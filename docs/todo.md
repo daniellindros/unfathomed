@@ -41,10 +41,12 @@ Questions that block work. Each says where the answer lives once it's settled.
       flip when the path turns more than 90°.
 - [ ] Crate prop: RigidBody3D with `axis_lock_linear_z` + angular X/Y locked.
 
-## Transcripts to collect
+## Transcripts to distil
 
-Run `reference/fetch-transcripts.sh` locally (YouTube blocks cloud IPs).
-Then paste one at a time into chat to distil into `inside-reference.md`.
+The download queue lives in `reference/talks.txt`; run
+`reference/fetch-transcripts.sh` locally to fetch it (YouTube blocks cloud IPs).
+**These boxes track distillation into `inside-reference.md`, not download** —
+paste a fetched transcript into chat one at a time.
 
 - [x] Subtleties of INSIDE (Konsoll 2017) — done, became section 9
 - [ ] A Game That Listens (GDC 2016) — highest value, do next
