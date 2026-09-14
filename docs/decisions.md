@@ -1,10 +1,16 @@
 # Decisions
 
-Append-only. One line per settled question. Binding — see CLAUDE.md.
-When a decision is reversed, edit the line in place and note what replaced it,
-rather than adding a contradicting line below.
+**Settled questions only.** A dated ledger — read it to find out what has already
+been decided, so it doesn't get re-argued. Binding: see CLAUDE.md.
 
-## Settled
+Append-only. One line per settled question. When a decision is reversed, edit the
+line in place and note what replaced it, rather than adding a contradicting line
+below.
+
+**What doesn't go here:** unsettled questions (`todo.md`), prose about what the
+game is (`design.md`), notes on how INSIDE did something (`inside-reference.md`).
+
+---
 
 - 2026-09-14 — Engine is Godot, 3D. Learning it for this project.
 - 2026-09-14 — Style target is INSIDE: low-poly, limited/near-monochrome palette, moody lighting, cinematic 2.5D.
@@ -12,11 +18,3 @@ rather than adding a contradicting line below.
 - 2026-09-14 — Camera is authored, not player-controlled.
 - 2026-09-14 — Project documentation lives in this repo, not in Claude.ai project knowledge. Single source of truth.
 - 2026-09-14 — Talk transcripts kept in `reference/transcripts/` for offline reference.
-
-## Open — decide before building much
-
-- Puzzle model: bespoke-per-puzzle (INSIDE) vs combinatorial one-system (The Swapper, Cocoon). Determines the whole production shape. Leaning combinatorial for solo feasibility, not decided.
-- Godot version to pin.
-- Target length / scope.
-- Whether to adopt the 200ms response budget as a hard rule.
-- Whether to build audio-driven respawn (the shockwave-loop technique).

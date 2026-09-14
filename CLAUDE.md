@@ -9,16 +9,22 @@ Explain engine concepts, 3D concepts, and game-dev conventions properly.
 
 ## Docs
 
-- `docs/design.md` — what the game is and isn't. Scope lives here.
-- `docs/decisions.md` — settled decisions. **Binding.** Read before proposing an
-  approach. Don't re-litigate what's in here; if something in it looks wrong, say so
-  rather than quietly working around it.
-- `docs/inside-reference.md` — researched background on how INSIDE was built.
+One home per kind of thing. If something belongs in two files, it belongs in one of
+them and the other should point at it.
+
+- `docs/design.md` — **what the game is.** A snapshot, rewritten in place. Scope
+  lives here. Half a page; if it's growing, say so.
+- `docs/decisions.md` — **settled questions only.** A dated, append-only ledger.
+  **Binding.** Read before proposing an approach. Don't re-litigate what's in here;
+  if something in it looks wrong, say so rather than quietly working around it.
+- `docs/todo.md` — **the working list, including everything still undecided.** Open
+  questions live here, not in `decisions.md`. When one is settled it moves to
+  `decisions.md` as a dated line.
+- `docs/inside-reference.md` — **researched background on how INSIDE was built.**
   Reference, not requirements. Lines are tagged `[doc]` (stated by Playdead),
   `[obs]` (observable), `[guess]` (inference). Never treat a `[guess]` as settled,
   and never treat anything here as a requirement — most of it was built by a funded
-  studio of 25 over six years.
-- `docs/todo.md` — current working list.
+  studio of 25 over six years. Nothing here is a task until it's in `todo.md`.
 
 ## Reference material
 

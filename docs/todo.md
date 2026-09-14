@@ -1,12 +1,36 @@
 # TODO
 
+**The working list — everything not yet done, including everything not yet
+decided.** Delete freely; this file has no memory and needs none.
+
+**What doesn't go here:** anything already settled. When a question is decided it
+moves to `decisions.md` as a dated line and leaves this file.
+
+---
+
+## Undecided
+
+Questions that block work. Each says where the answer lives once it's settled.
+
+- [ ] **Puzzle model** — bespoke-per-puzzle (INSIDE) vs combinatorial one-system
+      (The Swapper, Cocoon). Determines the whole production shape. Leaning
+      combinatorial for solo feasibility. Blocks any level work.
+      → `decisions.md`, and the reasoning into `design.md`.
+- [ ] **Godot version to pin** — blocks the tutorial below; it differs between
+      4.x releases. → `decisions.md`.
+- [ ] **Target length / scope** — needs to be a number, not "short".
+      → `design.md` under Target length, with a dated line in `decisions.md`.
+- [ ] **Whether the 200ms response budget is a hard rule** — see
+      `inside-reference.md` §9. → `decisions.md`.
+- [ ] **Whether to build audio-driven respawn** (the shockwave-loop technique) —
+      cheap to build in from the start, expensive to retrofit. → `decisions.md`.
+
 ## Now
 
 - [ ] Work through the official "Your first 3D game" tutorial in the Godot docs.
 - [ ] Grey-box test corridor: capsule player, one directional light, volumetric fog,
       debanding on. Spend an evening only tuning knobs. Judge the look before modelling anything.
 - [ ] Fill in `docs/design.md`. Half a page.
-- [ ] Decide the puzzle model (see `decisions.md` → Open).
 
 ## Soon
 

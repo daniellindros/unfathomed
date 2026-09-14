@@ -1,12 +1,16 @@
 # INSIDE — Reference Notes
 
-A working "how did Inside do this?" document. Organised by question, not by source.
-Kept in the repo alongside `design.md` and `decisions.md`.
+**Researched background on how INSIDE was built.** Organised by question, not by
+source. Read it to find out what the real technique was before choosing a cheaper
+version of it.
 
-**This file is reference, not requirements.** It describes what a funded studio of
-~25 people did over six years. Most of it is out of reach for a solo dev, and that's
-fine — the point is to know what the real technique was before choosing a cheaper
-version of it. Nothing here is binding. `decisions.md` is binding.
+**Reference, not requirements.** It describes what a funded studio of ~25 people did
+over six years. Most of it is out of reach for a solo dev, and that's fine. Nothing
+here is binding — `decisions.md` is binding.
+
+**What doesn't go here:** anything about *this* game. Nothing in this file is a task
+or a commitment. When something here is worth adopting, it becomes a line in
+`todo.md`, and then a dated line in `decisions.md` once settled.
 
 ---
 
