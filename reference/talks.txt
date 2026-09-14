@@ -3,7 +3,7 @@
 # Lines starting with # are ignored. Add anything here; it isn't INSIDE-specific.
 #
 # This is the download queue only. Whether a transcript has been distilled into
-# docs/inside-reference.md is tracked in docs/todo.md.
+# docs/inside-reference.md is tracked in Plane (project UNFAT, label transcript).
 
 subtleties-konsoll2017    3pzgnN3pK_8
 game-that-listens         Dnd74MQMQ-E

@@ -189,7 +189,7 @@ Four files, different authority levels. This distinction matters:
   `[obs]` (observable) or `[guess]` (inference). Never treat a `[guess]` as
   settled. Never treat any of it as a requirement — most of it describes what a
   funded studio of 25 did over six years.
-- `docs/todo.md` — working list.
+- Working list — since moved out of the repo to Plane, project `UNFAT`.
 
 `reference/transcripts/` holds raw auto-generated YouTube captions of Playdead
 talks. Third-party source material. Auto-captions garble names and technical
@@ -244,7 +244,7 @@ ajar in the background. Free to apply.
 
 ## Immediate next steps
 
-See `docs/todo.md`. In order:
+Tracked in Plane, project `UNFAT`. In order:
 
 1. Official "Your first 3D game" tutorial in the Godot docs — nodes, scenes,
    signals before anything else.
