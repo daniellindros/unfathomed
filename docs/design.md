@@ -5,7 +5,7 @@ Half a page is the target. If this file is growing, that's scope creep showing u
 in prose before it shows up in work.
 
 **What doesn't go here:** dated decisions (`decisions.md`), tasks and open
-questions (`todo.md`).
+questions (Plane).
 
 ---
 

@@ -17,7 +17,6 @@ them and the other should point at it.
 - `docs/decisions.md` — **settled questions only.** A dated, append-only ledger.
   **Binding.** Read before proposing an approach. Don't re-litigate what's in here;
   if something in it looks wrong, say so rather than quietly working around it.
-- `docs/todo.md` — **being retired.** See Work tracking below. Don't add to it.
 - `docs/inside-reference.md` — **researched background on how INSIDE was built.**
   Reference, not requirements. Lines are tagged `[doc]` (stated by Playdead),
   `[obs]` (observable), `[guess]` (inference). Never treat a `[guess]` as settled,
@@ -33,11 +32,6 @@ them. Not in the repo. Two labels carry meaning:
   `docs/decisions.md`, and the work item closes.
 - `transcript` — a Playdead talk to distil into `docs/inside-reference.md`. Tracks
   distillation, not download; the download queue is `reference/talks.txt`.
-
-`docs/todo.md` is a **partial remnant** of that move, not the live list. Its
-Undecided and Now items are already in Plane; its Soon, Transcripts and Later
-items are not yet. Read it for those, but don't treat it as current and don't add
-to it.
 
 ## Reference material
 

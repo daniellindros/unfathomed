@@ -1,13 +1,13 @@
 ---
 name: distil-transcript
-description: Distil a raw conference-talk transcript into docs/inside-reference.md with correct [doc]/[obs]/[guess] tagging. Use when Daniel pastes a transcript, points at a file in reference/transcripts/, or asks to work through one of the talks listed in docs/todo.md.
+description: Distil a raw conference-talk transcript into docs/inside-reference.md with correct [doc]/[obs]/[guess] tagging. Use when Daniel pastes a transcript, points at a file in reference/transcripts/, or asks to work through one of the talks tracked in Plane under the transcript label.
 ---
 
 # Distil a transcript into inside-reference.md
 
 Input is a raw auto-generated YouTube transcript — pasted into chat, or a file in
 `reference/transcripts/`. Output is an edit to `docs/inside-reference.md`, and
-usually a line in `docs/todo.md`.
+usually a work item in Plane.
 
 Read the whole transcript before writing anything. Auto-captions have no
 punctuation and no speaker labels; a claim's meaning often only resolves several
@@ -65,7 +65,8 @@ Also update, when the talk warrants it:
 
 - **§13 table** — a newly-learned technique gets a row: technique, cost, verdict.
 - **§14 open questions** — delete ones the talk answered, add ones it raised.
-- **`docs/todo.md`** — tick the talk's box under "Transcripts to distil".
+- **Plane** — close the talk's work item (project `UNFAT`, label `transcript`).
+  Those items track distillation, not download.
 
 ## What never happens
 
@@ -73,7 +74,7 @@ Also update, when the talk warrants it:
   six years. Write it as description, never as instruction.
 - **Never add to `decisions.md`.** A transcript is third-party source material and
   is never authoritative over it. If something is worth adopting, it becomes a
-  line in `docs/todo.md` under Undecided — Daniel decides, not the transcript.
+  work item in Plane labelled `decision` — Daniel decides, not the transcript.
 - **Don't inflate the file.** A three-hour talk might yield six lines. Volume of
   transcript is not evidence of volume of finding.
 

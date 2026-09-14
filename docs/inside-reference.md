@@ -9,8 +9,8 @@ over six years. Most of it is out of reach for a solo dev, and that's fine. Noth
 here is binding — `decisions.md` is binding.
 
 **What doesn't go here:** anything about *this* game. Nothing in this file is a task
-or a commitment. When something here is worth adopting, it becomes a line in
-`todo.md`, and then a dated line in `decisions.md` once settled.
+or a commitment. When something here is worth adopting, it becomes a work item in
+Plane, and then a dated line in `decisions.md` once settled.
 
 ---
 
