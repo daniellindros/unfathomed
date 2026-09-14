@@ -7,7 +7,7 @@ Append-only. One line per settled question. When a decision is reversed, edit th
 line in place and note what replaced it, rather than adding a contradicting line
 below.
 
-**What doesn't go here:** unsettled questions (`todo.md`), prose about what the
+**What doesn't go here:** unsettled questions (Plane, label `decision`), prose about what the
 game is (`design.md`), notes on how INSIDE did something (`inside-reference.md`).
 
 ---
@@ -16,5 +16,6 @@ game is (`design.md`), notes on how INSIDE did something (`inside-reference.md`)
 - 2026-09-14 — Style target is INSIDE: low-poly, limited/near-monochrome palette, moody lighting, cinematic 2.5D.
 - 2026-09-14 — Player is constrained rather than free-3D. Movement follows an authored path that can move toward and away from the camera, not a fixed world-axis Z plane.
 - 2026-09-14 — Camera is authored, not player-controlled.
-- 2026-09-14 — Project documentation lives in this repo, not in Claude.ai project knowledge. Single source of truth.
+- 2026-09-14 — Project *documentation* lives in this repo, not in Claude.ai project knowledge. Single source of truth. Narrowed later the same day: task tracking moved out to Plane, see below.
 - 2026-09-14 — Talk transcripts kept in `reference/transcripts/` for offline reference.
+- 2026-09-14 — Task tracking lives in Plane, project Unfathomed (`UNFAT`), not in the repo. `docs/todo.md` is being retired. Docs stay in the repo; only the working list moved.
