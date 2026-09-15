@@ -55,6 +55,7 @@ level designer on both games.
 - **[doc]** There was never a written story document. Jensen shared fragments with individuals as they needed them for their own work. The nearest thing to a design bible on Limbo was a 3m × 2m concept art poster on the office wall showing the world's areas in miniature, which the team mined for week-to-week ideas.
 - **[doc]** Flat structure, open plan, no line managers for designers. Artists weren't asked to maintain production-tracking tasks; a producer handled that, and designers cleaned up after artists had finished an area.
 - **[doc]** Many endings were tried for Limbo — at least five genuinely different ones — and discarded for not working well enough.
+- **[doc]** The same pattern recurs on Inside. A single drawing by the lead artist — "the huddle drawing", a potato — was referred to throughout production for modelling, shading, lighting and shadowing decisions across the whole game, not only the creature. Two projects, two cases of one image doing a design document's job. *(Huddle Up!, GDC 2017)*
 
 **Transfers to solo work:**
 
@@ -190,17 +191,62 @@ Svendsen. Slides are public.
 
 ## 8. Art direction and VFX
 
+Primary source is *Turn it Down 90%* (Control Conference 2016, Mikkel Bøgeskov
+Svendsen). **Watched and transcribed.** He joined after Limbo shipped and ended up on
+VFX without expecting to.
+
 - **[obs]** Low polygon counts, near-absent albedo detail, no visible normal-map work.
 - **[obs]** Near-monochrome palette. The boy's red shirt is the only saturated colour for most of the game and anchors the eye in every frame.
-- **[doc]** The VFX talk is titled *Turn it Down 90%*. Playdead describe the game as visually minimalist — clean shapes, muted colours, no added sugar — and the talk covers what those choices cost the VFX work.
 - **[obs]** Environment silhouettes carry readability; shapes are simple and high-contrast against fog.
 
-**The trade for a solo dev:** removes texture authoring, UV work and PBR material sets
-almost entirely, and moves the cost into lighting. Good trade — lighting is learnable
-alone. But low-poly under flat lighting looks like an asset pack, not like Inside.
+### The title is the method
 
-**The restraint is the technique.** "Turn it down 90%" is a usable rule: build the
-effect, then remove most of it.
+- **[doc]** He arrived wanting to prove himself — the biggest explosions, the best rain, tens of thousands of rendered figures. The advice that corrected it was literally "how about you turn it down ninety percent", and he says it took a long time to sink in.
+- **[doc]** His framing for the discipline: game VFX is the cherry on top, and like film CGI or stage makeup, people only remark on it when it's *bad*. The best version is the one nobody notices.
+- **[doc]** The tuning instruction he was given, and the most usable line in the talk: **turn it down until it becomes uncomfortable**, then live with the discomfort. He describes it being uncomfortable for a few days before he began to enjoy the omission.
+- **[doc]** Two concrete rules from it: don't make the rain the brightest thing on screen, and don't colour smoke opaque grey or yellow just because that is "smoke colour".
+- **[doc]** The shipped rain is dim enough to read mainly on shaded surfaces and under a lamp post. The intent: you hear rain, your eye goes looking for it, and it is there. That is the whole requirement.
+
+### Integrate rather than add
+
+- **[doc]** The first water waves were additive and lit from a cube map, because that was the easy and fashionable approach. The result was reflections with no source in the scene — motion replaced by a distraction. The shipped version blends normally and samples the *same* reflection and refraction maps the water already uses, so it sits inside the picture rather than on top of it.
+- **[doc]** Smoke is authored as two picked colours, a lit side and a shaded side, sampled from what is actually around it. The shader takes the dot product of the normal against a **custom light direction chosen per smokestack** — there is no single sun to reference — and blends between the two. He describes it as deliberately camouflaging the effect into the environment.
+- **[doc]** Their standard particle shader **does not accept colour from the texture at all**, only alpha, with colour coming from that two-tone blend. The alpha is deliberately low-detail; variation comes from random rotation and random size instead.
+- **[doc]** Lens flares were going to have rainbows. In a near-monochrome game they went monochrome almost immediately.
+- **[doc]** The first water normal map was an ocean, generated from cellular noise with every octave, with screen distortion. It was a pond. The shipped version is a subtle bump that satisfies the need for motion and nothing more.
+
+### Detail has a floor, not a ceiling
+
+- **[doc]** Sub-particle motion — UV distortion sampled from a motion texture before the real texture — was taken from a Naughty Dog technique, chosen to keep overdraw low.
+- **[doc]** His first attempt used sharp Perlin noise from a 3D package, on the reasoning that turbulence is what smoke does. It was too detailed to work even turned down entirely. The replacement was made in Photoshop from a UV gradient with a swirl filter applied and tiled — he calls it "world noise" — and it reads as slow, viscous motion at about ten percent strength.
+- **[doc]** That particle system contains roughly **eight particles**.
+- **[doc]** The rule he quotes from a mentor: **your work is only as good as its worst detail.** One detail too many either falls apart or reads slightly wrong, and wrong is attention-grabbing. *(The mentor's name is destroyed in the captions and is not reproduced here.)*
+
+### Water edge displacement
+
+The one deeply technical item, and a good illustration of the cost of things nobody sees.
+
+- **[doc]** Crossing the waterline, the surface was a flat polygon — visible for perhaps two frames, and jarring after seeing it bumpy from above. The fix was a tessellated edge with displacement mapping near the camera.
+- **[doc]** That introduced a hard cutoff at the top and bottom of the water band. The solution traces toward the horizon tracking the lowest and highest wave found, then fades each vertex out as it approaches either extreme while staying sharp at the horizon, using a remap (inverse lerp) on data carried from the vertex shader.
+- **[doc]** He describes it as weeks of despairing work, so that the player does not notice a flat-pancake water surface.
+
+### Deleting things
+
+- **[doc]** Sometimes the right answer is removal, not restraint: an effect too aggressive, ten thousand figures replaced by a line in the background, a flourish dropped because the scene was already strange enough.
+- **[doc]** He is openly unhappy about "kill your darlings" as a phrase, and gives a better reason for it: **you delete what you are too close to, because proximity removes your ability to judge whether it fits.**
+- **[doc]** The counterweight, stated explicitly: they do turn it up to eleven once or twice, and knowing when you are the lead violinist and when you are not is the actual skill.
+- **[doc]** He credits every lesson in the talk to mentorship rather than to himself.
+
+**The trade for a solo dev:** the art style removes texture authoring, UV work and PBR
+material sets almost entirely, and moves the cost into lighting. Good trade — lighting
+is learnable alone. But low-poly under flat lighting looks like an asset pack, not
+like Inside.
+
+**"Turn it down until it becomes uncomfortable" is the version to keep.** It is an
+actual procedure rather than an aspiration, and it costs nothing but nerve. Note that
+this is a different move from the darlings channel in §5 — that one finds a home for
+work that doesn't fit, this one deletes it.
+
 
 ---
 
@@ -296,12 +342,59 @@ spots rather than doing it everywhere.
 - **[doc]** The huddle took more than four years on and off. A consultant hacked together a working prototype in one month, which convinced the team it was worth doing; a programmer was then dedicated to it for the rest of the project. Roughly a third of the company touched it at some point.
 - **[doc]** Grøntved, the animator, is explicit that people assume the huddle is thousands of hand animations strung together, and that this is neither true nor feasible.
 
+### How the huddle actually works
+
+From *Huddle Up!* (GDC 2017), three speakers: the animator, the senior programmer and
+a gameplay programmer. **Watched and transcribed.** Two of the three names are
+destroyed by the captions and are not reproduced here.
+
+**Conception.** The animator's job before production was to find the movement.
+
+- **[doc]** The reference wasn't a spec but a single drawing by the lead artist, known internally as "the huddle drawing" — a potato. It was consulted throughout production for decisions on modelling, shading, lighting and shadowing, **and not only for the huddle but for the whole game**. This is the concept-art-as-design-document pattern from §2, named.
+- **[doc]** Three stated inspirations: the demon boar from *Princess Mononoke*, which morphs and grows a limb wherever its purpose requires one; the physics blob game *Gish*, which deforms to squeeze through gaps; and **crowd surfing** — many hands with a shared goal but different motives, some lifting gently, some holding you in place, some trying to bring you down. The huddle is framed as a cluster of individuals with one goal and conflicting motives.
+- **[doc]** The concept rig was deliberately crude — four spine bones, points scattered over the surface, six legs, several arms and torsos, two free-floating bodies — so limbs could be pulled inside and pushed out elsewhere. Fast to animate with no rig in the way.
+- **[doc]** The first concept animations date to **late 2010**, months after Limbo shipped. Around **40** were made before any production work, described as a spot on the horizon to aim for. He says the team outdid them by miles.
+- **[doc]** Silhouette beat plausibility explicitly: three arms grip the swinging crane where plausibility would want twenty.
+
+**The core, from the senior programmer.**
+
+- **[doc]** **26 dynamic bodies** — rigid bodies with colliders, stepped by a custom physics model. On top of them sit the same number of *internal bones*, caching position, velocity and mass and accumulating the impulses that get synced back.
+- **[doc]** An **adjacency graph** links nearest neighbours. At boot the bodies are placed on a sphere and the edges are established then — **the edge configuration never changes again**. Each edge is a spring with a target length, and the target lengths deform continuously with the core's scale and height.
+- **[doc]** **Two spine bones** sit above all that, driven by logic states and a little animation rather than by physics. Each owns a *cluster* of internal bones which hold local positions relative to it, so applying torque to the top spine bone drags its cluster along. The programmer's phrase for this is "skimming the physics" — macro control over a simulation you don't otherwise steer.
+- **[doc]** Because many largely independent systems all push impulses into one core, the result is explicitly **emergent** — unpredictable, and tuned by constant tweaking rather than designed to a spec.
+- **[doc]** Landing non-vertically is normal, and rotating the spine upright looked silly. Instead they **reconfigure the spine** so the structure rises. Doing that instantly pops, because every constraint changes at once, so the **rest lengths are blended** to hide it. He states the general rule plainly: they worked very hard to avoid any visible pop.
+
+**The visual layer, from the gameplay programmer.** The best part of the talk, because
+it is so much cheaper than it looks.
+
+- **[doc]** He joined while the core was a buggy floating blob, and was **not allowed to touch the physics** because it changed constantly. His job was a thin visual layer, done early specifically to find out whether the thing could ever be convincing.
+- **[doc]** His demonstration: the *shipped* huddle with its legs hidden looks like something you would doubt could ever ship. His analogy is the internet joke of crude stick arms drawn onto a bird, which makes it a different animal entirely. The legs are what sell the mass.
+- **[doc]** The mesh covers the **front only** — the back is empty because it is never seen. Six legs attach to physics bodies at the bottom, six arms at the top (one of which is a leg behaving as an arm), and they reconfigure when the creature turns so the silhouette always reads.
+- **[doc]** Loose body parts on the front were ragdolls glued on, swapped later for **custom springs** for performance. Losing the ragdolls lost their collision, so the parts now **retract near walls** to stop them clipping. Small forces on the springs make them squirm, so they read as alive rather than as an unconscious body.
+- **[doc]** **The entire leg system uses seven animations**: two running forward, two running backward (played in reverse), one stumble over an edge, two falling. The algorithm is: raycast down from the attachment body to find the ground, **blend between the high and low run cycle by distance to ground**, and **drive playback speed directly from the physics body's velocity**.
+- **[doc]** The refinements are small and specific: on stopping, blend to a pose with the foot down, because nobody stands with a foot in the air. Leg phase offset changes by gait — together at rest, maximally apart walking, about 25% apart galloping.
+- **[doc]** Sliding on a slippery floor is **the animation frozen** while the physics runs unchanged, plus a slide sound.
+- **[doc]** Each foot plant sends a small **shockwave of impulses up the body** so the mass jiggles. He admits it is hard to see, and says it makes a large difference in play — the difference between an animal and something translating through space.
+- **[doc]** The arms work the same way. Grabbing is a physics model; the arms are flavour on top. The two animations used most are a **grab that is scrubbed by play position** so it reaches different distances, and a retract for when a dynamic arm is finished and withdraws into the body.
+- **[doc]** The production rule underneath all of it: they tweaked the huddle for the gameplay they needed, and **where they could not make it work they deleted the gameplay and designed something else the system could do**.
+
 **Honest note:** animation is the most likely bottleneck for a solo dev and the one
 least helped by the low-poly art style. Two options: budget for it explicitly, or
 design a game that needs less of it.
 
 **The prototype-in-a-month pattern is worth copying.** Before committing to an expensive
 mechanic, build the ugliest possible version and see if it's fun.
+
+**The leg system is the most encouraging thing in this whole file.** Seven animations,
+a downward raycast, one blend on height and one mapping from velocity to playback
+speed — and it carries a creature people assume was hand-animated for years. The
+expensive part of the huddle was the core simulation; the part that makes it *read* is
+cheap and within reach. Where animation budget is tight, look for the equivalent
+trick before authoring more clips.
+
+**"If the system can't do it, change the gameplay" is the production lesson.** They
+had four years and a dedicated programmer and still bent the design to the tech rather
+than the other way round. A solo dev has less room, not more.
 
 ---
 
@@ -506,6 +599,11 @@ allocate in a per-frame path.
 | Anchor a mechanic to music time | High | Avoid — every timing guarantee becomes frame-rate dependent |
 | Teach controls by obstacle order, no prompts | Low | Take it |
 | "Turn it down 90%" restraint on VFX | Free | Take it |
+| Tune an effect down until it is uncomfortable, then leave it | Free | Take it — an actual procedure |
+| Colour effects from the scene (lit/shaded picked colours), not from the texture | Low | Take it |
+| Sell a physics body with a few animations on a raycast + velocity mapping | Low | Take it — the cheapest big win here |
+| Impulse shockwave on foot plant, for weight | Low | Take it |
+| Change the gameplay when the system cannot support it | Free | Take it |
 | Darlings channel for puzzles that don't fit | Free | Take it |
 | Limited palette, one accent colour | Free | Take it |
 | Separate diffuse/specular/bounce light authoring | High | Approximate with per-area environments |
@@ -548,9 +646,9 @@ Individual talks:
   Source code (MIT, Unity 5+): https://github.com/playdeadgames/temporal
 - *Banding in Games* — DTU VisionDay 2014. Dithering to kill colour banding.
 - *Custom Pixels* — GGJ 2015. Replacing all shaders in Unity for fully custom rendering.
-- *Turn it Down 90% — INSIDE VFX* — Control Conference 2016.
+- *Turn it Down 90% — INSIDE VFX* — Control Conference 2016, Mikkel Bøgeskov Svendsen. **Watched and transcribed.** The source for section 8.
   https://www.youtube.com/watch?v=vA3uFC2p8eo
-- *Huddle Up! Making the [spoiler] of INSIDE* — GDC 2017. Physics-driven creature.
+- *Huddle Up! Making the [spoiler] of INSIDE* — GDC 2017, three speakers. **Watched and transcribed.** The source for section 10. Two of the three speakers' names are unrecoverable from the captions; check the slides before citing anyone.
   https://www.youtube.com/watch?v=gFkYjAKuUCE
   Slides: https://media.gdcvault.com/gdc2017/Presentations/Grontved_Huddle%20Up!%20Making.pdf
 - *A Game That Listens* — GDC 2016, Martin Stig Andersen. **Watched and transcribed.** Audio/gameplay feedback loops; the source for most of section 11. Note: YouTube serves only a Danish-tagged caption track for this talk, transcribed with the wrong speech model — names and figures in it are unreliable.
