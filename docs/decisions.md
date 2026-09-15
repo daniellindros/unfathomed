@@ -20,3 +20,4 @@ game is (`design.md`), notes on how INSIDE did something (`inside/`).
 - 2026-09-14 — Talk transcripts kept in `reference/transcripts/` for offline reference.
 - 2026-09-14 — Task tracking lives in Plane, project Unfathomed (`UNFAT`), not in the repo. The in-repo working list was removed at commit e99348c. Docs stay in the repo; only the working list moved.
 - 2026-09-15 — Godot version pinned to 4.7, the current stable. Policy is to track latest stable; 4.8 is alpha and not used until it ships.
+- 2026-09-15 — Design docs follow two standard templates: `design.md` is the concept/pitch document (the overview), `gdd.md` is the detailed GDD. Overlapping sections live in `design.md` only; `gdd.md` links rather than repeats. Unresolved questions stay in Plane rather than in the GDD's own section.
