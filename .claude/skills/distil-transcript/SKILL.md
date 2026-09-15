@@ -13,6 +13,12 @@ Read the whole transcript before writing anything. Auto-captions have no
 punctuation and no speaker labels; a claim's meaning often only resolves several
 paragraphs later.
 
+**Read the file header first.** It records which caption track YouTube served. A
+track tagged as a language other than the one spoken was transcribed with the
+wrong speech model, and the header says so — in that case names and technical
+terms are not just unreliable, they are wrong, and nothing specific survives
+without verification against the slides.
+
 ## The tagging rule
 
 Every factual line gets a tag. An untagged factual line is a bug.
