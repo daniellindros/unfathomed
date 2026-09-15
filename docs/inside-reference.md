@@ -307,12 +307,75 @@ mechanic, build the ugliest possible version and see if it's fun.
 
 ## 11. Audio
 
+Primary source is *A Game That Listens* (GDC 2016, Martin Stig Andersen). **Watched
+and transcribed.** He frames the talk as three interlocking problems: death and
+respawn, sound conducting in-game actions, and audio-driven gameplay — where the
+game must read the sound to know its own state.
+
+**Source caveat.** The only caption track YouTube serves for this talk is tagged
+Danish and was transcribed with the wrong speech model — see the header of
+`reference/transcripts/game-that-listens.txt`. The argument survives intact and the
+mechanisms below are clear, but every *figure* is as the captions rendered it and
+none is verified against slides. Treat numbers here as `[guess]` even where the
+surrounding claim is `[doc]`.
+
 - **[doc]** Wwise integrated with Unity, wired into animation and gameplay rather than bolted on.
-- **[doc]** The GDC 2016 audio talk (*A Game That Listens*) is about feedback loops in both directions: audio-driven gameplay, sound conducting in-game actions, and folding death and respawn into the overall sound structure rather than interrupting it.
-- **[doc]** Concrete example: in the shockwave sequence, a repeating background explosion sets a rhythm and the player must be under cover when the wave arrives. On death the game does *not* cut the audio and reset — the explosion loop keeps running and the player respawns at an appropriate point in the cycle.
 - **[doc]** Martin Stig Andersen created sound using bone conduction through a human skull.
 - **[doc]** Audio influenced design, not just the reverse. The cornfield originally had no rain; Andersen liked the idea and applied the sound treatment, the team responded well, and the scene was changed to match.
 - **[doc]** For the huddle, Andersen took five to seven improv theatre performers into a forest, tied them together, had them move as one mass, and recorded the footsteps. Convincing audio early is part of what made the creature feel real enough to keep.
+
+### The continuous audio engine
+
+- **[doc]** The audio engine runs continuously from entering the game to exiting it. Sound is unaffected by anything happening in the game unless explicitly specified otherwise — the inverse of the usual arrangement, where audio follows game state.
+- **[doc]** The cost is that every sound must then be accounted for. Dynamic objects with their own start and stop events are the hard part, and keeping an overview of them is real work.
+- **[doc]** Sounds are split into two categories: those that restart on respawn, and those that play across it. The respawn handler stops everything *except* ambience, music and similar beds.
+- **[doc]** Mix states also survive death and respawn, selected from a library of generic ones — fade out over a few seconds on death, fade back in after.
+
+### Death and respawn
+
+- **[doc]** The game sends a death event, then pauses audio event execution while the level unloads and reloads, then resumes it — so everything queued during the gap fires at the same point in time instead of scattering across the load.
+- **[doc]** Loading a save point and respawning are deliberately *different* events. Come back from the menu after a few days and the musical cue plays again; die and respawn and it doesn't.
+- **[doc]** On death the mix is ducked, not cut. Andersen's claim is that nobody notices, and that this is what stops repeated deaths turning a piece of music you liked into the sound of being stuck. The captions give the figure as 6 dB.
+- **[doc]** He uses Limbo as his own counter-example. The hotel sign's musical cue stops on death and restarts on reload; he says he played Limbo carefully to avoid dying because of it. They had ideas for fixing this during Limbo and no time to build them.
+
+### Respawning into the right part of the loop
+
+This is the marching-figures puzzle, not the shockwave — two separate sequences that
+are easy to conflate.
+
+- **[doc]** The boy must follow a line of marching figures. The loop has two halves: walk during the first, stand still during the second. Doing the opposite kills him.
+- **[doc]** The characters' footsteps are *in the music*. The music decides when they walk, rather than the animation triggering footstep sounds.
+- **[doc]** Respawning in the first half would kill him instantly, so a segment is queued as the screen fades to black, timed so he never arrives in the lethal half — and offset by roughly half a second so he doesn't land exactly on the beat.
+
+### Deciding the outcome before the audio needs it
+
+- **[doc]** In the shockwave section a blast fires every six seconds and the boy must be in cover.
+- **[doc]** The music has to know whether he survives *before* the blast happens, because the loop restarting is what triggers the shockwave — by the time the game knows the answer, it is too late to choose the right material. So the game checks whether he is in cover shortly before the loop point (the captions say ~50 ms) and commits to that outcome.
+- **[doc]** Having committed, they honour the decision even if he leaves cover during the blast. Otherwise the audio and the game would be telling the player different things.
+- **[doc]** The musical change lands when the puzzle is *logically* solved, not when the player physically leaves it — underlining that you got it right.
+
+**Committing early is the transferable idea, and it is free.** Anything that must
+react ahead of an outcome — music, a camera move, a light change — needs that outcome
+decided before it is visible and then honoured even if the world disagrees. It is a
+correctness rule, not a content cost.
+
+### Music time versus game time
+
+- **[doc]** The central engineering problem of the whole approach. Anchoring a mechanic to music puts it in *real* time; game time is frame-rate dependent. Five game-seconds and five real seconds are not the same thing, so a traversal that always worked can become impossible when the frame rate drops.
+- **[doc]** Their debug view for the rotating cover: green bars mark solution positions and a yellow bar marks the cover's target, both locked to music time, while the cover itself runs on game time and continuously re-aligns toward the target.
+- **[doc]** Slowed down hard, the cover visibly jumps between positions — "one thing I hope you never see in the game." The stated goal was that the puzzle stays solvable on a bad machine even when the motion stops being smooth.
+- **[doc]** The target snaps to the nearest solution once the player is close enough. The game helps.
+
+**This is the expensive half.** Syncing gameplay to music means every timing
+guarantee now depends on real-world performance, and the fallback behaviour has to be
+designed rather than discovered. A solo dev can have the continuous-audio half —
+which is most of the emotional payoff — without ever anchoring a mechanic to a beat.
+
+### Sound conducting the game
+
+- **[doc]** Markers in the audio trigger events in the game. The flashing warning light before a shockwave is fired from a marker in the sound, not from game logic.
+- **[doc]** The elevator crash: during development the elevator happened to hit the water on the beat, they liked it, and so its speed is now adjusted to land on the beat regardless of when in the loop the player triggers it.
+- **[doc]** Audio drove a level-design change. The director and Andersen felt the shockwave section was too intense given a climax coming later, so the boy was sent inside a building to bring the mood down.
 
 ### The breathing loop
 
@@ -327,11 +390,14 @@ The clearest example of how tightly audio and animation are coupled, from the Ko
 **Worth copying as an architecture, not just an effect.** One signal (breath intensity)
 fed by many gameplay sources, driving audio, with animation slaved to the audio. It
 gives free continuity between systems that would otherwise have to be synchronised by
-hand — and it's the same idea as the shockwave respawn.
+hand — and it's the same idea as letting the audio own respawn timing.
 
-**The respawn-into-the-loop trick is cheap and enormously effective.** Almost nothing
-technically, and it's the difference between death feeling like a reset and death
-feeling like part of the scene. Strong candidate for this project.
+**The continuous audio engine is the cheap, high-value half of this talk.** Letting
+the mix run across death, ducking instead of cutting, and splitting sounds into
+restart-on-respawn versus play-across costs almost nothing and is the difference
+between death feeling like a reset and death feeling like part of the scene. The
+beat-synced puzzles are the expensive half and are separable. Strong candidate for
+this project — and much easier built in from the start than retrofitted.
 
 ---
 
@@ -365,6 +431,10 @@ system to plan, not a side effect.
 | Debanding + volumetric fog + one strong key light | Low | Take it |
 | Checkpoints so no puzzle is ever repeated | Low | Take it |
 | Respawn into a running audio loop | Low | Take it |
+| Duck the mix on death instead of cutting it | Low | Take it |
+| Split sounds: restart-on-respawn vs play-across | Low | Take it |
+| Commit to an outcome before the audio needs it | Free | Take it — a correctness rule |
+| Anchor a mechanic to music time | High | Avoid — every timing guarantee becomes frame-rate dependent |
 | Teach controls by obstacle order, no prompts | Low | Take it |
 | "Turn it down 90%" restraint on VFX | Free | Take it |
 | Darlings channel for puzzles that don't fit | Free | Take it |
@@ -386,6 +456,7 @@ Unanswered. Fill in or delete as you learn.
 - How are camera transitions triggered and blended?
 - Is the checkpoint system manually placed or driven by puzzle state?
 - What's in the Danish-language animation talk? Not yet watched.
+- How did Wwise communicate state back to the engine? Andersen was asked this directly in the Q&A and said timeline markers were used during development but replaced by something else for the final game. The captions destroy the answer. The slides or the Wwise Tour talks may have it.
 
 ---
 
@@ -413,7 +484,7 @@ Individual talks:
 - *Huddle Up! Making the [spoiler] of INSIDE* — GDC 2017. Physics-driven creature.
   https://www.youtube.com/watch?v=gFkYjAKuUCE
   Slides: https://media.gdcvault.com/gdc2017/Presentations/Grontved_Huddle%20Up!%20Making.pdf
-- *A Game That Listens* — GDC 2016. Audio/gameplay feedback loops.
+- *A Game That Listens* — GDC 2016, Martin Stig Andersen. **Watched and transcribed.** Audio/gameplay feedback loops; the source for most of section 11. Note: YouTube serves only a Danish-tagged caption track for this talk, transcribed with the wrong speech model — names and figures in it are unreliable.
   https://www.youtube.com/watch?v=Dnd74MQMQ-E
 - *Unbreaking Immersion* — Wwise 2016. Audio sequencer, breathing, the shockwave sequence.
 - *The Boy From INSIDE* — AES 2016. Sound design of the main character.
