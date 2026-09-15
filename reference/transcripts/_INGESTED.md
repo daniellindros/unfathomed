@@ -20,8 +20,8 @@ article that cites it, not here.
 | `turn-it-down-90-vfx.txt` | Turn It Down 90% — INSIDE VFX (Control 2016) | No — §8 is from slides only |
 | `huddle-up.txt` | Huddle up! Making the [SPOILER] of INSIDE (GDC 2017) | No |
 | `stutter-free-60fps.txt` | Stutter Free 60 FPS (Unite 2016) | No |
-| `unbreaking-immersion-2.txt` | Wwise Tour 2016 — Voice (2 of 3) | No |
-| `unbreaking-immersion-3.txt` | Wwise Tour 2016 — Scene Change (3 of 3) | No |
+| `unbreaking-immersion-2.txt` | Wwise Tour 2016 — Voice (2 of 3) | **Yes** — §11 |
+| `unbreaking-immersion-3.txt` | Wwise Tour 2016 — Scene Change (3 of 3) | **Yes** — §11, §12 |
 
 Not fetchable: **Unbreaking Immersion part 1** (`1yzj2ZinN5M`) has captions
 disabled. Confirmed — it failed while later videos in the same run succeeded.
