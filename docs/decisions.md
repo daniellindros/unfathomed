@@ -19,3 +19,4 @@ game is (`design.md`), notes on how INSIDE did something (`inside-reference.md`)
 - 2026-09-14 — Project *documentation* lives in this repo, not in Claude.ai project knowledge. Single source of truth. Narrowed later the same day: task tracking moved out to Plane, see below.
 - 2026-09-14 — Talk transcripts kept in `reference/transcripts/` for offline reference.
 - 2026-09-14 — Task tracking lives in Plane, project Unfathomed (`UNFAT`), not in the repo. The in-repo working list was removed at commit e99348c. Docs stay in the repo; only the working list moved.
+- 2026-09-15 — Godot version pinned to 4.7, the current stable. Policy is to track latest stable; 4.8 is alpha and not used until it ships.

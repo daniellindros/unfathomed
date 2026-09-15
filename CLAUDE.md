@@ -1,7 +1,7 @@
 # Project
 
 Cinematic 2.5D puzzle-platformer in the style of INSIDE (Playdead, 2016).
-Godot 4.x, GDScript. Solo dev, first game.
+Godot 4.7, GDScript. Solo dev, first game. Tracking latest stable — see `docs/decisions.md`.
 
 I'm a frontend developer (Vue/TypeScript) — strong on programming fundamentals,
 new to Godot, 3D, and game development generally. Skip programming basics.

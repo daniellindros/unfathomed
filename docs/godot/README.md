@@ -23,10 +23,12 @@ Every claim carries one:
 
 ## Version
 
-**No Godot version is pinned yet.** Until one is, a version-sensitive claim names the
-version its source targeted and nothing more. The tutorials here span at least
-4.x-generic and 4.7, and at least one feature (`@abstract`) is recent enough that it
-won't exist in an older 4.x.
+**Godot 4.7** (`decisions.md`, 2026-09-15). Policy is to track the latest stable, so
+this moves; 4.8 is alpha and not in use.
+
+A version-sensitive claim names the version its source targeted. Most of these
+tutorials are 4.x-generic; BucketBrigade's is 4.7, so its use of `@abstract` — recent
+enough that it won't exist in an older 4.x — is on-version for us.
 
 ## Articles
 
@@ -36,6 +38,7 @@ won't exist in an older 4.x.
 | `scene-structure.md` | Node paths, scene-unique nodes, keeping components decoupled | Godotneers ×2 |
 | `signals.md` | Connecting, custom signals, editor vs code | Recursive Dev, Godotneers |
 | `data-models.md` | Separating data from nodes | Godotneers, BucketBrigade |
+| `ui.md` | Containers, the sizing model, themes, and two project settings to set early | Godotneers |
+| `shaders.md` | The pipeline, visual vs code, language gotchas | Godotneers |
 
-Not yet written up: `godotneers-ui-basics` (no UI in this game yet),
-`godotneers-shaders-intro`. Both still in `reference/transcripts/godot/`.
+Every Godot transcript fetched so far is written up.

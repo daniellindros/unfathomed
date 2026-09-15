@@ -40,8 +40,8 @@ Community tutorials. Not official documentation, not authoritative over
 | `godot/godotneers-components.txt` | Godot Components — structuring a game | Godotneers | Yes — `scene-structure.md` |
 | `godot/godotneers-data-models.txt` | Data models — extensible, maintainable games | Godotneers | Yes — `data-models.md` |
 | `godot/recursivedev-signals.txt` | The basics of signals in Godot | Recursive Dev | Yes — `signals.md` |
-| `godot/godotneers-ui-basics.txt` | Godot UI Basics | Godotneers | No — no UI in this game yet |
-| `godot/godotneers-shaders-intro.txt` | Welcome to Shaderland | Godotneers | No |
+| `godot/godotneers-ui-basics.txt` | Godot UI Basics | Godotneers | Yes — `ui.md` |
+| `godot/godotneers-shaders-intro.txt` | Welcome to Shaderland | Godotneers | Yes — `shaders.md` |
 
 ---
 
