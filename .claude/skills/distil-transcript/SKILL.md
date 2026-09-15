@@ -1,13 +1,13 @@
 ---
 name: distil-transcript
-description: Distil a raw conference-talk transcript into docs/inside-reference.md with correct [doc]/[obs]/[guess] tagging. Use when Daniel pastes a transcript, points at a file in reference/transcripts/, or asks to work through one of the talks tracked in Plane under the transcript label.
+description: Distil a raw conference-talk transcript into the topic files under docs/inside/ with correct [doc]/[obs]/[guess] tagging. Use when Daniel pastes a transcript, points at a file in reference/transcripts/, or asks to work through one of the talks tracked in Plane under the transcript label.
 ---
 
-# Distil a transcript into inside-reference.md
+# Distil a transcript into docs/inside/
 
 Input is a raw auto-generated YouTube transcript — pasted into chat, or a file in
-`reference/transcripts/`. Output is an edit to `docs/inside-reference.md`, and
-usually a work item in Plane.
+`reference/transcripts/`. Output is an edit to one or more files under `docs/inside/`,
+and usually a work item in Plane.
 
 Read the whole transcript before writing anything. Auto-captions have no
 punctuation and no speaker labels; a claim's meaning often only resolves several
@@ -55,13 +55,13 @@ detail by tagging the sentence `[doc]`.
 
 ## Where the material goes
 
-`inside-reference.md` is organised by question, not by source. Merge into the
-existing numbered sections by topic — a talk's content usually scatters across
-several of them.
+`docs/inside/` is one file per question, not per source. Read its `README.md` for the
+list, then merge into the files the material belongs to — a talk's content usually
+scatters across several.
 
-Only add a new numbered section if the talk opens a genuinely new topic area.
-Section 9 exists because the Konsoll talk is the only substantial source on game
-feel; that's the bar.
+Only add a new file if the talk opens a genuinely new topic area, and add it to the
+README table when you do. `game-feel.md` exists because the Konsoll talk is the only
+substantial source on it; that's the bar.
 
 When a claim contradicts something already in the file, **correct the existing
 line in place**. Don't append a note saying the old line was wrong — a file that
@@ -69,8 +69,9 @@ contradicts itself is worse than one that's slightly out of date.
 
 Also update, when the talk warrants it:
 
-- **§13 table** — a newly-learned technique gets a row: technique, cost, verdict.
-- **§14 open questions** — delete ones the talk answered, add ones it raised.
+- **`stealable.md`** — a newly-learned technique gets a row: technique, cost, verdict.
+- **`open-questions.md`** — delete ones the talk answered, add ones it raised.
+- **`sources.md`** — mark the talk as watched and transcribed.
 - **Plane** — close the talk's work item (project `UNFAT`, label `transcript`).
   Those items track distillation, not download.
 

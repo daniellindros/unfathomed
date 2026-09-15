@@ -84,20 +84,20 @@ and the character sails. One exported float, and a whole category of puzzle.
 
 **Physics props are the exception.** A `RigidBody3D` crate is simulated by the physics
 server at global scale — one body can't be slowed. The way out is Playdead's own: the
-fern in `../inside-reference.md` §9 is a linear animation driven by a single float
+fern in `../inside/game-feel.md` is a linear animation driven by a single float
 acting as a velocity, no simulation at all. Built that way, a prop scales like anything
 else.
 
 ## Hold, don't toggle
 
-Grab in INSIDE is a held state, never a toggle (§9). Matching that keeps one input
+Grab in INSIDE is a held state, never a toggle ([game feel](../inside/game-feel.md)). Matching that keeps one input
 grammar, and means the player is always one release from normal time.
 
 ## The meter problem
 
 A drain meter needs reading, and there's no HUD. So make it diegetic:
 
-- **Audio.** Pitch-drop the mix on entry; warp pitch and filter toward "running out" as charge depletes. This is the breathing-loop architecture from §11 — one signal feeding audio, visuals slaved to the audio rather than driven in parallel.
+- **Audio.** Pitch-drop the mix on entry; warp pitch and filter toward "running out" as charge depletes. This is the breathing-loop architecture from [audio](../inside/audio.md) — one signal feeding audio, visuals slaved to the audio rather than driven in parallel.
 - **Colour.** Push further toward monochrome as it drains.
 
 Neither needs a pixel of UI.

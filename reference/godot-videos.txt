@@ -6,7 +6,7 @@
 # Community tutorials, not official docs and not Playdead. Unverified: a video
 # written for one Godot 4.x may not hold for another, and none of this is
 # authoritative over docs/decisions.md. Distilled on request only — these do NOT
-# feed docs/inside-reference.md.
+# feed docs/inside/.
 
 # Godotneers — engine fundamentals
 godotneers-node-paths        KzvkrpA5Y3M

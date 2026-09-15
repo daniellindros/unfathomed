@@ -10,25 +10,25 @@ article that cites it, not here.
 
 ---
 
-## Playdead talks → `docs/inside-reference.md`
+## Playdead talks → `docs/inside/`
 
 | File | Talk | Used? |
 |---|---|---|
-| `subtleties-konsoll2017.txt` | Subtleties of INSIDE (Konsoll 2017, Fasterholdt) | **Yes** — §9, almost entirely |
-| `game-that-listens.txt` | Inside: A Game That Listens (GDC 2016, Andersen) | **Yes** — §11 rewritten from it |
-| `rendering-gdce2016.txt` | Low Complexity, High Fidelity: The Rendering of INSIDE (GDCE 2016) | **Yes** — §7 rewritten from it |
-| `turn-it-down-90-vfx.txt` | Turn It Down 90% — INSIDE VFX (Control 2016) | **Yes** — §8 rewritten from it |
-| `huddle-up.txt` | Huddle up! Making the [SPOILER] of INSIDE (GDC 2017) | **Yes** — §10, §2 |
-| `stutter-free-60fps.txt` | Stutter Free 60 FPS (Unite 2016) | **Yes** — §12 rewritten from it |
-| `unbreaking-immersion-2.txt` | Wwise Tour 2016 — Voice (2 of 3) | **Yes** — §11 |
-| `unbreaking-immersion-3.txt` | Wwise Tour 2016 — Scene Change (3 of 3) | **Yes** — §11, §12 |
+| `subtleties-konsoll2017.txt` | Subtleties of INSIDE (Konsoll 2017, Fasterholdt) | **Yes** — `game-feel.md`, almost entirely |
+| `game-that-listens.txt` | Inside: A Game That Listens (GDC 2016, Andersen) | **Yes** — `audio.md` rewritten from it |
+| `rendering-gdce2016.txt` | Low Complexity, High Fidelity: The Rendering of INSIDE (GDCE 2016) | **Yes** — `lighting.md` rewritten from it |
+| `turn-it-down-90-vfx.txt` | Turn It Down 90% — INSIDE VFX (Control 2016) | **Yes** — `art-direction.md` rewritten from it |
+| `huddle-up.txt` | Huddle up! Making the [SPOILER] of INSIDE (GDC 2017) | **Yes** — `animation.md`, `how-they-worked.md` |
+| `stutter-free-60fps.txt` | Stutter Free 60 FPS (Unite 2016) | **Yes** — `performance.md` rewritten from it |
+| `unbreaking-immersion-2.txt` | Wwise Tour 2016 — Voice (2 of 3) | **Yes** — `audio.md` |
+| `unbreaking-immersion-3.txt` | Wwise Tour 2016 — Scene Change (3 of 3) | **Yes** — `audio.md`, `performance.md` |
 
 Not fetchable: **Unbreaking Immersion part 1** (`1yzj2ZinN5M`) has captions
 disabled. Confirmed — it failed while later videos in the same run succeeded.
 **Covered anyway** by Jakob Schmid's slide deck for the whole talk, which was read on
-2026-09-15 and used to verify and correct sections 11 and 12. The deck is a better
+2026-09-15 and used to verify and correct `audio.md` and `performance.md`. The deck is a better
 source than the captions for all three parts. It is not vendored here; the URL and the
-Git LFS gotcha are recorded in `docs/inside-reference.md` under Sources.
+Git LFS gotcha are recorded in `docs/inside/sources.md`.
 
 ## Godot tutorials → `docs/godot/`
 

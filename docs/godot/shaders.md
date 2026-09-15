@@ -34,10 +34,10 @@ Source: Godotneers, *Welcome to Shaderland*. 2D throughout, to keep the maths si
 
 ## For this project
 
-**`[ours]`** Not needed soon, and worth being disciplined about. `inside-reference.md` §7
+**`[ours]`** Not needed soon, and worth being disciplined about. `../inside/lighting.md`
 is explicit that the style lives in lighting — `WorldEnvironment`, volumetric fog,
 debanding, one key light — none of which is a custom shader. Playdead wrote their own
-renderer; §13 rates that "very high / no."
+renderer; `../inside/stealable.md` rates that "very high / no."
 
 **`[ours]`** Where it would plausibly earn its place later: the diegetic desaturation
 for the time-dilation meter in `../answers/2026-09-15-time-dilation.md`, and subtle

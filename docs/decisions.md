@@ -8,7 +8,7 @@ line in place and note what replaced it, rather than adding a contradicting line
 below.
 
 **What doesn't go here:** unsettled questions (Plane, label `decision`), prose about what the
-game is (`design.md`), notes on how INSIDE did something (`inside-reference.md`).
+game is (`design.md`), notes on how INSIDE did something (`inside/`).
 
 ---
 

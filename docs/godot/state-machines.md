@@ -50,7 +50,7 @@ and compile-time checking buys nothing.
 
 **`[ours]`** Nodes over `RefCounted`, despite the above coming from the nodeless
 tutorial. Being able to see and tune states in the inspector matters more here than
-allocation, and `inside-reference.md` §9 is full of per-state numbers that want to be
+allocation, and `../inside/game-feel.md` is full of per-state numbers that want to be
 exported values — the cut-short frame thresholds especially.
 
 **`[ours]`** The signal-based transition is worth taking. It's the same shape as the
@@ -59,5 +59,5 @@ thing that knows something announces it, rather than reaching for whoever needs 
 
 **`[ours]`** None of this is needed yet. The grey-box corridor needs a capsule that
 moves, and a two-state machine is more ceremony than `if is_on_floor()`. This becomes
-worth building at around four states, or when the two-exit animation system from §9
+worth building at around four states, or when the two-exit animation system from [game feel](../inside/game-feel.md)
 arrives — that one genuinely wants per-state authored frame thresholds.

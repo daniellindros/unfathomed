@@ -12,7 +12,7 @@ settings that want deciding once and early, not retrofitted.
 
 **`[ours]`** `expand` is the one that matches a cinematic 2.5D game — more world
 visible on a wider monitor, no bars, no distortion. It also interacts with framing:
-`inside-reference.md` §4 says every screen in INSIDE is composed, and `expand` means
+`../inside/camera.md` says every screen in INSIDE is composed, and `expand` means
 the composition's edges differ between aspect ratios. Worth knowing before shots get
 framed, not after.
 
@@ -42,7 +42,7 @@ framed, not after.
 
 ## For this project
 
-**`[ours]`** INSIDE has no HUD and no menus during play (§1), and the time-dilation
+**`[ours]`** INSIDE has no HUD and no menus during play (`../inside/production.md`), and the time-dilation
 sketch deliberately puts its meter in audio and colour rather than on screen. So this
 is for the pause and options menus and nothing else.
 

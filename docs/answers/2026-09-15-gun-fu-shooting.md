@@ -17,16 +17,16 @@ Gun-fu is about spatial relationships — you, and several people at varying ang
 distances, and reading the room. On a path, under a camera you don't own, enemies can
 only be left or right. That isn't John Wick, it's a shooting gallery.
 
-Adding free aim to fix that reintroduces the exact failure `inside-reference.md` §3
+Adding free aim to fix that reintroduces the exact failure `../inside/movement.md`
 records for Somerville: a player pointing at things in a space whose depth the camera
 deliberately flattens, and reviewers who couldn't tell what was reachable. The plane
 lock is load-bearing, not a shortcut.
 
 ## The verb count is the other problem
 
-INSIDE ships two buttons, taught in one barn, and never adds a third — §6 calls that
+INSIDE ships two buttons, taught in one barn, and never adds a third — [teaching](../inside/teaching.md) calls that
 the solo-dev-sized design. Shooting brings aim, fire, reload, cover, target-switch and
-a slow-motion toggle. Each needs animation in every direction, and §10 already flags
+a slow-motion toggle. Each needs animation in every direction, and [animation](../inside/animation.md) already flags
 animation as the most likely bottleneck for a solo dev and the one least helped by
 low-poly art. Then enemies that path, flank and telegraph — a system a puzzle-platformer
 doesn't otherwise need at all.

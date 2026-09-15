@@ -21,7 +21,7 @@ Typed properties fix all three problems at once — autocomplete instead of stri
 real scene references instead of paths, and one file per item instead of one growing
 dictionary.
 
-**`[ours]`** Relevant sooner than it looks. `inside-reference.md` §9 is a list of
+**`[ours]`** Relevant sooner than it looks. `../inside/game-feel.md` is a list of
 per-action tuning values — cut-short frame thresholds, minimum hold durations, the
 two-tier lean threshold — and those are the same shape as `PlayerData`. Keeping them
 in a resource rather than scattered across state scripts means tuning in one place,

@@ -57,5 +57,5 @@ whenever two systems would otherwise need to import each other.
 
 **`[ours]`** The slide-collision approach is the one that fits here — the player is a
 `CharacterBody3D` calling `move_and_slide()` every frame already. And
-`inside-reference.md` §3 warns that most 2.5D bugs are the player catching on
+`../inside/movement.md` warns that most 2.5D bugs are the player catching on
 decoration, so Visible Collision Shapes is likely to earn its keep early.
