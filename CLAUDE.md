@@ -45,8 +45,9 @@ them. Not in the repo. Two labels carry meaning:
 
 - `decision` — an unsettled question. When it's settled it becomes a dated line in
   `docs/decisions.md`, and the work item closes.
-- `transcript` — a Playdead talk to distil into `docs/inside/`. Tracks
-  distillation, not download; the download queue is `reference/talks.txt`.
+- `transcript` — a talk or tutorial to distil into `docs/` (Playdead into
+  `inside/`, Godot into `godot/`). Tracks distillation, not download; the download
+  queues are `reference/talks.txt` and `reference/godot-videos.txt`.
 
 ## Reference material
 
