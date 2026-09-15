@@ -1,0 +1,630 @@
+---
+title: Godot Components - how to structure a game into manageable parts (Beginner/Intermediate)
+author: Godotneers
+source_url: https://www.youtube.com/watch?v=W8gYHTjDCic
+date_added: 2026-09-15
+date_published: unknown
+type: Video transcript (auto-generated captions)
+caption_track: en
+segments: 1632
+---
+
+hello goners when you are creating a game in gdau it is often hard to decide how to structure
+all your notes and scenes which notes should go into which scene which notes should talk to each
+other and when they all somehow need to work together but it seems very easy to turn everything
+into a big bowl of spaghetti where every note just seems to talk to every other note so we are
+going to explore how we can structure a game into components and how these components can work
+together without creating a tangled mess this is a beginner to intermediate level tutorial you
+should know the very basics of gdau for example how notes and scenes work and you will also need
+to know some GD script as we're going to look at quite a bit of code there are a lot of Concepts
+covered in this video and therefore it's going to be quite long if you need a break feel free to
+pause the video and come back later with a fresh mind so for this tutorial we are going to build
+a little tower defense game and we let it play on the water how does the tower defense game
+usually work well you have some units that come from one side of the screen in our case from the
+right and you have some towers that you can place and these towers try to prevent the units from
+getting to Z some other position well in our case the left side of the screen and just from this
+little description we can already identify a few components for our game so we are going to have
+some attacking unit in our case we're going to use a fish for that and we are going to have some
+towers and maybe we are also going to have a component that represents a projectile that the
+tower shoots at the fish so let's start with the fish this fish is quite big and it looks into
+the wrong direction so we first fix that and now we want the fish to move so we add a script and
+we call it fish GD and inside of the script we write a phix process function and then we just
+change the global position y some Vector 2 so we want to move horizontally with 200 pixels per
+second so every time something is per second you multiply it with Delta it's an easy rule of
+thump and we don't want to move it vertically and sure enough our fish moves to the left that is
+great that was easy enough so let's try to build a tower so this is going to be our Tower and
+I'm going to name it Tower the tower just sits here it doesn't move so we don't need a scrip for
+it that is also great but the tower does something very important it needs to shoot something at
+the fish so we need some kind of projectile and I have also prepared something like that it's a
+little bit too big and we also rotate a bit so now we have a projectile so how could the tower
+now shoot the projectile well we could try something like this we could make the projectile a
+child of the Tower and maybe we move it around here and we add a script to it the tower GD and
+now the tower will move the projectile for us that sounds like a good plan to me so we write
+another physics process function and we need to access this projector somehow so we can move it
+and a really simple way to do this is just using a not so we can make a unique name out of this
+we drag this over here with control and now we have access to our projectile and then we can do
+pretty much the same thing that we did with the fish we just change its glob position and move
+it by some back to two let's say 400 per second again Delta is per second and let's try it out
+so great our Tower can now fire projectiles oh well it didn't hit the fish that was not good
+okay so how could the projectile somehow find out that it's near a fish and then destroy the
+fish we could try to use the global position of the projectile and maybe compare to that of the
+fish so well let's quickly do that let's drag in the fish then we can maybe do something like if
+the projectiles global position is not too far away to the fish's Global position and let's say
+they're I don't know 20 pixels apart well then we can just destroy both right so we can say fish
+Q free and we can also say projectile Q free so let's see how that works something worked where
+we get an error so it complains about that this projectile was freed and now we cannot use it
+anymore so maybe we just say if the projectile is no longer valid we don't do anything let's try
+if that helps hey fantastic our projectile shot the fish we have a tower defense game now we can
+go home now well not really because this is a real mess this is not the way in which we should
+the game we have so many problems here the first really obvious problem is that we don't have
+any more fish and we also don't have any more projectiles so this is going to be a really short
+game but we already have produced this kind of spaghetti that I was talking about in the
+beginning of this video now the tower knows about the fish the tower knows about the projectile
+and the tower does most of the work so we need to think about what should a component be is a
+component just a Sprite that some script moves around or is a component something else ideally a
+component is something that works independently of all the other components around it and it
+knows as little as possible about these because then we don't have the spaghetti right if the
+tower doesn't need to know where the fish is well we don't need to have these variables also a
+component should allow us to configure it in a way that stuff that is relevant to the game play
+is easily accessible and right now if we want to change the speed of the projectile we need to
+go into code if we want to change the speed of the fish we also need to go into the code so
+let's restructure this and build it in a better way that doesn't turn the whole game into a
+messa spaghetti so let's first start with the fish and we are going to replace this here with an
+export variable so we can easily change the speed of the fish in the inspector so we make it a
+variable called speed and we put the 200 in here and then we can just use minus speed here so
+now if we look in the inspector we can see okay we can now configure the speed of the fish
+without having to go into the code and this is really helpful when we do prototyping and want to
+see how our components work together we can quickly change a few values and see how the game
+plays out with these new values okay so the more pressing problem is the projectile right now
+it's just a Sprite and maybe it is better if if this projectile does its own movement so we move
+it out here and we can also remove this unique name we add a script and we call this projectile
+and inside of this we can pretty much do the same thing as we did with the fish so I'm going to
+quickly copy this and we maybe start with a default speed of 400 but the projectile needs to
+move to the right so we don't use negative speed but we use positive speed now we have a
+projectile that can move on its own and this allows us to remove all of this stuff from the
+tower so the tower right now does not need to do anything because the projectile moves on its
+own that is a lot better and you see how we already simplified this quite a lot now it would be
+good if the tower could somehow create new projectiles so how would we do that well we can save
+this projectile as a scene we can right click on it and select save branches scene then we save
+it into a new scene and what I seen is in Gau it is a description of how nodes are built up so
+it's not the real note it's just a description of it and now we can in our Tower create an
+instance of this scene so we make a physics process again and now we need to create an instance
+of the scene how can we do this well we can drag it in here and we get a preload from gdau which
+will load this scene so now we have the scene loaded and we need to assign it to some variable
+so we call this maybe projectile scene and now we create a new projectile from this description
+of a projector so we say projector scene instantiate we also need to put this into a variable so
+we call this maybe new projectile and now we have a new projectile isn't that great so let's try
+it out if this works and maybe to see if it really works we delete this one and let it run huh
+it doesn't work why didn't it work the reason is that we just created a new node for this
+projectile but we didn't add it to this tree so right now we just have a new node that is
+floating around somewhere but it's not added to the tree and if you don't add it to the tree
+then G do will not render it so we need to add it to the tree and where shall we add it for
+starters we could just add it to the tower as a child let's see how that works so we say just
+add Child new projectile and we run it again that is adding quite a few projectiles so that is
+way too fast and we need a better way of doing this so how can we do this what we want to do is
+we want to spawn this projectile in a regular interval and there's actually a build-in component
+in gdau which is called a timer and we can use that so we add a new child note to this and we
+say we want a timer and in this timer component we can set a weit time and the timer will then
+tick with this weight time okay so now the timer is ticking but how do we get to know about this
+in our Tower component after all the timer is a built-in node of gdau and it doesn't really know
+anything about Towers so how can we tell the timer well could you tell our Tower whenever is
+time to spawn a new projectile and the way to do this Ino is called signals if we have a look at
+this Note Tab here you can see there's an entry called signals and you can think of signals as
+some kind of mailing list that a note offers where you can subscribe to so the timer has this uh
+timeout mailing list and now other nodes can go to the timer and say Hey I want to subscribe to
+your timeout mailing list I want to be notified whenever you have a timeout that would be cool
+so how would we do that how would our tower now talk to to the timer and say I want to be
+notified I want to be on that mailing list well the tower needs to talk to the timer so easy way
+to talk to the timer would be to use a note path so we just drag this in here and we also maybe
+make this a SC unique note because there's really no reason to not use SC unique notes these
+days and now our Tower in its ready function can ask the timer hey can I subscribe to your
+timeout mailing list so we say timer timeout this is the signal we want to subscribe to and to
+subscribe to a signal you call connect and when you subscribe to a mailing list well usually you
+give your email address so it knows where to send the notification to and we do a similar thing
+here but our toar obviously doesn't have an email address it only has some functions so we give
+it the name of a function that should be called so we make a function ontimer time out and then
+we give it the name of this function on timer timeout that's important to only give the name
+because if you add these parentheses you will call the function and we don't want to call the
+function we just want to say this function should be called and now we can move the projectile
+stuff in here and we can try it out oh it didn't work Why didn't it work we still need to start
+the timer so let's do that real quick timer start and try it again and yeah we have we have
+projectiles but why are they spawning down there that's that's not where they should spawn
+that's not good so let's have a look at our projectile scene again and we can see that when we
+created the scene it moved the projectile somewhere here this an easy fix for that we can just
+reset its position to the center and if we go back to to the Tower and try to play it now now
+it's working a lot better so now it would be nice if the projectile would be able to actually do
+some damage to the fish so let's have a look at our main scene and try to think about this
+problem so we add a little projectile here so we have something to talk about and now we can
+think about how we can solve this problem so the projectile it moves from the left to the right
+and when it's near the fish it should destroy itself and deal some damage but how can the
+projectile find out that it's actually near a fish we tried to compare the positions of the fish
+and the projectile when we had all of this code in the tower but we saw that this doesn't really
+work out because for this to work we need to have access to the fish and the projectile in the
+same script so we can compare their positions and we cannot really use a not par for this
+because if I duplicate this fish then it gets a new name and then it ALS gets a new not path so
+that doesn't work so how can the projector now get an idea that it is around the fish what we
+can do is we can use gau's physics system to help us with that there's a not in gdau which is
+called an area and this can detect other physics object that are around it so let's add this to
+the projectile we add a child note called an area and this area needs to have a collision shape
+and we're going to choose a circle Collision shape and the Collision shape basically tells the
+physics engine what is the region that we want to look for other physics bodies now we have this
+area but this area can only detect physics bodies it cannot detect Sprites so we need to make
+our fish a physics body so we add a character body Tod this is some built-in physics body of
+gdau that has Collis but also allows us to move it around and then we can drag the fish Sprite
+into the character body 2D we also see a little warning here which tells us that this character
+body also needs a collision shape so the physics engine knows how big the fish actually is for
+this we could maybe go with a capsule shape and it's now moved up here and the fish is up there
+so we move everything to the center and now we can set up the Collision shape and rotate it a
+bit and that should about do it so now we have a Collis shape on our fish and the area can
+detect it so we can move the fish again to its correct position now we can go back into the
+projectile and do something with the area that we just added and this works very similar to the
+way that the timer works so the area also has some signal or mailing list if you will and
+there's a lot of stuff that you can subscribe to we are interested in this body entered signal
+which tells us when somebody enters into this area so now we could again create a variable for
+the area and then connect the signals but there's actually a quicker way to do that we can just
+right click on the signal and click on connect and then we say we want to connect this to the
+projectile script and we want to create a method on area Tod body entered and now gdau has has
+done the connection for us and we can see this by this little icon here on the area 2D and we
+can also see this by this icon near the function that this is connected to something so if we
+click on this we can see that this function is connected to the body entered signal of the area
+so this is a quick nice way to make signal connections without having to write a lot of code for
+starters we just print that we hit something so we can try it out and well we we hit something
+but it doesn't really seem to work why is that whenever we want to debug stuff like that goo has
+a very helpful feature we can go to debug and say visible Collision shapes and that will show us
+the Collision shapes when the game is running so yeah now we can see why it's working a bit
+strangely because our fish is swimming and the Collision shape stays here and the reason for
+that is that we have the fish script still at this Sprite and the Sprite is its own component
+right it moves independently of the character body so this is not what we want what we want is
+to have this script at the character body so we detach it from the fish and we reattach it to
+this character body and now we need to do a bit of changes because the base node is now no
+longer a Sprite by the character body so we change this also character bodies don't move by
+changing their positions but they actually have a method for moving them so the physics engine
+knows that we move the node with the character body it works like this we have a velocity that
+we set and then we call move and slide and you see that we didn't add Delta here because the
+character body does the Delta calculation for us so we don't need to do it so let's try again if
+that works and now we can see that everything moves together and we get this hit something
+messages whenever a projectile hits a fish so that is fantastic because now our projectile has
+found a way to find fish without actually knowing about fish right there's nothing about a fish
+inside of this script this projectile is completely independent of the fish it can find anything
+that is a physics body how do we now do damage to the fish because we just said that the
+projectile doesn't even know that this is a fish so how can it communicate with it to do this we
+can make a little contract between our nodes we can say that whenever something can be damaged
+it has a function called take damage so we give the fish a take damage function and then our
+projectile can look at the thing it just collided with and ask do you have a take damage
+function by any chance and if the fish has a take damage function the projector can just call it
+and if it does not have a take damage function then the projector will simply ignore it and move
+on so let's go back to the projector script and try to implement this so first we need to know
+with what we collided and thankfully the mailing list of the area the signal it not only
+includes some information that we hit something but it also includes the information what we
+have hit and this is this body that we we're getting as a parameter for this function we can ask
+the body as method take damage this way we can know okay this body has a take damage function so
+we can call it and we can do body take damage and since the damage is also something that
+affects the gaml it's probably a good idea to make this configurable so we write an export for
+the damage maybe 25 and we put it in here and then we can destroy ourselves we just can do a q
+for three so if we try this again we can see that really nothing happens but we also don't get
+an error because this fish doesn't have a take damage function so nothing will happen the
+projectiles will just move on and on so next we add a take damage function to the fish and maybe
+let's do a bit renaming here so we don't get confused with what the fish actually is we can now
+add a function take damage and takes the damage as a float and now inside this function the fish
+can do whatever it needs to do when it takes damage for now we can just say whenever we take
+damage we just Q free ourselves and let's see if that works fantastic now our projectile has
+eliminated the fish and if we look again at the code of the projectile we can still see that
+it's totally independent of the other things around it because it only checks if there's a take
+damage method it doesn't even know that there's a thing called a fish this projectile would work
+with everything that just has this take damage method so now we can kill fish with the
+projectile but it's probably not going to be a lot of fun if the fish is always instantly killed
+so the fish needs to have some health and before we can do that we first create a scene from it
+so the fish is now also nicely organized and not a huge set of nodes in our tree so we can open
+up the fish scene and we can add some Health Board to it we see that the fish moved a bit off
+screen so we move it back to the center where it belongs and now we can add a Health Board to it
+so we add a child note and maybe use a progress board for that like this and now we can go to
+the script so first we add an export for the health because we want this health to be
+configurable so we can easily tweak our game variables and we also need to initialize the
+progress bar we can do this in ready and we need a variable for our progress bar so again we do
+a right click access as unique name and then we can direct this in with control and we already
+get our unready variable for this and then we can just say progress bar max value is health so
+the maximum value should be always the half that the fish has at the start of the game and and
+we set the current value to be also the health so we start with 100% and inside of take damage
+we subtract the damage from the health and we update the progress bar and if our health drops to
+zero or below then we destroy the fish and we can try this out but our fish moved up here
+because we changed it in the scene so we move it again to this position and now we can see that
+our fish is losing the health more slowly and that makes for a much more interesting game so we
+have just added a new feature to the game that fish can have health and because we designed our
+components to know as little as possible about each other we could add this feature without
+having to change anything else but the fish itself so now we want to spawn new fish because just
+having one fish is rather boring and the game would be very short if we just had one so how
+could we do that a fish can obviously not spawn itself and the Tower and the projectile should
+probably also not spawn new fish so we are going to need a new component for that so let's add a
+new component and as a base note we could maybe use a marker 2D marker 2D is basically a node 2D
+but it has this little nice feature that when you have it not selected you can still see its
+position and we call it spawner and we add a script to it and we call it spawner as well and we
+delete all of this so we can now add a function where we can spawn something and now we want to
+spawn a fish and we already did a similar thing in the tower so let's quickly have a look at how
+we did it in the tower there we loaded a scene using preload then we made a new instance of it
+and then we added it to our ourselves so let's maybe do it the same way and see how that works
+out for us so we drag in the fish we assign this to a variable fish scene and then we create a
+new instance also assign this to a new variable and we add this as a child of our own let's try
+it out well it didn't work because nothing is calling this function and this brings us actually
+to the next next question how often should we spawn something we could use a regular timer like
+we did in the tower but then the fish would come in in a regular row which would look somewhat
+unnatural so we want to have random spawn intervals so let's first add two variables where we
+can configure the spawn intervals so we have a spawn interval Min which is maybe 2 seconds and
+we have a spawn interval Max which is Maybe 3 seconds and then in the ready function we call
+spawn something and once we have spawn something we need to wait for a little time and we can
+use a scene tree timer for that get threee create timer and we want to wait a random time
+between the Min and Max interval so we can do a Rand F range spawn interval Min spawn interval
+Max now we get a random time interval between 2 and 3 seconds this drives the timer and create
+timer returns a timer object if we have a look at here it returns a Scene Three timer object and
+the scene three timer it also has a timeout signal very much like the normal timer that we have
+so we can now connect to the signal and be notified when this timer times out so we say time out
+connect and whenever this timer times out we want to spawn a new thing so we just say when
+time's out please spawn something again we don't need to worry about this timer being garbage it
+will automatically be discorded when it times out so good will take care of that so let's try
+this and now we get a nice somewhat random row of fish and that is great but what if we wanted
+to spawn more than one type of fish so maybe we have a second type of fish that is bigger has
+more Health let's maybe quickly do this we can go to our fish scene and we can duplicate it and
+we call it maybe big fish and we can make the Sprite a bit bigger and the Collision shape a bit
+bigger and in our configuration we give it maybe 200 health and maybe the big fish they move a
+bit slower so we go with 100 we now see the benefits of having this fish in its own little
+separate configurable component because we can just use the same script to make a different kind
+of fish and give it a different configuration okay so now we want to spawn more than one fish
+and let's go back to our spawner now the problem we have is that this spawner actually knows
+about what it should spawn so we have hardcoded a reference to the fish here of course we can
+add a second line and hard Cod a reference to another fish but then every time we want to add a
+new kind of fish that should be spawned we always need to change the Cod and this this is not
+really a nice way for a component to behave so how can we make this a bit nicer well we can add
+another export and we name it maybe items and this is an array of packed scene and you may now
+wonder what is this packed scene thing well this is the object that represents such a TSN scene
+it's the object on which we call instantiate now we have an export that allows us to give it
+scenes and now we can use this and say okay we pick a random one of these items pick random then
+it instantiates it adds it then it does the timer thing and the timer will then call the spawn
+something again after some time has elapsed so all we need to do now is go to our spawner scene
+and we now have here a new property where we can add the scenes that we want to spawn so we add
+two of them and then we can pull in the big fish and the normal fish and let's see how that
+works out so it spawns a small fish and a big fish and another small fish so that works quite
+nicely however we can see that the fish collide with themselves and that the big fish now
+prevent the small fish from going further so we need to fix that but this is a rather easy fix
+so we can go to the fish and to the character body and then we go to Collision over here and we
+just remove this mosque here what this will do it will prevent the fish from colliding with any
+stuff that is also in layer one so the fish is in layer one we need that to be in layer one so
+the projectile can detect it but if we remove this mosque then it will not collide with
+themselves and we can do the same thing for the big fish and now we can try it out and now we
+can see that the small fish can swim past the big fish without being blocked and this is what we
+want now it would be nice if the fish were able to actually damage our Tower so first the tower
+will need to have some health and some health indicator let's quickly put the tower into its own
+scene so it's going to be in Tower tscn and we are going to reset its position okay now we can
+add a progress bar to indicate the health it works pretty much the same way as it does in the
+fish so we are going to create a health variable we are going to have an all ready for our
+health bar we are going to initialize it and now we can have a look at how the fish to damage
+the tower so we go back to our fish scene and the first thing is that the fish would need to be
+able to detect when it has collided with the tower and we could use an area for this similar to
+how the projectile was done but I want to show you a different way of doing this and this is by
+using slight collisions so any character body can detect that it collided with something else
+during this move and slide method and for this to work of course the tower will also need to be
+some Physics body because right now it's only a Sprite so we will have to do a little bit of
+reorganization we create a new node and we use a static body Tod because we don't want the fish
+to be able to move the tower by colliding into it then we make this the root of our scene so
+right click make scene root then we move all of this as a child of the static body and we move
+the script to the top and rename it and then we need to add a collision shape so the physics
+engine knows how big the tower is going to be so we go to 2D view add a collision shape Circle
+makes sense for this shape that we have like this and now we only need to do a minor change here
+we say this now extends static body Tod so now our Tower is a physics body and our fish can
+collide with it the move and slide function will take care of that but we want to know whether
+we just collided with the tower and we can ask the character body Tod with how many objects did
+you Collide during the last movement slide so we say Collision count equals get slide Collision
+count now this variable holds with how many objects we just collided during this last movement
+slide and now we can walk over them for I in Collision count now we need to get information
+about what was the actual object that we collided with because right now we only have a number
+we only know with how many objects we collided but we still don't know with which objects we
+collided and we can get that by asking the character body uh can you give me more information
+about this Collis please so we say Collision info get slide Collision and then we can give it
+the number of the Collision for which we want more information so now we get back a collision
+info object and from this we can get the actual object with which we collided so we can say War
+collider is Collision info get collided and now this variable contains the object with which we
+just collided so it's just a different way of getting the object with which you just collided
+but this time we pull the information from the character body rather than than the way that we
+did it with the area where the area would notify us about a collision so both things are
+possible which one to use depends on your needs if you need to do a move and slide anyway the
+physics engine has already made all these calculations for Collision so you have already spent
+the CPU for this so it might be a good idea to just use what the physics body can give you but
+if this seems to be too Troublesome you can of course also use an area but I wanted to show you
+how this could be done now we want this fish to damage the tower and we can use the same
+contract that we have designed for our projectile where we said that every object that can take
+damage just has a take damage function so we go back to our main scene and our Tower is moved so
+let's quickly move this over here and maybe we add another fish so we can see what we're talking
+about the fish would collide with the tower and then the fish would ask the tower do you have by
+any chance a take damage method and the tower would say yes I have a take damage method and then
+the fish can say okay fine you just now take this much damage thank you very much and then the
+tower does whatever it needs to do when it takes damage and the fish will just destroy itself so
+again we want these components to know as little as possible about each other so the fish
+doesn't really care what the tower does when it takes damage how this is done exactly it's the
+business of the Tower so let's go back to the fish and let's Implement so we can say if the
+collider has the method take damage then we can call this method collider take damage and again
+the amount of damage that the fish will deal is some gameplay relevant thing so it's a good idea
+to have this as an export maybe impact damage and I don't know maybe 50 and then we can deal the
+impact damage Dage down here now our Tower still needs a take damage method and we can pretty
+much copy this from our fish except that we named the thing Health Bo here which is not good I
+think we should name things consistently so we're going to rename it health bar here as well so
+just that things are consistent and then let's quickly check in the tower that everything looks
+okay well we still still don't have the health ball looking right so let's quickly fix that so
+now we can try it out so now interesting stuff happens the fish didn't seem to damage our Tower
+at all but our projectiles now seem to damage our Tower which is not good so the good news is
+that our contract actually works because what happens is is that the projectile is spawning like
+this and the area will immediately report a collision with the tower and then the projectile
+will ask the tower do you by any chance have a take damage method and now the tower says yes I
+have a take damage method so the projectile damages the tower and then destroys itself which is
+not what we want so we need to have some way of telling friend from foe the projector should
+only attack the fish and it should not attack the towers there's a really neat way in which we
+can do this in gdau which are groups and you may have seen groups already when we were looking
+at the signals because there's a little groups thing here groups are little stickers that you
+can apply to each gdau node that is in a scene so you can put a little sticker on it and you can
+put any name on the sticker so we could go to the fish and we could say the fish is now in the
+enemy group so we put a sticker on it which is saying this is an enemy and we also see this with
+the little icon here we should also do this for the big fish so we also put this in the enemy
+group and we put the tower maybe in the friend group and now we need to add some code to our
+projectile so it only attacks enemies so we can go back to the projectile and we first check if
+the body is in group enemy and only if that is the case we execute this rest the codes so let's
+try if this works maybe delete this projectile here yeah now this seems to work a lot better so
+the projectile will no longer damage the tower but it will still damage the fish okay but we
+still have the problem that our fish do not damage the tower it looks like they don't even
+recognize the Collision so why would that be the case whenever we have a collision problem like
+this it's always a good idea to look at the Collision layers and we're going to look at the
+Tower and the tower is in layer one and has a m one but our fish is also in layer one but has no
+Moss so it will ignore everything that is in layer one so a quick fix would be that we just put
+our Tower in Layer Two and we don't really need the Moss but anyway we can set it and then we
+say to the fish well you check whatever is in Layer Two so you can collide with it so let's
+check if that works yeah that worked a lot better however our fish fully destroyed our Tower and
+just moved on so we need to add a little bit more coat to our fish and that is when it has given
+the damage to the tower it should destroy itself Q3 and now we can try it out again and this has
+worked so tower has lost 10% of its health and the fish has destroyed itself fantastic now we
+want to detect if a fish has left the screen and we already know a way in which we can do this
+we can do this with an area so we could make ourselves a component that is an area and we call
+this maybe fish detector and we are going to add a collision shape so we can set a size and
+we're using a rectangle shape and make it this big so every fish that now leaves this area needs
+to go go through this little fish detector and we want to count in display to the player how
+many fish have left the game so to display something we will need some label at least so we call
+this maybe fish through label and since it's going to be a UI we want to layer it across
+everything so we are going to add a canvas layer and put the label in here so in case we want to
+add a camera later that it doesn't move around and we give it a zero for starters and maybe a
+bit bigger font so we can actually see something now we can see it so now whenever this fish
+detector detects something we want this label to increase since we are trying to build
+components that are self-contained it would be good if the fish detector doesn't really know
+anything about this label and maybe it's also not good if if the label knows about the fish
+detector this score is not only important for showing it to the player it is also important so
+we know when to end the game we can say we have 10 units that can go through and if 10 units
+have come through then the game is over so we would have to have a third component that somehow
+keeps track of the score and then can update the label and can also trigger the game over and
+you're going to have such a component in almost every game which has the main purpose of just
+organizing how other components work with each other so in this game we're also going to make
+one and we are going to make this node here the main node this component that organizes
+everything so we add a script to the main node and we call this game and we're going to delete
+all of this and now this note we'll do a little bit of everything it will get notified by the
+fish detector and it will update the fish through label in order to update the fish through
+label it needs to know about it so we are going to make a unique name out of that and we're
+going to drag it in so now this node knows about the fish to label and using a not path is
+totally fine if the node is below you and under the control so this label is never going to move
+anywhere else it's always going to stay here and now the fish detector should inform us whenever
+something entered this thing so what we can do is we can use the signal so we are going to
+connect the body entered of the fish detector to the main on fish detector body entered now we
+need a counter we make an export or maximum units through and we say maybe five and whenever
+something has entered the fish detector we don't really care what it is because it can
+realistically only be a fish so we just say we reduce use the maximum units through by one and
+then we update the label so to speed this a bit up we are going to use this fish and put it here
+so it can go right through and we see that everything works okay that was almost correct but you
+saw at the start that this is zero so we forgot to initialize our label and now we should get a
+five and four and maybe it is also a good idea to move the area a bit to the left so the fish
+needs to fully leave the screen before we count it so let's see if we move the fish here then we
+can move the fish detector here and it should work out nicely so let's move the fish back and
+try it out yeah that is better okay we have a fish detector but what happens to the fish that
+move out here if we have a lot of fish well that's going to be a lot of fish on this side of the
+screen that nobody sees but that goo needs to calculate so it would probably be better if we
+kill every fish that has come into the fish detector so we add a script here and now it's no
+longer a fish detector but it's more like a fish grinder we also name it fish grinder and now we
+can connect the same signal to our fish grinder so yes like you can subscribe to your own Ming
+list any component can also listen to its own signals so that works so we say on body entered
+and everybody that has entered we just destroy now we need a way of seeing whether this actually
+works so we go back to our 2D scene here and rename this fish to be our test fish and maybe we
+move it a bit over here so we have a bit more time to set everything up so let's see and I'm
+going to pause this real quick because there's a remote tree that you can access only when the
+game is running and when you click on this you will see what is actually happening inside of
+your game we can now see our test fish here and now we can continue to run the game and the test
+fish goes through and now we see that it has disappeared so our fish grinder actually works and
+it also has countown to four so you see it also works if we connect the same signal to multiple
+different components now we can detect if fish leave the game and we also have all the
+information that we need to know whether the game is over but it would also be nice if we could
+count whenever a fish was destroyed by a projectile or when it was destroyed by hitting this
+Tower so we could give the player some score for this which the player could then use to buy new
+towers so let's maybe add a score label for that so we add a new note and this going to be a
+label and we call this score label we make it a senori name and we're going to change the font
+size by the way this is really not the way how to make UI if you want to know a better way how
+to make UI then watch my UI Basics video we're just doing it quick and dirty here so now we have
+the score up here and we can also add this to our main component but now we have an interesting
+problem how does our game component get to know that a fish has been destroyed by a projector so
+let's check which other component could tell our game component that this has just happened
+let's have a look at the projectile could the projectile do it well no it cannot do it because
+the projectile only tells the fish to tell damage and the fish does the destruction itself so
+the projectiles out could the tower do it well obviously it cannot because if a projectile kills
+a fish then the tower doesn't know about it could the fish do it well at least the fish knows
+when it's going to be destroyed so that would be a good place to start but the fish doesn't
+really know about our main component up here which is not good so how can we get out of this one
+way to do this would be to create a so-called autol load and an autoload is basically a
+component that is globally available in the whole game all the time so everyone can access this
+component no matter where they are in the tree so let's explore if that would be an option so we
+could create a new script and we call this point counter and this component would then have some
+function where we can count a point so we could say funk count point and right now we are not
+doing anything with that and now we go to project project settings and there's a tab autoload
+here and we can select our point counter here and we need to give it a name point counter and
+then we add it so now what we have is a note that is named point counter and that we can access
+everywhere so let's maybe add a Quick Print here counting points and let's use this in our fish
+script so the fish is destroyed when it either collides with a tower or when it is destroyed by
+a projectile so we need to call our point counter here and here and because the point counter is
+an aut load we can just call it by its name so we can just say point counter then count point
+and we can do the same down here and then we can try it out and maybe move our test fish down
+here so we get a bit quicker feedback and let's see and boom the fish has been destroyed and we
+got a counting points down here so now we have 50% of the way the point counter knows about that
+a fish has been destroyed but we still need to get this into the main script and since we want
+to inform the main script whenever this happens this sounds a bit like event notification so it
+might be a good idea to use the signal here so let's go to the point counter and now we are
+creating a custom signal it's very easy to do we can just say signal and then we give the signal
+a name Point counted and then instead of printing something when we count a point we are
+emitting the signal and we can emit a signal by just taking its name Point counted and then
+calling Emit and this will emit this signal so now all that is left is that we listen for this
+signal in our main script and we already know how to subscribe to a signal through code we can
+just say point counter point counted connect and then we need to give it a function that this
+should call so let's quickly make a function maybe let's call this Onish diet and we give it the
+function up here and now we can implement this so we need to have a point counter right now we
+don't have one so let's create a variable for that points and whenever a fish dies we increase
+the points by one and we update our score label okay so now we can try it out our fish just
+impacted with the Tower we get one point here now this fish died and we get a second Point here
+so it looks like our autoload solution Works nicely to count killed fish so using an autoload
+seems to be a nice solution for the problem that we had but an autoload is not without its
+drawbacks when we look at how stuff works right now whenever a fish dies it needs needs to talk
+to our autoload and then the autoload will talk to our main script to tell it that the fish has
+just died and for our main script to be able to get notified by the autol load it first needs to
+subscribe to the signal that is provided by the autoload now we have just introduced the heart
+dependency between two components our main component and the fish component to the autoload so
+the fish can no longer work without the autoload and the main can also no longer work without
+the autoload and depending on the game that you're building this may be totally fine I mean
+there's no need to make things more complicated than they need to be but the more functionality
+you add and the more autol loads you add the more we get back into spaghetti land where every
+component just wildly talks to every other component I think for a little game like this it is
+totally fine but say we wanted to make this whole thing work without an autoload how could we do
+that in order for this to work we would need to have one component that knows every fish because
+then it could get notified by the fish if they die so do you see a component in here that knows
+every fish and maybe you pause the video and think a few seconds about this I'm moving my cursor
+over here and there we are this is the component that knows all fish that's the spawner whenever
+it spawns a new fish it has the fish instance in its hands let's maybe have a look at the code
+here so here we can see a new fish is instantiated and then it's added as a child to the spawner
+and here it actually knows the fish so if we now give our fish a signal that is always fired
+when the fish dies so let's remove this point counter stuff here and remove this point counter
+stuff here and we're creating a new signal signal died and then instead of calling the point
+counter we emit this signal died Emit and we do it here as well so now in our spawner we can
+subscribe to this signal we can say new fish died connect and we make ourselves a new function
+Funk on fish died and we call it here and now we add a new signal to the spawner which we call
+fish died fish died and whenever a fish dies we just emit this signal and now we can listen to
+this signal in our main script we can remove this and since the spawner is a component in the
+same scene we can actually connect this through the editor so we can go to our spawner take the
+fish died signal and connect it to the main script on fish D and now we don't need the autoload
+anymore so we can remove it from our project settings and maybe let's do a quick recap on how
+this works so when the spawner spawns new fish it connects to the died signal of the fish and
+when the fish dies it tells the spawner that it has just died and then the spawner tells our
+main game component that a fish has just died and the main game component can update the label
+but this time we are using signals to transmit this information and we're not using a
+centralized autoload and because of this our components stay independent of each other they
+don't need to know about each other anymore so let's move it over here and give it a quick Spin
+and that didn't work at all why didn't it work well interestingly enough it works for this fish
+see we get a increased label here so why doesn't it work for this fish but it works for the
+other fish well I think you know the answer already the answer is that this fish is not spawned
+by this spawner it's just placed for us so it doesn't get it signal connected and that's why
+it's not working for this fish but it looks like we found a solution how to solve this without
+an order load and now our components are still independent of each other and that's exactly what
+we want we don't want the components to know more about each other than they absolutely need to
+so now that we have the point counting done the next step would be to end our game when more
+than a certain amount of fish have escaped when the game ends what should happen is that
+everything disappears except the two counters and we add a little game over label here in the
+middle of our screen so let's first add that label we give it a c unique name rename it to game
+over label Now we move it into the center and type game over and change the font size to 64 that
+should do it and now we can go in our main component and add some code that shows the label and
+we would do this in this on fish detector body entered function because here we count the units
+down so first we need to have this label so we can again control drag this into to our script
+and move it up and then we can check if maximum units through is less or equal than zero then we
+show the game over label and by default we will make this invisible and to test it we will use
+our trusted test fish and move it here and since we need two fish to escape we will make a
+second and test fish so our test fish now is company and we can try it out so one moves out two
+moves out and the game is over so that is good but we still need all of this to disappear and
+for all of this to disappear our main component somehow needs to know about all of these things
+it needs to know about the tower it needs to know about the projectiles it needs to know about
+the fish so how can our main game component know about all of these without knowing about all of
+these and we can use a feature again that we already used which are the groups because right now
+our Tower is in the friend group our fish is in the enemy group and our projectile is currently
+in no group but what if we would put all of them in a group that is maybe named destroyed on
+Game Over Again a group is just a little sticker that you can put on an object and you can put
+as many as you want on them so this is a really nice way of marking components so other
+components can quickly find them and we will see how you can find these in a minute so we have
+done the tower now we are going to do the fish destroyed on game over and then the other fish
+and finally the projectile and now we can go back to our main script and we can find all
+components that are in this destroyed on game overg group and we do this by asking the tree so
+get tree could you please give me all noes that are in group destroyed on game over and we put
+these in a variable to destroy and then we can just walk over them and we CU Freedom so let's
+run this one fish out two fish out game is over except we have forgotten something our spawner
+is still alive but that's an easy fix we can also put this into the destroyed on game over group
+and now it should work so one fish out two fish out game is over everything is destroyed now
+that worked just fine but what if we wanted to keep the projectiles alive so they could just fly
+out while we kill everything else well we could approach this as we did dealing damage to other
+units we could make a contract when you want to do something special at the end of the game you
+need to have some method on game over so let's implement this for the fish we make a method on
+game over and the fish will just destroy itself and we're going to copy that because we're going
+to need this for the tower as well on game over we paste this in here we also do this for our or
+spawner but we will do no such thing for the projectile now we have added this function but we
+still need a way of calling this function and usually if you want to call a function you need to
+have the object on which you want to call this function in your hands and this main game
+component does not so how could it call this oname over function oh there's something built in
+Gau that allows every node to call a function on all of its childart nodes this is called
+propagate call so we do propagate call and then we need to give it the name of the function that
+we want to call on game over and what this will do is it will go through all of the child nodes
+in the tree and we'll check do you have a oname over function and if the child node has such a
+function in the script then this function will be called and if it has not such a function then
+nothing will happen so it works really similar to how our damage dealing with the take damage
+function works we don't need this destroyed on game over thing anymore so we can quickly remove
+this and now we can try it out one fish through two fish through fantastic but our projectiles
+are still gone to debug this it would be nice to have a look at the tree before we do this
+propagate call so we set a little break point here and then we run the game again one fish
+through two fish through breakpoint so now we can have a look at the remote tree so we see
+what's going on here well we have one projectile here this also seems to be a projectile and
+this also seems to be a projectile and we see that all of these projectiles or children of the
+tower because if we go to the tower code we can see that it simply adds the new protile as its
+own child and now when the tower is being destroyed in on game over then it will just destroy
+its child projectiles with it because in Gau when you destroy a note it will automatically
+destroy all child nodes with it so that's one more thing that we need to fix so we need to tell
+our Tower to which node it should append its children and it should ideally not be the tower
+itself say we want to be really really configurable and we want to make this a configuration
+setting well we can do this with another export or parent for projectiles and this is a not path
+and now if we look in the inspector of the tower we get a new field here where we can pick
+another note and if we think about this this is actually pretty useful because now the tower can
+interact with another node and it doesn't even know where this node is because the noep is not
+hardcoded but it is now a configuration setting so this is still a note path and we need to get
+the actual note with the get note function so we say parent is get note parent or projectiles
+then we add the new projectile to the parent so let's try out if this fixes our problem well it
+fixes it sort of the projectiles are still there but they spawn at the wrong position the reason
+for this is that when you add a new note it will set its position relative to the parent to
+which you add it and before we added it to the tower so they spawn the tower's position but now
+we add it to the main note because that's the note that we have selected so they spawn relative
+to the main node's position but we can quickly fix this by just setting the global position of
+the new projectile to our own Global position and that should do the trick yeah that works a lot
+nicer so now when the game is over the projectiles keep moving but everything else is destroyed
+so being able to configure the path of another node can actually be pretty helpful when you want
+to have components talk to each other that know nothing about each other but as everything it
+has its trade-offs if we were to place this Tower dynamically maybe through a buy menu where the
+player could buy new towers then we would somehow need to set up this path when placing the
+tower and this is additional comp complexity so in this special case it is safe to assume that
+the projectile and the tower could have the same parent and this would allow us to simplify this
+by removing this export and then instead of doing a get note with this export we just call get
+parent at child and you probably have realized that whatever design choice you take there's
+always a tradeoff so there's never that choice that is always always correct that is always the
+right thing to do it always depends on the situation and also on how your game works to make
+this into a fully fledged tower defense game we would need to add quite a few more things maybe
+a menu to buy stuff more Towers more projectiles different fish graphical effects sound you name
+it a lot of stuff but this is not a tutorial on how to build a tower defense game and I think I
+have shown everything that I wanted to show so let's wrap it up here and have a look at what we
+learned in this video we learned about structuring a game into small components we learned that
+a component has some small but useful functionality works independently of other components and
+can be reconfigured for easy prototyping and reuse we also learned that it is useful when
+components know as little as possible about their surroundings and the inner workings of other
+components this helps keeping them independent of each other and also allows to combine them
+more easily in different situations we learned that there are ways in which we can access other
+components in order to communicate with them when hardcoded not paaths are not enough such as
+using the physics engine groups autol loads or configurable no paaths and we learned that there
+are quite a few ways in which components can communicate without having to know a lot about each
+other such as signals contracts signal relays or propagated calls building a game is a complex
+matter and knowing what options the engine provides you is a good first step in designing a game
+that you can easily extend and test I have shown you a way that mimics the way those built-in
+components are working therefore it works quite well together with the engine but it is by far
+not the only way or the correct way of doing things every game has its own requirements and
+there are many solutions to a single problem it is also important to not over engineer things in
+the search for some perfect solution sometimes a quick and simple solution is preferable to one
+that may be nicer on paper but just adds unnecessary complexity finding a solution that is both
+simple and nice will usually take a few iterations so don't be discouraged if you are
+occasionally back in spaghetti land if you have any questions or some experience of your own
+that you want to share please post them in the comments if you like this video please give it a
+thumbs up and consider subscribing to the channel to get notified when new videos are posted
+thank you very much and happy goener

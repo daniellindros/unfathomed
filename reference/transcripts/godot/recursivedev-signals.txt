@@ -1,0 +1,73 @@
+---
+title: The basics of signals in Godot
+author: Recursive Dev
+source_url: https://www.youtube.com/watch?v=EvRkJAxlgPg
+date_added: 2026-09-15
+date_published: unknown
+type: Video transcript (auto-generated captions)
+caption_track: en
+segments: 151
+---
+
+Welcome back to another video. In this video, we're going to look at signals and how you can use
+signals to create different UI, different events that trigger actions in your game. Let's just
+start by making a folder and we'll just call this scenes. And in here, we're going to create a
+new scene and we'll just make it be um a 2D scene and we'll call it main scene. In here, I'm
+going to first attach a script and this is where we're going to do all our events for the
+different signals. For this video, I'm just going to do very basic things like printing um
+[music] depending on the different things, obviously. So, I'm going to start with control node
+and in the control node, I'm going to add buttons. And yeah, now our button, we can just add
+some random text. Um let's say click. And then, if we now here go to signals, you'll see there's
+a few different [music] signals. And if we click connect, we can now click on the script we want
+to add it to and then we're just going to click connect. Going to create a method or function,
+whatever you want to call it. And I'm just going to print Sorry. Print button click. Now, if you
+run this and we will have to select this as our main scene. As you see, click me here. And if we
+look down here, we can see the button's been clicked. Now, this is the most basic thing you can
+possibly do. Um now, if we're going to just quickly explore the button, we can change it to a
+togglable button. And this is where we start seeing more um complicated um buttons. So, I'm
+going to now go to this toggled [music] signal and we'll connect this. Um so, it's now made this
+toggled one. And here, we want to make an if statement. And you'll see that in the function, we
+have this variable called toggled on. So, if toggled on, then we want to do something. So, we
+can just pass and then we'll add an else pass. Now, this is obviously not very useful because
+I'm just passing it. But, let's say we wanted to change the color. So, theme override, add color
+theme override, um font color. So, here we can see the different options. So, I'm just going to
+change the font color because that's something you'll be able to see and it's quite simple. And
+then here I will go color.red for instance. And I'm just going to copy this and we'll change the
+color. So let's go blue. There we go. Now if we run this, wait a minute. Oh, visibility was
+toggled off. Now if we click it, we'll first see button click. Also so unfortunately the text is
+behaving weirdly. That's because it has a hover effect as well. But you'll notice here that the
+font color is changing. It's just being quite strange. Now what I usually use this for is if I
+have a button for instance, let's say a vibrate button where I have two states. I create a scene
+where I have a button as its parent and then the button will act as a toggle where the icon will
+change. So there I change the sprite that I use. I use a texture button. Now let's look at some
+more child nodes that we could add. Collision area. So we're going to add an area 2D and it's
+going to need a collision shape. And we'll just make the shape. For this I'm just going to use a
+circle. Actually maybe a rectangle would be simpler. Okay. And what we're going to do is also
+add a body. Now we can see all the different bodies. We're going to add a rigid body 2D. This is
+also going to need a collision shape. So if I do that, this will just be circle. We'll put it up
+here. Now we're not going to see anything if we I don't add something that we can see. So I'll
+just add a panel. And this is very much not perfect but this will get the idea across. And we
+can take this panel and copy it over here. Now that I already did it. And there we go. It's not
+a very perfect thing and the trigger's going to be off a bit but this will get the idea. In our
+area 2D we're going to have a signal. Body area entered. That's a very broad one. So I'm also
+going to go to body entered and if we connect this, we'll connect it to our main scene. And
+we're going to remove this button pressed out. And we're simply again going to print that ball
+fell through the goal. Now there we go. As As as that block fell through, we got this ball fell
+through the go. Now, there's some things we can do. We cannot get this body and we can do things
+with it. So, let's say I want to move the position up again. So, position.um y also going to set
+the velocity to zero. Sorry, body. Okay, there we go. Now, I've set the velocity equals to zero,
+so it's just falling and then it disappears when it gets to the bottom. This is just a simple
+idea of what you can do with the body that's getting passed into the method. Now, from this I
+think you should understand how to do this with any other node. Every node has the basic
+signals. If we look here, this has canvas items node stuff and then object stuff. Most of the
+time, these things aren't going to be used and you'd rather use the signals that are part of
+this. Let's say now you have you want to make a custom signal. This is I'm not going to go in
+depth how it works, but you would have a node and in the node node that you have this would
+usually be an instantiated scene. You'd have a script attached to it. And then here you'd add
+what's called a signal. You give it a name, so node and on ready we're going to go node dot
+emit. And if I now go into the signals, you see here a node ran and we can connect it to our
+main scene. And if we go back out, we'll see node ran and it will just print ran. This is going
+to run once at the start. There we go. That's just how that works very simply. And I hope this
+covered the basics. I didn't want to go in depth too much. Thank you for watching. You know,
+that's that for this video. I hope you enjoyed. Please like and subscribe and I'll see you in
+the next video.

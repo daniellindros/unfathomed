@@ -1,0 +1,492 @@
+---
+title: Konsoll 2017: Martin Fasterholdt - Subtleties of INSIDE
+author: Konsoll
+source_url: https://www.youtube.com/watch?v=3pzgnN3pK_8
+date_added: 2026-09-15
+date_published: unknown
+type: Video transcript (auto-generated captions)
+caption_track: en
+segments: 1203
+---
+
+so we are at our last talk for the day and our next speaker worked on the game inside which is
+one of my personal favorites this is super nice and kind of weird but that's a good thing and he
+will be talking about the subtleties of inside so please welcome Moulton for thoughts hello good
+afternoon and thanks for the invitation my name is Martin faster halt and I'm a gameplay
+designer at played it I've been there for about five years or so now and the gameplay designer
+could really mean anything but in my case it's like a mix of different things so early in the
+production I'll be doing prototyping and then later on I'll do like level design later on again
+I'll do specific interactions which you're gonna see a lot of here with stuff like pushing a
+button or pulling a lever and stuff like that and later again I'm doing like cleanup and and
+programming and stuff and overall maybe half my time is spent programming and the other half is
+spent in unity or all over the place so I'm gonna present a lot of stuff from inside and this is
+work done by a lot of people so I'm here just presenting it and reaping the benefits of
+everybody else but really the credit should go to the whole team there's very little inside the
+game that's just one person that's responsible because everything is bounced around and there's
+people making audio people making graphics and there's people doing code and so really it is
+it's not all all for me it's really a huge thanks to the whole team which is pretty amazing I'll
+also be rounding a bit about design and choices and we thought this and we did that and it's
+it's all my opinion so I'm not kind of speaking on behalf of all of them it will just be me
+ranting about these things yeah so the whole talk is gonna be about inside and about very subtle
+things inside the game a spoiler warning is do I'm gonna spoil some of the puzzles if anybody is
+worried I'm not gonna spoil anything related to the ending of the game a goal warning is
+probably also do there's gonna be some fairly bloody scenes but I think you'll be okay the the
+focus throughout the talk is going to be subtleties or things you may or may not have noticed
+but things that are definitely turned way down often we would implement a thing and it would be
+very obvious that it's there and then we'd be like ah turn it down a notch and we'll turn it a
+bit down it like I turn it down more and we would turn it down until you almost didn't see it
+it'll be like yep that's that's the one we're keeping and the general theme with these
+subtleties because I've tried to pick things that I've been most involved it with the like it
+the the common theme will be animation and input so I I tend to work really closely with the
+animator and I'm kind of like the implementation and the design of it and then he kind of
+creates the visualization so there's definitely be a theme throughout regarding animation and
+inputs and really a lot of it boils down to this this battle between having me a player being
+control of the character while also playing like a nice continuous animation and this this was
+something we were really striving to do having this control while playing animation and it's not
+an easy task this talk will hopefully be be interesting to hear and maybe some of will be like
+directly applicable person to something you're working with or maybe it'll be indirectly just
+interesting to see what we've done with with different things so what you're seeing on the
+screen right now is a development build of inside very close to release and I'll be running the
+whole presentation inside this development built and then you'll see why in a second so it's a
+bit of an experiment and hopefully you'll work out and it will be interesting and it would be
+good but we'll see so there's a warning as well live demos will will do different things and I
+almost expect something will go wrong along the way but we shall see but yeah yeah so let's have
+a look at this thing so it's mostly like like just the regular game if you've played it except I
+have these weird menus where I can do all sorts of things so one of the things I can do is like
+I can go super fast another thing I can do is I can go slow I can also pause the game it's not
+as impressive as the slow-motion and then one of the features you're gonna see a bunch which was
+most definitely not intended to be used like this is being able to kind of change the camera
+view and the trick is that is really really sensitive control so I will be fiddling around this
+as we go along and this very quickly very much breaks the game and try and do something there's
+something weird here try something here check it out anywho that's the camera thing I've never
+ridden a talk with this many notes and these few slides okay so this talk is going to be
+structured like a bunch of chunks about different themes that are somewhat related but also not
+so the first thing I'll talk a bit about is breathing so there's this system of breath happening
+throughout the entire game here comes this camera fiddle enos if you look closely closely you
+can see his chest move so his chest is moving very suddenly back and forth and his head is doing
+like a slight nod as well and on top of all of the animation we can add this layer of breathing
+and it's done with additive poses that we then blend in and out of so he has like a pose
+breathing out and opposed in and then we can blend between them and these poses are ensuring
+controlled by the audio directly from the audio system we use rear eyes and that feeds in and
+tells the game how he should breathe so that always matches up and in turn then the audio is
+controlled by lots of things from the game so that could be really be anything it could be if
+you're running a differing animation theme it tells the audio to play a different breath if
+we're moving in a certain way the more you move the more intense your breath gets we can have
+certain triggers that ramps up there the breath doing a specific area every time you interact
+with something you can change the breath so if you grab a lever he kind of breathed through his
+nose and if he's like pulling and moving something his his breath gets a little bit more intense
+so there's really all sorts of these things that can that can all change the breath and they do
+it all by going through the sound so changing the sound and then the sound in turn changes how
+we're moving these these additive poses on top so just try and run around here for a bit it's
+been an active day now now you can see his breath is kind of intense and then you kind of slowly
+comes down so you'll see me doing this a lot this is a safe point but not the ones that you kind
+of play but the ones we've been using so they have funky names and when I load another one
+you'll also be able to see everything flying and strangely because there's no freight screen
+because we need to be able to see things yeah so in this next scene is hopefully a good example
+of this breath so he's a bit tense here there's something rumbling in the background and in a
+minute he will be chased by this car and that will get his breath going [Applause] yes in this
+this was my more attend SMO Minh where he really really gets scared then we let it take a long
+while before the breath is is all the way out and he's calm sometimes you can also hear if he's
+if he's breathing really violently or if he's kind of trying to to handle his breath so here you
+can see so he's kind of like bent forward but the the breath is still layered on top so we have
+this Crouch theme where he's kind of sitting down and and kind of trying to sneak but the brush
+can still be applied on top of it and we can raise it a bit here because there's something there
+happening in the background and he's attentive to it he's not relaxed next I'll just play a
+small section of the game where you can hear the breath another thing you can notice in this
+this section will be his inhale and exhale so we had the breath in and then we were jumping
+around and it felt weird when when you jumped and the press didn't react so we implemented this
+thing where every time you take off into a jump he would inhale you like and then every time he
+lands he exhales so no matter what else is going on with the breath that would kind of override
+it because it was just too strange that he would breathe weirdly compared to these kind of
+action animations and so now I think I'll just play a little bit try not to die [Laughter]
+[Applause] [Applause] [Applause] [Music] that was briefing uh yeah I think I'll just skip to the
+next room so this was from kind of early on in the game and you play for a bit and then you come
+to this section and these chickens are really loud so you've the the running sequence you just
+saw was kind of our introduction to have you completely understood moving around and jumping and
+if you kind of make it through that then we like okay good we don't have to worry about that
+we've introduced moving and jumping and after that you kind of walk for a bit you meet these
+chickens you walk through a field and then you get to this barn looking area and here we start
+to really build upon the the movie we just established and add a lot more detail and teaches the
+player a lot more things so the first thing you do is you jump to this rope and then this is the
+kind of the first time you push up really on the stick and you learn ah okay so up on the stake
+is it's also a movement it's climbing up the rope easy enough and then we're inside and now is
+sneakily when falling down here now you kind of stuck in this area of devices and you won't get
+out before you've kind of experimented and and learnt the things that we hope you'll learn so
+this is where we establish really establish these interaction with all sorts of things so
+there's like as this lever you can grab and there's this thing over here and we established this
+thing where we have one button there's two buns in the game there's one button for jumping and
+there's one button that's just the action button or the grab button and here we try to really
+cement how this action button works so the way words with the lever is you hold down the button
+you grab the lever you let go of the button you release the lever so so that that then becomes
+the notion that's happening with everything so if you go over here and you want to grab this one
+you hold the button he grabs and importantly he keeps holding it until I let go with the button
+so there's this mapping hold means holding the button and you've already done this with with
+some boxes before reaching here so so you know which button it is and here we start having this
+stand still and applying pressure so if you push the stick then you push the lever and similarly
+over here if you have this one and you pull then you pull the little lawn mower handle there and
+now I'm keep holding the stick so he keeps pulling the lever so now we further buildin and say
+okay if you keep holding the stick then you keep pulling and when I let go of the stick I do
+this and if I let go of that then I let go of the handle and similarly this handle over here
+it's like a spring in it so if I keep holding it it will be pushed to the left but if I let go
+it bounces back so now like just experimenting with this and maybe not even really solving the
+puzzle but we've established this notion of you can grab with this button and whatever you put
+on top will be will be the guest sure of where to pull it right and now we've explained that
+entire thing without having any sort of tutorial in the game and over here is what you actually
+need to kind of get a bit further there's this door and this there's this thing you can also
+grab and you can push it and pull it but nothing happens so here I want to talk a bit about
+conveying failure so in level design for example if you have a jump and that jump looks like
+it's just just outside of reach but it looks like if you could just jump a little bit better
+you're gonna make it if you have a jump like that in your game the player will endlessly try to
+make this jump and it's really frustrating to see so if you have a jump this is good advice to
+make it sufficiently long so that it really looks okay there's no way I'm gonna make it across a
+jump and a jump is just a simple case you could also have a puzzle where any arbitrary wrong
+solution could look almost feasible and if that is the case then the player will just be stuck
+there for a long while before they eventually move on and and didn't have a good experience with
+it and we have lots of puzzles where we would actively throw away puzzles just because they were
+like these quirks or these like failed solution that was not convincingly wrong and just just
+didn't feel elegant so we would remove it all and returning to this door we have animations to
+show that you you're interacting with with the door but it not the right way so if we had no no
+feedback then the player just thought out okay maybe nothing has happened or I don't interact
+with it but here we have this this push and this pull and hopefully in combination with having
+just been introduced to the lever and the lawnmower thing and having just climbed up the rope
+where you did a vertical motion hopefully you grab this and maybe you try the horizontal one but
+then you try vertically you try pushing the stick up in which case you just lift the board off
+and then we have established okay now you can grab and then no matter the direction it's a pull
+in that direction both horizontal vertically and so forth then you do a little get you to push
+in open the door and the chicken comes in just play for a little bit here we can hear the
+chicken and here again with this lawnmower if you push it you can see leans forward slightly and
+then you change it and you actually have to kind of again get a couple of times before it starts
+going [Music] yeah and then as the final thing before leaving the area you get another box and
+you grab it with the same button and you push it so we build on the same notion so now after
+this we're done introducing all of the all of the interactions the rest we'll just kind of build
+on that or be riffs on that yeah so this is just a cool little finger when is your show so here
+we have another one where you you grab it with the button and then you you push up to lift this
+really heavy hatch but building on this notion of conveying the failure what what happens if you
+kind of stand on this side and grab it and of course we could made it so that you didn't grab
+the lever or you switch to the correct side but instead we let you grab the hat standing on top
+of it and then when you pull it it's like you get this and a little rumble in the controller and
+and then you're none the wiser and then maybe like so there's a notion of conveying the wrong
+interaction is something we implemented throughout the game and I think it's extremely important
+to guide players to in the right direction I think there's love chicken so building on top of
+there we we had have the animations of the boy as kind of the ground layer and then we have this
+briefing as additive posters on top of it and now I'm going to show you a kind of a procedural
+layer that goes yet on top of again and you've maybe already seen it but now we'll see it more
+in action and it's it's the boy looking at things so the way it's done is that his head and then
+gradually his spine is being rotated to do this look at and then his shoulders are actually
+moved in reverse direction and what I will do is that it will I think now he's kind of looking
+down at the chicks or the birds down there very subtly and then here the kind of change and
+he'll be looking up maybe I do a little soon so he's looking up and what he's looking at is that
+that juice is safe up there and it checks the direction of the head so if the head is too far
+out of the direction of the the object then he won't look it will kind of blend out and the
+reason why that is an advantage is so like if he starts doing random animation where he is like
+looking in a different direction or doing whatever fiddling with this clothes then that will
+mean that his head will will be rotated away from the point and it will automatically just ease
+out he can do his idle animation and then when he's back in this kind of natural idle then he'll
+look back up at the safe so here if we move across now he's kind of like yeah now it's too steep
+to look back up at the safe so here's a good example where this this point of interest or look
+at is really used a lot so we've introduced these characters kind of walking in these lines in
+the background but we want to emphasize them so in while you're in this little alleyway here you
+can see his head is fixated on these guys in the background and hopefully the player will kind
+of follow his head and also look there there was a little bit of idle where he looked away so
+it's like okay we can't have his head kind of start spinning so while he's looking away we we
+let him do that and and otherwise we really keep focus on these guys in the background and
+what's what's up with them then you get over here and you're kind of pulling off these boards
+and now he's like busy interacting so there's other animation playing so of course he's not
+looking into the background while he's pulling off boards but when he's done I mean kind of look
+back again yeah so apart from just being a detail layer and nice we can also use it to emphasize
+kind of gameplay elements so here here he's kind of nervous his breath is a little heightened
+then and he's looking very set on this weird machine in the background so so there's definitely
+something up with those she seems very fixed on it you will soon find out why because if you
+flick this switch over here they turn on if they catch you in your luck their life than they you
+so this led us this layer of look at kind of helped us kind of guy direction and put focus on
+things and kind of subtly guide guide the player without taking any control away so there's a
+the first bit of this kind of keeping the player in control so it's a continuing onwards and on
+this notion of of staying in control or letting the player stay in control I'll show you
+something here you kind of fall down on this platform and then the boy plays this slow animation
+of kind of stumbling to his feet put his in his hands on the wall and and being ready to move on
+let's just do it one more time he's taking his sweet time getting up but on the other hand we
+don't want the player to be stuck there because he looks like he's doing okay so now I'm gonna
+try and push right from the start and I can actually move for that so this notion of having
+these two two different ways of exiting out of an animation or unstudied is something we use an
+awful lot let's just try and understand one more time so I'm holding the right stick now so
+there's still a little bit of the animation and this we can we can control which way the Sun
+stunt should work so we can set the frame he should understand so we can say ah okay I want to
+be forced a player to show a little bit of the to see a little bit of the the impact animation
+but then they're okay they're free to go but on the other hand if if the player is like waiting
+and kind of patiently looking at it then there will be a natural animation of kind of stumbling
+to his feet and this is something we have all over the place next we'll take a very close look
+at this this here lever before it gets uncomfortable yeah so similarly to the fall that's
+something that just happened while you're playing you fall down to this platform and then we
+have two exits this is this is more of a case where the player actively takes control so
+similarly to the other lever we saw this is a lever you just kind of grab it and then you can
+like pull it that's the that's the function that all it does is open that door in the background
+but here we see some more examples of this on stunning so if I'm grabbing the lever you
+continues to grab it of course and as soon as I let go he plays this animation way kind of
+slowly let go and he's like naturally back but on the other hand if I'm holding the left stick
+you'll do this so he's forced still in a little bit I can't remember but like seven frames or
+something of the let go animation before it's like okay now if you're pushing right we'll let
+you we'll let you run and similarly if you jump we can also let you go and they have two
+different frames so we can choose which which does which so sometimes jump is allowed to
+understand a little bit quicker because it's more of an aggressive movement so it doesn't look
+weird whereas the running away it's kind of a more soft movement so we let that happen a bit
+later or whatever fits the specific case we can do there the whole thing grabbing it from the
+other side as well as this slowly relaxed animation or if you hold to the right you're in
+control so this is the start of this of examples of these being in control so we don't want the
+player even to be stuck in that time where he's letting go of the lever as soon as it makes
+sense to let go and let the player run away we'll let them do it while also trying to balance
+the the animation of course so if you do wait then we still want to make it look natural and we
+don't want to just do a straight blend to a post that wouldn't look nice and in the same spirit
+we have these small timers that controls what happens if you kind of give really small input so
+if I just kind of now I'm just kind of tap the action button kind of does this weird grab of the
+leave rank and then kind of stumbles back so hopefully that will show the player that they are
+on the right track to interacting with this lever and we have a little bit of a timer and it
+doesn't look like just like a two frame animation or something like that if you were to actually
+just play the animation for however long you held down the button but instead we have this
+little piece of logic that just makes a little wiggle and if you do play like press left or you
+press jump of course you're you're gonna be allowed to get out of that one and similarly if
+you're holding the lever and you kind of let go for a split second this is a little bit of a
+timer as well that kind of this okay you can't let go less time than this because then it just
+looks weird and this this notion of kind of letting the player be in control is all over the
+place it's both with the things you interact with or the fall we had before way so I just fell
+to this platform and then there was like kind of two paths on multiple paths for getting up it's
+also the case but these levers are really anything you interact with and it's also the case for
+just the general movement of the character so here if we jump up this ledge and kind of start
+running that's kind of one scenario but on the other hand if you climb up while holding right
+all the time there's like a different transition animation from from climb up to start run that
+plays in this case we're gonna try it again so here I'm climbing up and I'm up and then I start
+running next I'm gonna just hold right while I climb up so it kind of leans directly into it
+from his climb and this is this is implemented all over with the movement to kind of keep keep
+the player fluent all the time and it's particularly with these levers and buttons it's it's
+it's implemented to really keep the player in control while interacting with this so we don't
+have to take it away and have it feel like this mini cutscene look fiddly camera yeah so so
+similarly to the the grabbing and releasing of the button here you have a puzzle where you're
+flicking the switch and then you kind of have to flick flick it back to get these weird guys in
+a wagon off the track but what we kind of focus on is it's the lever again so here if I start
+pulling it but immediately change the direction then it's allowed by the game so we don't want
+the player to to even lose control while pulling the lever right we wanted them to have control
+the whole duration if nothing else kind of interferes then they should be in control so here if
+I'm kind of doing small things I'm allowed and if I do a bigger movement there's kind of an
+animation where he kind of leans into it a little bit more so here's like okay that's a very
+small movement no animation a little bit more ok gets a little bit of leeway there so that
+really lets you kind of change direction really fluently and of course you can also let go of
+the crap button at any point in which case the the lever is still there and you're still in
+control so you can always let go we never kind of take that away from you and they fall down
+over there so now we're underwater and the boy has learned to breathe underwater mysteriously
+and and here we are grabbing this lever over here to the right and here it's even more
+complicated than the land because now we have like omnidirectional movement so now you could
+come add it from any sort of direction so here we have a bunch of different grab animations so
+this is one of them where you can swim into it and we kind of try and blend the rotation and
+stuff we have a grab animation and all of that is similar too so the lever but just more fiddly
+because you're underwater and you can reach it from different directions the main thing I wanted
+to show with this one so here all you have to do is kind of you have to pull out this cylinder
+thing again we have this conveying of the wrong direction so if you do this you'll kind of lean
+against it but nothing will happen and if you pull in the other direction it will start moving
+while it's moving again we never take away the control you can always let go of course but also
+the the progression of this one action we never take it away and you can actually push it back
+if you want and then of course a rule isn't a rule before you break it so here we break the rule
+as well so if you pull this cylinder I think it's 80% out then we actually take control and just
+pulls it out all the way and no matter what input you get but most likely if you're trying that
+anyway like if you pulled it that far most most players are like we expect that they would just
+hold it and then continue to pull it and that would be what happened anyway and if someone
+really unluckily pulled it just to that moment and started returning we don't want to we don't
+want to punish that to be like okay if you get this far then we kind of auto finish the last
+little bit it's about yeah so here I'll let just name-drop a bit so if if you're ever looking
+for a book about game design I would highly recommend the book called game feel written by a guy
+called Steve Swank he also in this book he talks at length about this real-time control of this
+notion of real-time control and the importance it has for video games so there's a lot more
+elaborate on that the reason I mentioned it is both to recommend the book but also to point at
+this number he he presents and it's a number that comes from various studies in psychology and
+also studying games and it's a number of 0.2 seconds or 200 milliseconds and that's that's what
+he proposed as the time it will you will need your game to react for the player to feel in
+control of that action so 200 milliseconds it's the time from I'm clicking the button so it
+streams down to the computer and the computer react and I need to see that reaction and if it's
+200 milliseconds or faster then I'll connect whatever I did with that thing happening on the
+screen and if it's slower than that then I'll start to feel sluggish or it will start to feel
+out of out of connection so that's a nice benchmark or I've used it a lot for for for all sorts
+of things it's not it's not you read the book and this is the first time you'll hear about
+real-time control he's just really good at elaborating on it and this number is 0.2 or 200
+milliseconds it has been helpful for me as kind of thinking of it as a moment and if you can do
+it faster than that then it's it will be tight and the slower you are above it or you're more
+you are above it it will feel more and more sluggish just going to what's awful and this is both
+the case if you have like one button press so if you click jump you want to see the character
+jump there it's exceptionally important that you will really feel it but it's also important if
+you have like a continuous movement so really you want the player to always have these 200
+milliseconds on any sort of action and that's what we've tried to do with a lot of these these
+actions are interactions with the levers and that the climbing is to always let the player have
+that control so I think that's an extremely important and it's a good rule of thumb to kind of
+carry with you and you can so this was some examples of how we kind of balance this having
+having control while also showing some animations you're not going here where is it I'm just
+gonna play for just a minute I think okay so we'll leave the the funky crate behind and talk
+about this button so there's many ways you could have done a button you could have just have the
+thing toggle when you click and play no animation or you could play one fixed animation and then
+just take away control and that that'd be hidden and try and maybe play the animation as quickly
+as possible but we wanted to try and take it a bit further and really keep the control while you
+click this button again on this notion on Wii we want to play the animation but also be in
+control so one thing here is if I hold down my my action button on my controller he will also
+keep holding the button and when I let go he'll let go if I click briefly he'll do it quickly
+and if I hold it I can just hold it as long as I want so what happens if he is like standing in
+front of it and doing the same thing so like ok we'll we'll make another animation where he
+pushes the button from from this side and then what happens if he's over here does it turn
+around it just okay we'll make a reach back and push the button animation and then what we ended
+up doing was that we made these as additive posis instead of animations in their own right so
+they're actually only applied additively to his kind of his upper body and what that let us do
+is that we can blend together there all three so if I hold it down here and start moving forward
+he'll continue to have his hand on it and just simply blend to the other poses so in this way
+then we also get all the in-between positions so if he's standing kind of here and I like half
+half in the center half to the left we'll just play that that animation and it will fit and also
+if you start moving while you have your key pressed will still have animation to show you and
+the button will stand it and still be kind of present in the world these animations turned out
+to not work if you're running past it so instead we we added like a running push so in the start
+we had three of those as well that was kind of weirdly blended together but it turned out not to
+be the best solution so we ended up just having this one and he just kind of slides his hand
+along and that's kind of precise enough to vae you hit the button and this one we could also use
+if you're kind of pressing it like this and then start running then you'll get you'll get the
+run and then of course the rule needs to be broken as well so if you jump past the button and
+click we try to have some additive animation with the arms kind of flailing but it didn't really
+work very well and it looked weird some of the times and when it did work it didn't really look
+much different than your regular jump because he's already kind of flailing so in the end we
+just didn't have any animation for that one and sometimes if you do like a turn and click see if
+I can do it yeah there I think it happened so if you're in the middle of a tournament like we
+can't use either hand like there's no way we can we can get them to push them we also just like
+ah forget it no push right so so the gameplay kind of takes takes over when it's really
+necessary because we need the bottom to absolutely always be a be a react to your input that's
+that's like number one if we don't have that then it everything else doesn't matter so it needs
+to always always be pushed and if you click several times it will kind of queue up your input
+and always execute them so all input is kind of listened to like if I stand starts banning it it
+will kind of queue them up internally and then actually execute them so the exact numbers of
+taps are being being made but while on the other hand we also really would like to play a lot of
+these animations so this was an example of some of the ways we get away with playing the
+animation while don't taking away the control from the player like at all I think there's some
+internal speed speed run records at the office and who can play it faster with the fast-forward
+it gets very fast next it's story time so while we were making this we were not really allowed
+to talk about it and I had a lot of very curious friends who kept asking me about this game and
+what I was working on it and I couldn't really tell them anything and and this went on for years
+because we were it was far into production before we really released much and even then we
+couldn't really talk about much outside of whatever we had wit release so it was really limiting
+but then at one point I caved and I told them about what I've been working on that week and that
+was this fern in the background and and then it became this this this gimmick so I ran did like
+all of a sudden I was like I broke my oath and then I talked at length about this fern and the
+whole week me and the animator had spent on making making a fern and then it became this gimmick
+amongst some of my friends that that that was like the fern of to kill old ferns and it was like
+a perfect fern and like the the hype for this fern became unreal by the end because that was the
+only thing that heard about the game for years was like this bloody fern so now you get the hype
+as well and it's not gonna live up to it but it's a pretty nice fern I think we can go a bit
+closer if I can wiggle the camera into submission yeah so the reason why it took like a week or
+maybe even two weeks to make a fern was because of course we iterated a lot so that happens with
+almost anything and it almost feels sometimes like we we just study it's a rating and then we
+iterate and prototype until we release and this fern was no different so we made a bunch of
+different versions which made some that was was just kind of a physics version and they were
+just freaking out as physics - right like you thought you had control and then they freaked out
+and it's like I don't really like that and then we tried some that was just like purely
+animation driven but they were also not entirely satisfying so in the end we ended up with this
+mix where there's a there's a fern and then there's like a body of the fern and there's a leaf
+and they do kind of different things so the body has different shake animation and is like just
+an animation driven thing and we can kind of shake it from different direction we can kind of
+check where the character is and kind of shake shake the body of the fern from different
+directions and then there's like this main leaf sticking into the playground and that one got a
+lot of extra love and care so what it has is it has this left right animation that the animator
+did which is just a completely linear animation so no life at all and then I would do a little
+float variable inside of the script controlling the fern which would work as a physics velocity
+while not being physics simulated because that was the problem right the physics simulation
+would freak out so I have no real collision but I have this one variable which is the rotation
+speed of the fern so that I can then influence so I can I can push it when you move into it and
+then when you move away I can kind of let it sway normally so instead of being locked in to
+having to play the sway animation now I have kind of dynamic controls that can sway in any way i
+touch it and if I kind of push it gently and like walk away then it will have like follow me and
+it will have a smaller and if I kind of knock it it will have like continued to move for a
+little bit so all of a sudden we get all of this fidelity from a kind of physics II but not
+physics because we didn't want to deal with that and then if you jump into it there's some logic
+there and if you're kind of here and jumping above it it will react hopefully hopefully well so
+it's kind of checking if you jump up in this pose and it can find its way underneath you then it
+will do it and there's actually another one over here that's a good plated example of if there's
+another fern there in the dark which you will of course totally notice if you play this game
+it's a good example of turning things down until you almost don't notice it that first firm but
+luckily there's the second one so we did get to show off our work and it's used at least two
+other places in the game I think so so we use there we use but this notion of having this small
+physics parameter inside of the code was really good for keeping control adding some fidelity
+while still don't having to deal with the actual real physics and the lever you saw before also
+has a similar one so kind of if you let go of the lever at any random point we don't have to
+deal with the animation of that we just say oh just run the the physics and then it will
+automatically apply a velocity and it will kind of do its bounce and and it will resolve nicely
+so that also helps us keeping the player in control so we'd used it a couple of times this
+velocity slider inside a device or a plant or whatever and then we came to this device which is
+thin you rotate and for this one we we went even further with this idea of fake physics of
+physics and actually ended up doing it with physics except excluding it entirely from the game
+world so this device has like imagine an invisible sphere behind it that's a rigid body and
+physics driven but don't collide with anything and then what happens when you start interacting
+with this device is depending on your input will send torque or forces to this sphere that will
+then rotate and it will have its friction and whatnot and then in return it will then control
+the animation of this wheel and the animation of this valve is a different posis we wanted to
+have them like kind of have him idle and stuff but we ended up just having them as poses and
+then we blend between them so when you rotate it's actually blending between the poses and then
+it's just rotating the leaving behind it but having this physics object in the background for
+this one turned out that it was just easier than implementing all of the the drag and the
+friction and whatnot it was it was convenient to have an actual physics object and I was mainly
+because this device starting getting more and more complicated it's it's as many things inside
+it's more complicated than it looks so we started out wanting the player to be in control so
+when you push the stick now I'm pushing the stick left and the boy is kind of pulling the valve
+to the left and if I hope to stick up then the valve is up and so forth so it's really mapped
+exactly to my direction of the stick which feels nice when you're kind of standing still and
+grabbing it that it matches your stick direction however when you start moving like when you
+start rotating if you have to keep matching the stick it looks really weird and at some point
+you're rotating so fast that it can't really figure it out and then you can kind of try and
+blend to it but it becomes became really weird so in the end when you start rotating we change
+the state into rotation mode so we spot that you're starting to do gaseous and we say ah we'll
+just rotate that also lets us kind of clamp the rotation speed so we do want to encourage the
+player to rotate fast but we don't want them to be able to do it like insanely fast so by
+changing into this rotation guess here we can clamp that speed and kind of have have a maximum
+rotation speed and then it took a long time to kind of try and make the transition between the
+two so if I'm now I'm going fast and it's in like rotation and then I stop and there will be in
+one of the state right oh it would be matching my direction and when you're rotating and you
+strike at speed and then stops you'll try and continue to rotate if it's possible so he lines up
+in this so there's this transition state between this kind of guessed your mode and this kind of
+direct mode and this was an interesting development with this device and it went through lots of
+different hands and lots of different iterations and it was very helpful to think of this kind
+of direct input versus the gesture so do we map it to the exact input of the controller or do we
+map it matter to kind of what we we think the player intended to do and of course the this kind
+of mapping it like this would be okay that's the direct version and then when you do start
+rotating that's more of a gesture so that was an example of having actual physics but not really
+control it so similarly to the other one that was something that helped us a lot with again just
+continuously having control now we're back at this but next I want to talk a bit about details
+we added when the player kind of starts to prod and poke around behind the curtain of the game
+so we really wanted to kind of emphasize the world being consistent or always being present and
+you're never really ending up at this point where it feels like the game didn't reply or it was
+unfinished or something like that and we really want to encourage the player actually to explore
+and and poke around and try all of these interaction and see all of these little details so
+here's one example where you fall down on this platform like we did before see there's these two
+pots on the the platform there so when it bends what happens of course they they slide off and
+what happens if they fall all the way down in that valley they break and if you I I'm not
+actually sure if that's that's possible with the real controls but with the teleportation you
+can kind of get down there fast enough let's do it so there's a little animation on the pots
+breaking at the bottom and then they leaves all of these shards from the pots see if I can
+actually make it down fast enough I'm not sure and there's a cat and some litter right so it's
+not just an empty area we want to say oke you jump down here and kind of explored we would like
+to also have the world continue down here and this this could be one example which is just like
+where you you could fall down but another way to kind of establish the world or reconfirm that
+it's there is like for example this so you see he's up against the wall and he's he's holding
+his hands up and if you push against the wall instead of maybe just running towards it he'll
+kind of do this leaning against it similarly too if you're interacting with things but just kind
+of saying oh I I've hurt your input there's where the wall is it's still there and if you kind
+of walk here he has a little animation ways like oh he's looking down it's like we that's grim
+down there don't like that and then try over here I try not to die if you run towards the edge
+and stop it's like oh there was an edge so so a different animation from when if it just stops
+here there was no no danger but if you're like here's my roof scary and there's another one if
+you turn right at the edge you get this super uuu that was a close call so we we have a lot of
+fun putting these all sorts of the places in the game so here's a gap where you would normally
+just jump across and you'd be running right and you'll never think back on that one lonesome gap
+but if you should manage to fail the jump or if you jump down there to explore you'll see this
+suspicious-looking shopping trolley that our animator put there and if you think what if I hit
+that shopping trolley it's like does this wiggle it's like okay that was those we're but what if
+I like hit it directly in the shopping trolley see if I can actually do I think so all of a
+sudden we are I don't know if the player ends up here they're not they're not focusing on the
+game anymore now they're stuck with this shopping trolleys like this animation won't work if I
+fail from the other side so like what happens if I if I fail from over here oh that's a
+different one so we have a lot of weird weird places like this and sometimes yeah let's just see
+another example if I can find them but really they're there one because we think it's very funny
+to make and to it helps that if the player start exploring both both the the puzzles or the game
+or the interaction or the animation or anything really we want there to continue to be game
+until they they can't kind of poke any further and it should help help them stay inside this
+world so here's another example this was the valve from before with this elevator this is very
+gruesome spike let's see if if we can hit it what was the time how much time left two minutes
+I'm out oh that will be the end I was going to finish whether playing a small section but now
+you'll get to play it yourself thank you for your attention and we don't

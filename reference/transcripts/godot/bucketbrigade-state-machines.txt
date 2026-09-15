@@ -1,0 +1,174 @@
+---
+title: The State Machine Video Of All Time ( Godot 4.7 )
+author: BucketBrigade
+source_url: https://www.youtube.com/watch?v=LmT2UgWOQis
+date_added: 2026-09-15
+date_published: unknown
+type: Video transcript (auto-generated captions)
+caption_track: en
+segments: 410
+---
+
+Hey guys, welcome back to another video. Today, we're going to be going over how to create a
+nodeless state machine in Godot. We're also going to be going over how components can interact
+with the state machine, such as an input component and an animation component. Lastly, we'll
+also be discussing how our state machine can interact with data resources to better decouple
+data from our code. Before the video starts, I just want to say I've opened up an account on Buy
+Me a Coffee if you guys want to support the channel. And we still have the asset pack up on
+itch.io if that's another way you want to support. Thank you guys and enjoy the video. Starting
+off in our main player controller scene here, I'm going to go ahead and add in a basic node to
+the scene tree. And I'm going to give this node the name of state machine, as this node is going
+to hold the script for our state machine. So, I can go ahead and drag that script on top here,
+and let's go over how I have this set up. For the rest of the video, if you're ever wondering
+what script we're in, in the top right corner, I've left a little note that says the name of the
+script we're currently looking at. Now, let's take a look at how I have this state machine set
+up. At the top, we have our state change signal. It gets emitted every time we change state. The
+current state is passed into this signal and can be used by other components that are connected
+to this signal. The next thing we want to look at is our max state history. This number caps off
+the amount of states we store in our state history. Next is our initial state, which I've static
+typed to GDScript. I'm going to be going over why I did this, and it's kind of interesting and
+kind of elegant when we start transitioning between our state. Below that is our export group
+labeled dependencies. The three dependencies we'll have for each state is our actor, data, and
+input component. The actor is going to be the parent of our state machine, and the data and
+input components we'll go over later in the video. Then we have our last two variables, which
+are current state, which holds the state that we're currently in, and our state history, which
+is a list of the last three states that we've entered, determined by our max state history. In
+our ready function, if we've selected an initial state, we're going to transition to that
+initial state. We'll go over the transition to function as we go down through the script. Let's
+now take a look at these three functions. We have our unhandled input, physics process, and our
+process function. If we have a current state, we are then going to call their respective
+functions. You'll see we have a handle input, physics update, and update function. These names
+are given to not confuse with the real virtual functions built into Godot. Moving on to
+transition to, you're going to see we have the parameter new state class static type to
+GDScript. This allows us to use the auto-completed class name of our states to transition
+between them, instead of using things like strings or export variables. We start off by taking
+the class name we've passed in and creating a new instance of this script. We store it into our
+new state variable, and then we check if this new state variable is actually a state. If it
+isn't, we throw an error. We then want to check, is our current state equal to our new state? If
+it is, we don't need to transition, so we return. If our current state is set to something, we
+want to exit that state and set the current state back to null. If we've passed all of these
+conditions, we then want to set our new state into our current state variable. We then need to
+set up our state by using the setup function and passing in the dependencies we looked at
+earlier. We want to connect our transitioned signal, which is a part of our state class, to our
+transition to function within our state machine. This allows us to signal up from our states to
+our state machine. We then want to update the state history array with our current state. We
+then enter the current state, passing in our state history, and lastly, we emit [music] our
+state change signal with our current state as the argument. The last function I want to look at
+is our update state history. It pushes the current state to the front of our array. If our state
+history array is larger than the max state history, we then pop the back oldest state off of the
+state history array. Now that we've looked at our state machine, let's go look at our base state
+class. Starting at the top of our state script, we have the @abstract keyword. This means that
+this script can never be instantiated and is used just as a base template. We then have the
+extends ref counted. This means that this script is never used on a node and is used as a
+standalone script, which is useful for our nodeless state machine approach. Next we have our
+transition signal, which we talked about earlier. This is used by our subclass states to
+communicate with our state machine when they need to transition to another state. Let's say we
+want to go from idle to jump when we click the jump button. We would transition using the
+transition signal and passing in the jump state class name. We then have our state dependencies
+being our actor, our data and input, which allow us to access things like our actor's velocity
+or speed value in data or if we're clicking a key to go a direction in input. These are set in
+our setup function, which is called within our state machine like we looked at previously. Below
+that we have all of our state specific functions such as handle input, physics update, update,
+enter function and exit function. These will all be used for specific use cases, which we'll go
+over later in the video. Lastly, we have our handle transition function. This is used as a
+container function that holds all of the transition logic in each state. Next we'll look at two
+state subclasses called movement and rest state, which are going to help us cut back on repeated
+code. Starting off in our movement state, you'll notice again I'm using the @abstract keyword as
+this script will never be instantiated within our game. It's simply used to cut back on repeated
+and redundant code within our state subclasses. As an idle state would not need any of these
+functions, thus it would not be a movement state. Take a look at these five functions. This
+number would of course grow and shrink depending on the scope of your game. The thing that you
+should note is that I'm passing in parameters such as gravity, max gravity, speed, acceleration,
+and so on. This is really important later on as we go over our data resources. It allows us to
+utilize this custom data resource so that we can extend the state machine to more entities than
+just the player. Lastly, we want to look at our rest state, which is also an abstract class and
+extends our state class. As you can see by its function here, it lowers our actor's velocity
+back down to zero by a certain amount of friction. To recap, we have our abstract state class
+that holds all of our variables and functions needed to build out our state subclasses like
+idle, walk, jump, and fall. We also went over our other two abstract state subclasses, movement
+state and rest state, that allow us to cut back on redundant and repeated code, which gives us
+the ability to pick and choose which functions we need for each substate. Lastly, we'll now go
+over how each of these states is created and how they'll communicate with the finite state
+machine. So, let's get into that. Before we get into our player states, we need to make sure
+we've covered all our dependencies. Let's learn about our data resource. If we open up this
+script, you'll see we have another abstract class called data, which extends resource. In Godot,
+we use resource scripts to store data. In our case, we'll be storing an entity's variable data
+such as speed, jump height, acceleration, and so on. You could store other things like health or
+damage variables. As you can see, I made a subclass of our data resource called player data,
+which holds all of our player's movement properties. These properties will be used by our states
+to move our character around. To create our player data resource, we want to right click on the
+area where we're going to store it, and we want to create a new resource. If we search up player
+data, we'll see it'll pop up, and we can hit create. You'll see I already have one, so I'm just
+going to hit cancel, but you would hit create. All right, the last thing we need to look at is
+our final dependency, which is our input component. So, I'm going to go ahead and add a basic
+node and give it the name input component. Just like this. If I go down to my file explorer, I
+actually already have an input component script that we're going to take a look at. So, I'm
+going to open that up. Taking a look in our input component, you're going to see we have a
+couple variables. These are our actor, who is the parent of our input component, and we have a
+couple movement variables, that being our move direction, jump requested, and our jump canceled
+boolean variables. You'll also see we have a physics process function declared within the
+script, and we also have a bunch of helper functions, which you can pause and take a look at if
+you're curious. Now, let's go ahead and check out our player input component. If we open this
+up, we'll see we have our physics process function, and we're setting our movement variables
+using the input class. We're checking our custom inputs like left, right, up and down, and jump.
+Of course, your game will differ if you have other inputs to consider. So, let's go ahead and
+drag that player input component onto our input component node. We now have all our dependencies
+set up, and we can now select them in the inspector. So, I'll go to my dependencies, set the
+actor, we'll go ahead and add our data resource, and lastly, we will add our input component.
+Perfect. There's one thing we're missing though, which is our player states. Let's go take a
+look at the four states I made for this demo, and I'll go over my thought process for how I
+created each one. Let's start off with our idle state. Let's consider what our idle state needs
+to be. It's bringing our character's velocity back to zero, which means this is considered a
+rest state. That means our idle state will extend our rest state. We also want to transition to
+our jump state, our fall state, and our walk state decided by conditions we'll put in our handle
+transition function. Let's take a look at the actual code. Taking a look at our player idle
+state, you'll see it extends rest state, just like how we went over in our list. We also have
+two private variables, one being our player variable, which is statically typed a player, which
+allows us to get all of the auto-completed properties and functions in our player script. We
+also have our data variable, which is statically typed to our player data, again, allowing us to
+have our auto completion. Next, let's take a look at our physics update function. You'll see
+I've taken the handle horizontal movement method from our rest state. I'm passing in the
+data.friction from our player data values and delta. Below, I'm checking our handle transitions
+and then doing player.move_and_slide. Let's take a look at our transitions. Scrolling down,
+we'll see if our player is not on the floor, we want to transition to our player fall state. If
+we check our input component and see if a jump has been requested, we then want to transition to
+our player jump state. If we check our input and it's requesting horizontal movement, we then
+want to transition to our walk state. I'm going to quickly scroll over the three other states,
+but they're basically set up the exact same way. So, if you're curious on how I set up any of
+them, you can just pause. Now that we're done that, let's select our initial state for our state
+machine. I'm going to go quick select and I'm going to choose my player idle state. Just like
+this. And now, if I go press play, everything should start working. So, you're going to see when
+I start moving around, my player goes left and right. I can jump and fall, but none of my
+animations are working. So, let's go get that set up. I have an animated Sprite 2D with four
+animations, idle, walk, fall, and jump. I want to create an animation component that uses my
+state machine and my animated Sprite to automatically switch between my animations. I have a
+script specifically for this called animation component and I'm going to put that on that newly
+named node. Let's check it out. To get started, we have three export variables. The first one
+being our animated Sprite 2D, the second being our state machine, and the third being our
+animation map, which is just a dictionary that maps our GDScript, that being our class name like
+player idle, player jump, to a string name, that being the name of our animation like idle or
+jump. We then connect our state machine's state change signal to our on state change function
+within our animation component. We then want to check if our states script is the same that's
+mapped to our animation's name. If our animation map does not have the state within it, then
+we'll throw an error. If we found a match, we'll then play the animation. Now, let's go ahead
+and set all of our export variables in our inspector tab. We'll go ahead and set our animated
+sprite, our state machine, and then we'll start setting up our animation dictionary. Now, if you
+guys think that there is a better way to set up this animation component, or you've seen
+something online that could be useful for us to make a better state machine animation component
+relationship, then please leave it in the description below, cuz I'm really curious if there's
+something else out there, cuz I'm not convinced this is the best way. Let's check it out. As you
+can see, all of the animations are matching up with their states perfectly, but there's one
+thing that's missing, and that's our animation sprite flipping. So, let's make another
+component. I'm going to add in another basic node and give it the name flip component. I've
+already built a script called flip_component.gd that we're going to add to this node. We're
+going to just drag it on top and check out the script. As you can see, it's pretty simple. We
+just have two export variables for our animated sprite and our input component. In our process
+function, we just check if our input component is requesting horizontal movement. If it is, we
+check if our character's facing forward, >> [music] >> and we decide whether to flip or not
+depending on that boolean variable. Now, let's go ahead and set those two [music] export
+variables, that being our animated sprite and our input component, and let's go press play. And
+you can see, our sprite's flipping and all our animations are working. And with that, we've
+reached the end of the video. Thank you guys so much for sticking around to the end of the
+video. If you guys enjoyed, leave a like. If you want to see more of these videos, subscribe.
+And if you have any questions or suggestions, leave a comment down below. I know it's been a
+while, but I hope to be getting more videos out soon. And until the next one, see you guys.
