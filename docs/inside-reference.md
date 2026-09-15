@@ -535,6 +535,7 @@ which is most of the emotional payoff — without ever anchoring a mechanic to a
 - **[doc]** Markers in the audio trigger events in the game. The flashing warning light before a shockwave is fired from a marker in the sound, not from game logic.
 - **[doc]** The elevator crash: during development the elevator happened to hit the water on the beat, they liked it, and so its speed is now adjusted to land on the beat regardless of when in the loop the player triggers it.
 - **[doc]** Audio drove a level-design change. The director and Andersen felt the shockwave section was too intense given a climax coming later, so the boy was sent inside a building to bring the mood down.
+- **[doc]** The mechanism, from the slides: **named user cues are placed in music segments** and arrive in the engine as a callback — normally on the frame after the cue occurred. The game can also ask Wwise for the **current music playback position** directly, with extrapolation, and drive itself from that. This is how the game reads the sound rather than the other way round.
 - **[doc]** The background flashes in the shockwave section are fired from **markers placed in the music**, not from game logic. Because each musical variation has different rhythmic content, Andersen decides per variation where the flash lands. He states the inversion directly: normally the game triggers sound events; here the game creates things from events the sound triggers.
 - **[doc]** The mix is shaped continuously rather than switched. Ambience and the boy's voice are both **side-chained to the shockwave**, giving a pumping effect and making him quieter as the blast is louder. Reverb is enveloped so the world "sucks in" about two seconds before each blast and opens out after.
 - **[doc]** In and out of cover are different filter states — muffled inside, bright and exposed outside — with a small reverb in cover and a large one outside.
@@ -555,9 +556,21 @@ theatre scene change: the curtain closes, people run about moving furniture, the
 curtain opens, and nothing appears to have happened.
 
 - **[doc]** On death the game unloads every non-static scene — anything physics or logic can have disturbed — and loads the respawn point. The audio must come through with its state unchanged.
-- **[doc]** The sequence: a death event fires so the audio can prepare; the respawn point is already known, so a prepare-spawn event fires too; the screen goes black; **the game stops calling `RenderAudio()`**; scenes unload, scene-placed sounds stop, new scenes load and their trigger boxes fire; a spawn event posts; then `RenderAudio()` resumes.
+- **[doc]** The slides give the sequence exactly. Note that the prepare and spawn events are **named per save point**, so the audio knows where it is going before the load starts:
+
+  | Moment | Audio |
+  |---|---|
+  | Boy death | death event |
+  | Fade out start | `prepare_spawn_[savepoint]` |
+  | Fade out complete | **pause Wwise updates (`RenderAudio`)** |
+  | Unload scenes | scene stop events |
+  | Load scenes | scene and global start events |
+  | Fade in start | post `spawn_[savepoint]`, resume Wwise updates |
+  | Fade in complete | — |
+
+- **[doc]** Their own summary of the effect: it creates **the illusion that no time passed**. The slide's image credit is a behind-the-scenes photograph of the Metropolitan Opera, which is where the curtain metaphor comes from.
 - **[doc]** Freezing Wwise by simply not rendering is described as the absolutely simplest way to make it retain state. The commands issued meanwhile accumulate in a buffer and all execute in a single audio frame when rendering restarts.
-- **[doc]** That single-frame burst overran Xbox's standard 512-sample buffer, so they doubled it. The added latency was judged not noticeable.
+- **[doc]** That single-frame burst needs a **2 MB command queue**, which overran the standard **512-sample** audio buffer. The fix was to double it to **1024 samples**; the added latency was judged imperceptible. The slides give both settings directly (`uCommandQueueSize`, `uNumSamplesPerFrame`).
 - **[doc]** The death fade is six seconds — the length of the shockwave loop — which is how the player lands back at the same point in the cycle.
 
 ### The breathing loop
@@ -569,20 +582,23 @@ describes the result; the Wwise talk gives the mechanism.
 - **[doc]** The poses are driven *by the audio system*, not by gameplay directly. Gameplay changes the sound; the sound then drives the visible breathing. Chest and head movement always match the audio because the audio is the source.
 - **[doc]** Concretely: a small sequencer written in Unity script posts a Wwise event, asks for a callback when it finishes, and posts the next one on that callback. The **recorded sounds' own lengths therefore define the rhythm** — uneven, and natural because of it. The same callbacks drive the additive pose, which is why they cannot drift apart.
 - **[doc]** Everything hangs off **one Wwise event** at the top of a switch hierarchy: action, then theme, then emotion, then cycle (inhale or exhale).
+- **[doc]** The loop is explicit in the slides: update the breath cycle, set the switches and RTPC, post the event asking for an `AK_EndOfEvent` callback, wait for it, repeat.
+- **[doc]** **Action is normally derived automatically from the animation**, and overridden only where a scene needs a different reading. Emotion can also be set to morph automatically to another value after a given time.
 - **[doc]** Three axes, all settable at runtime: **action** (what he's doing), **emotion** (the situation), **intensity** (exhaustion, or emotional charge). Emotions in the hierarchy include panic, alert, determined, frantic, relaxed, relieved and strangled.
 - **[doc]** A `sneak` theme exists alongside `normal`, because it is largely a stealth game and Andersen is explicit that a character making ordinary noise while sneaking breaks it for him.
-- **[doc]** Intensity is a continuous parameter banded into musical dynamics — piano, mezzo-forte, forte — rather than numbered 1–10. His reasoning: hearing a sound, he can always say which dynamic it is, where a number means nothing. The same scale is used for physics sounds.
+- **[doc]** Intensity is **exhaustion, low-pass filtered** — movement generates exhaustion, the filter smooths it, and the result selects the depth and force of the breath. Depending on the emotion switch it reads as physical exertion or as emotional charge. It is a continuous parameter banded into musical dynamics — piano, mezzo-forte, forte — rather than numbered 1–10. His reasoning: hearing a sound, he can always say which dynamic it is, where a number means nothing. The same scale is used for physics sounds.
 - **[doc]** Intensity updates only when a breath is taken, which Schmid believes is performance-related.
 - **[doc]** The voice is mixed in plain stereo, and its volume depends on distance to camera **and the angle of the boy's head** — facing the camera is louder, facing away raises the reverb. This is the look-at layer from §9 feeding the mix.
 - **[doc]** Recovery is slow and deliberate. After a chase, the breath takes a long time to settle.
 - **[doc]** Jumping is a special case rather than a simple override. You hold your breath in the air: if he is inhaling the sequence just stops there, and if he is exhaling a *quick* inhale is inserted so he is full of air on landing. Landing always begins with an exhale, and an impact value derived from speed chooses between a normal exhale and a grunt.
-- **[doc]** Grabbing is split into **passive engagement** (taking hold, bracing) and **active engagement** (actually pushing or pulling).
+- **[doc]** A three-state engagement axis — **not engaged, engaged passive, engaged active** — marks performing work and selects a different set of sounds. *(Corrected from the transcript against the slides, which show three states rather than two.)*
 
 ### Beat-matching the breath to the footsteps
 
 - **[doc]** Running switches the sequencer from stitching sounds together to spacing them out, targeting one breath per two steps.
 - **[doc]** Snapping to that instantly sounded forced, so Schmid treated it as a **frequency and phase alignment problem**. The run cycle runs 0–1 with each step at half phase; breathing wants half the run's frequency. The current breathing rhythm is analysed for its own frequency and phase, and then nudged toward the footsteps.
-- **[doc]** The stated model is a **DJ beat-matching two turntables**: if the tempo is off, adjust pitch; if the phase is behind, over-correct until it catches. Applied gradually, the two align without the transition being audible.
+- **[doc]** The stated model is a **DJ beat-matching two turntables** — and the slides sharpen it: interpolate the breath frequency toward the run frequency, and compensate that frequency for the phase offset, "like a DJ that uses pitch adjust without nudging the record". No discontinuity, so the transition is inaudible.
+- **[doc]** The numbers: a run cycle is two steps, right foot at phase 0.0 and left at 0.5; a breath cycle is one breath, taken at phase 0. On switching modes, the breath's frequency is computed from **the last two breaths** and its phase from that frequency and the last breath's time.
 
 **Worth copying as an architecture, not just an effect.** One signal (breath intensity)
 fed by many gameplay sources, driving audio, with animation slaved to the audio. It
@@ -673,10 +689,13 @@ Playdead published.
 - **[doc]** **No allocations at runtime.** Garbage collection freezes the whole game and produces a frame spike, which he names as the visible flaw in most lower-tier Unity games. Everything else below follows from this rule.
 - **[doc]** Where allocation was unavoidable they removed the cause rather than tolerating it: Wwise's user cues from the music allocated a string per callback, so they hashed the strings in the plugin source and compared hashes instead.
 - **[doc]** The Unity-side wrapper was the performance problem, not Wwise. Its `MonoBehaviour` API calls were "unreasonably slow", so they stripped what they could — including a per-object component check, replaced with an assumption that it is present and an error if not.
-- **[doc]** **Virtual voices** are called a free win: enabled indiscriminately, they culled enough inaudible sounds to recover meaningful CPU with no cleverness required. Schmid's advice is to have them on by default and trim back only if needed.
+- **[doc]** **Virtual voices** are called a free win: enabled indiscriminately, they recovered meaningful CPU with no cleverness required. The slides define what they actually do — an inaudible sound is **still updated, but not mixed** — which is why it costs nothing to leave them on everywhere.
+- **[doc]** Audio was pinned to its own core: Wwise on core 5, engine worker threads on 2–4.
+- **[doc]** I/O was handled by finding streams used heavily through the game and **converting them to non-streams**. Music shipped as PCM, everything else as Vorbis at quality 10.
 - **[doc]** They were using the entire CPU budget on Xbox, largely because of convolution reverb, which Andersen was unwilling to give up.
 - **[doc]** A 2D game has a small enough state space to be genuinely testable — they could profile a whole playthrough and compare two runs.
-- **[doc]** The debugging trick worth stealing: an inaudible glitch (256-sample blocks of silence) was found by **recording every playtest in Audacity and reading the spectrogram**, where each one shows as an obvious vertical line. Andersen could hear that something was wrong before anyone could find it.
+- **[doc]** The debugging trick worth stealing: an inaudible glitch — **256 samples of zeros**, caused by the large command queue — produced **no errors in the audio profiler at all** and was only findable by recording the console's digital output and reading the spectrogram, where each one shows as an obvious vertical line. Andersen could hear that something was wrong before anyone could find it.
+- **[doc]** Two profiling notes from the slides: record a whole playthrough to file, raising the capture log's memory ceiling to hold a session of a couple of hours; and because the profiler is single-instance, compare two sessions by running a second copy **in a virtual machine**.
 - **[doc]** They used Playmaker for state machines and say plainly that they sometimes wish they had not, because it does not perform well.
 
 **The allocation rule is the one that transfers.** It is engine-independent and it is
@@ -750,7 +769,7 @@ Unanswered. Fill in or delete as you learn.
 - How are camera transitions triggered and blended?
 - Is the checkpoint system manually placed or driven by puzzle state? *(Partly answered: the streaming talk shows safe points as fixed, named locations used by their profiling tools, and respawn reloading only the dirty gameplay scenes. Placement itself is still not described.)*
 - What's in the Danish-language animation talk? Not yet watched.
-- How did Wwise communicate state back to the engine? Andersen was asked this directly in the Q&A and said timeline markers were used during development but replaced by something else for the final game. The captions destroy the answer. The slides or the Wwise Tour talks may have it.
+- ~~How did Wwise communicate state back to the engine?~~ **Answered by the slide deck.** Named user cues placed in music segments arrive as engine callbacks on the following frame, and the game can additionally query Wwise for the current music playback position with extrapolation. The garbled Q&A answer was about reading the play position rather than relying on markers alone.
 
 ---
 
@@ -763,6 +782,15 @@ Playdead maintain an index page with PDFs and video for everything they've publi
 
 Slide decks mirrored in their GitHub repo:
 **https://github.com/playdeadgames/publications/tree/master/INSIDE**
+
+**Fetching those PDFs:** the repo uses Git LFS, so the usual `raw.githubusercontent.com`
+URL returns a 132-byte pointer file rather than the document. Swap the host for
+`media.githubusercontent.com/media/` and the same path serves the real PDF.
+
+Decks published there and **not yet read**, in rough order of likely value to this
+project: the rendering deck (carries the shader code section 7 refers to), *Banding in
+Games*, the Huddle Up deck (which would settle the two speaker names the captions
+destroyed), *The Boy from INSIDE* and the ITU audio talk, and the iOS shipping deck.
 
 Individual talks:
 
@@ -780,8 +808,9 @@ Individual talks:
   Slides: https://media.gdcvault.com/gdc2017/Presentations/Grontved_Huddle%20Up!%20Making.pdf
 - *A Game That Listens* — GDC 2016, Martin Stig Andersen. **Watched and transcribed.** Audio/gameplay feedback loops; the source for most of section 11. Note: YouTube serves only a Danish-tagged caption track for this talk, transcribed with the wrong speech model — names and figures in it are unreliable.
   https://www.youtube.com/watch?v=Dnd74MQMQ-E
-- *Unbreaking Immersion* — Wwise Tour 2016, Andersen and Jakob Schmid. **Parts 2 and 3 watched and transcribed** — the implementation behind section 11, and the performance notes in section 12. Part 1 has captions disabled on YouTube and has not been watched.
+- *Unbreaking Immersion* — Wwise Tour 2016, Andersen and Jakob Schmid. **Parts 2 and 3 watched and transcribed**; part 1 has captions disabled on YouTube, so **the slide deck was read instead** — it covers all three parts plus bonus slides with the exact API calls and settings, and is the better source throughout. Claims in sections 11 and 12 have been checked against it.
   https://www.youtube.com/watch?v=gRF8Gt5hys4 (2, Voice) · https://www.youtube.com/watch?v=TcSuVzUjmLw (3, Scene Change)
+  Slides: https://github.com/playdeadgames/publications/blob/master/INSIDE/schmid-Wwise_2016-INSIDE_Audio.pdf
 - *The Boy From INSIDE* — AES 2016. Sound design of the main character.
 - *The Playdead Approach to Audio* — ITU 2016. Wwise/Unity setup.
 - *Tools, Tricks and Technologies for Reaching Stutter Free 60 FPS in INSIDE* — Unite 2016, three Playdead programmers. **Watched and transcribed.** The source for section 12. Much of the detail is Unity-specific.

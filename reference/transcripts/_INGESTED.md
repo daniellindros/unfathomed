@@ -25,6 +25,10 @@ article that cites it, not here.
 
 Not fetchable: **Unbreaking Immersion part 1** (`1yzj2ZinN5M`) has captions
 disabled. Confirmed — it failed while later videos in the same run succeeded.
+**Covered anyway** by Jakob Schmid's slide deck for the whole talk, which was read on
+2026-09-15 and used to verify and correct sections 11 and 12. The deck is a better
+source than the captions for all three parts. It is not vendored here; the URL and the
+Git LFS gotcha are recorded in `docs/inside-reference.md` under Sources.
 
 ## Godot tutorials → `docs/godot/`
 
