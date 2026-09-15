@@ -167,8 +167,16 @@ solo-dev-sized design, and it's what Inside actually does.
 
 ## 7. Rendering and lighting
 
-Primary source is the GDC / GDC Europe 2016 rendering talk by Mikkel Gjøl and Mikkel
-Svendsen. Slides are public.
+Primary source is the GDC / GDC Europe 2016 rendering talk by Mikkel Gjøl (graphics
+programmer, first half) and Mikkel Svendsen (technical artist, second half).
+**Watched and transcribed.** Slides are public and carry the shader code.
+
+### Why any of this matters
+
+- **[doc]** The fixed camera is the root of the whole approach. Because framing never changes, artists can tune every pixel knowing it will look on the player's screen exactly as it does on theirs — so the game can lean on very subtle detail.
+- **[doc]** That is also the constraint: subtle detail cannot survive distracting artefacts, so banding, flickering and aliasing are unacceptable in a way they would not be in another game. **The art direction generates the technical requirements**, not the other way round.
+- **[doc]** Shipped at 60 FPS, 1080p, on every target. Unity with a source licence, so the engine itself was modified.
+- **[doc]** Light pre-pass rendering: base pass writes depth and normals; a light pass samples those and outputs lighting; a final pass applies materials and samples the lighting; then translucency; then post.
 
 - **[doc]** Lighting authored as *separate* diffuse, specular and bounce-light entities, so each could be tuned independently per shot.
 - **[doc]** Local shadowed volumetrics for atmosphere.
@@ -181,10 +189,64 @@ Svendsen. Slides are public.
 - **[obs]** Key light usually behind or to the side; the boy reads as a near-black silhouette.
 - **[obs]** Fog eats the background within a fairly short distance and does most of the depth work.
 
+### Fog, and the cheapest atmosphere in the talk
+
+- **[doc]** Many scenes were literally just geometry plus a **linear depth fog** — Gjøl shows one with and without, and the fog alone makes it moody.
+- **[doc]** One detail makes it work: the fog's intensity is **clamped to a maximum** so bright light sources still punch through. Exponential fog converges toward full opacity and swallows them.
+- **[doc]** Their "atmospheric scattering" is **a very wide glow** — blur the whole screen and add it back on top. Gjøl is almost apologetic about how simple it is; the artists got a great deal out of it.
+- **[doc]** A second, *narrow* high-intensity glow comes from an emissive mask remapped to an HDR range. The trap they hit: if a pixel produces a large bloom but is not itself rendered bright, it reads as wrong — so the **HDR values have to be written back**.
+- **[doc]** Order matters: **temporal anti-aliasing runs before the HDR bloom**, because a little aliasing at high intensity flickers badly.
+
+### Banding, and why it gets its own section
+
+This is the most directly stealable material Playdead published.
+
+- **[doc]** Output is 8-bit per channel; the eye perceives something closer to 14. Higher-precision buffers were too slow on some platforms, and sRGB targets had awkward platform implementations, so they dithered instead.
+- **[doc]** The principle: add one bit of uniform noise before quantising, and the quantised result averages out to the original signal.
+- **[doc]** Gjøl is emphatic that this is **two lines in a pixel shader** — add a random number on output — and says there is no reason any game should ship with banding, indies included.
+- **[doc]** Uniform noise has a flaw called **noise modulation**: the error depends on the signal, so you get visible bands with no noise in them. Switching to a **triangular distribution** makes the error independent of the signal, at the cost of two bits of noise rather than one.
+- **[doc]** To get that back, use **blue noise with a triangular distribution** — visibly less noisy and no bands. Implemented as a precomputed blue-noise texture for cache coherency, with an ALU version (two white noises summed) where bandwidth-bound.
+- **[doc]** **What to dither matters as much as how.** The lighting pass, then the final pass, which re-quantises when it reads lighting and writes 8-bit. The **translucency pass is possibly the most important**, because blending reads and writes the same target repeatedly and re-quantises every time. The post pass too. They pushed their wide-glow pass to a 10-bit target with power-of-two compression on top.
+- **[doc]** Banding is about quantisation, not colour, so **normals get dithered too** — needed only where intense speculars meet normals varying across large surfaces.
+- **[doc]** **Animate the noise**, or it sits on the screen like dust on a lens as the camera moves. Animated noise also gets integrated away by the temporal anti-aliasing, which is a bonus.
+- **[doc]** Dither the UI as well — it is mostly transparencies and fades. And output in the display's correct range so you dither the signal rather than leaving a television's limited-range conversion to do it badly.
+
+### Noise, patterns, and blue noise
+
+- **[doc]** The finding underneath several effects: **the eye is forgiving toward noise and unforgiving toward patterns.** White noise is cheap but noisy. A Bayer matrix gives good local coverage but reads as a pattern, which is worse.
+- **[doc]** **Blue noise** — high-pass-filtered white noise — keeps the local-coverage property without being a pattern, and roughly halved the sample counts they needed. Svendsen's summary at the end of the talk is simply that blue noise is the general saviour and you should use it too.
+
+### Local fog volumes
+
+The flashlight effect, and a good worked example of getting an expensive thing cheap.
+
+- **[doc]** Naively ray-marching to the depth buffer sampling the projected texture, shadow map and falloff took 128 samples and over a frame and a half.
+- **[doc]** Fog is authored as **boxes**, intersected geometrically with the light frustum — clip the frustum by each box plane and patch the holes — so sampling only happens where both exist. Front faces and back faces are rendered in two passes to bound the march.
+- **[doc]** The effect is smooth, so it runs at **half resolution** and is upsampled. The upsample deliberately adds a noisy blur to break up the half-resolution structure, which also feeds the temporal anti-aliasing: their TAA uses neighbourhood clipping, which handles per-pixel noise well and half-resolution noise badly.
+- **[doc]** The shipped version is around three samples at half resolution — **under one sample per full-resolution pixel** — in under a millisecond. Shadow maps and projected textures are also downscaled, since the effect is blurry anyway.
+- **[doc]** The same boxes carry effects: above water the light is sampled as-is; below, an animated texture fakes caustics.
+
+### Light types
+
+- **[doc]** Because the light pass just writes into a buffer, they could add custom light types freely.
+- **[doc]** The **bounce light** is the simplest and does the pseudo-global-illumination work by hand: a wrapped or double-Lambert term with an artist-facing **hardness** parameter that fades the front-to-back dot product. The effect is to blur where the light appears to come from, so it reads as an area rather than a point, and can be faded all the way to flat ambient.
+
+### VFX techniques worth remembering
+
+- **[doc]** **Fire is coloured once, not per sprite.** Individually coloured sprites stack during blending into implausible brightness, so instead they render black-and-white "hotness" sprites additively into a single buffer — reusing the HDR bloom alpha, since fire blooms anyway — and apply **one gradient** on read-back.
+- **[doc]** Their flipbook animation avoids two failure modes at once: sequential frames make a short loop obvious, and random frames repeat often enough that a repeat reads as lag. The fix is **sequential columns with random rows**. Frames cross-fade along a vertical gradient with noise rather than cutting.
+- **[doc]** **Rain is a mesh of individual raindrops** with a vertex shader that wraps a drop back to the top of the volume when it reaches the bottom. Splashes expand with random rotation and reposition on the integer part of time while animating on the fractional part. Scrolling post effects had no parallax; scrolling sprites had too much overdraw.
+- **[doc]** **Lens flare occlusion without ray casts or colliders**: sample the depth buffer stochastically **per vertex** — four samples for a quad rather than anything per-pixel — and multiply into the flare. Offsetting those samples off-centre gives a free gradient across the flare, since you are sampling all four corners anyway.
+- **[doc]** Screen-space reflections need an assumed wall thickness, or objects stretch — the artists' name for the artefact was "the boy with MC Hammer pants." Using the screen-space ray's movement as the thickness fails on a wall at 45° to the viewer, where the ray barely moves; using the reflection direction itself works.
+- **[doc]** Large water uses **planar reflections, not screen-space** — a surface spanning most of the screen shows the artefacts too readily. Layers are rendered as separate objects and the order flips when the camera goes under. Each layer writes an "already rendered water" stencil bit and later geometry reading that bit discards, which lets them render front-to-back with rejection instead of back-to-front.
+- **[doc]** The tiling trick for foam: wavy cobblestones tile perfectly without looking tiled, so they traced the wave lines from a photograph, layered stock wave imagery underneath, and removed the lines.
+
 **Godot translation:**
 
-- `WorldEnvironment` with volumetric fog on. Debanding enabled in project settings from day one — the most direct port of a Playdead technique available.
-- One strong key light per shot, plus fill. Godot doesn't split diffuse/specular/bounce authoring, so the equivalent is per-area Environment overrides and careful light energy.
+- `WorldEnvironment` with volumetric fog on. Set fog to fall off linearly rather than exponentially if bright sources need to punch through it — that clamp is what keeps lights readable through heavy fog.
+- **Debanding on in project settings from day one.** Godot's debanding is the same idea as Gjøl's two lines, applied at the end of the pipeline, and it is free. Worth knowing what it does *not* cover: it dithers the final output, not every intermediate pass. Playdead found the translucency pass the most important one to dither because blending re-quantises repeatedly, so heavy layered transparency plus wide fog gradients is where banding may still appear.
+- Animate any noise you add yourself. Static noise reads as dirt on the lens the moment the camera moves.
+- One strong key light per shot, plus fill. Godot doesn't split diffuse/specular/bounce authoring, so the equivalent is per-area Environment overrides and careful light energy. The bounce light's *hardness* idea — softening the falloff until the source is ambiguous — transfers as a light with low energy and wide range rather than a tight one.
 - Grey-box test corridor with one light and fog, tuned before any real modelling. Godot's defaults will not look like this; the knobs are where the style lives.
 
 ---
@@ -538,8 +600,66 @@ this project — and much easier built in from the start than retrofitted.
 
 ## 12. Performance and streaming
 
-- **[doc]** Playdead gave a Unite 2016 talk specifically about continuously loading and unloading assets during gameplay without stutter, targeting a stutter-free 60fps.
+Primary source is *Tools, Tricks and Technologies for Reaching Stutter Free 60 FPS*
+(Unite 2016), three Playdead programmers. **Watched and transcribed.** Much of it is
+Unity-specific and marked as such; the structural ideas are not.
+
+- **[doc]** The stated company principle: **technology should never cause a distraction from the game experience.** For Inside that meant no loading screens from start to finish, no streaming artefacts, and no frame-rate stutter at 60 FPS on console. One speaker notes the consequence — do the job perfectly and nobody notices you did anything.
 - **[doc]** Two known problem areas: the rooftop section, where a camera pan looking further ahead than usual caused the whole world to load; and the first submarine parking area, where a tinted glass pane hid an almost complete forest's worth of polygons that were still being rendered.
+
+### How the world is cut up
+
+- **[doc]** Content is split spatially into **subscenes**, of which Inside has about **250**, organised as areas (forest, farm, city) → individual puzzles → subscenes. A puzzle is roughly **100 metres, or one to three minutes of play**.
+- **[doc]** Each chunk splits three ways: **backdrop**, **environment** (graphics), and **gameplay** (collision and anything the player interacts with).
+- **[doc]** The split earns its keep because only **gameplay scenes are mutable**; environment and backdrop are treated as conceptually immutable — a tree may wave, but the scene's state is always consistent. So **respawn only reloads the dirty gameplay scenes**, not the world around them.
+- **[doc]** Three zones: scenes inside the view frustum are active; a surrounding **prepare zone** loads and readies them; beyond that they unload.
+
+### Five tests before an expensive object is active
+
+- **[doc]** A **potential visible set** per location, generated by a frustum, which a **level artist then manually prunes** using knowledge the geometry doesn't carry — one example goes from eight scenes to five.
+- **[doc]** Scene contents are rarely evenly distributed, so a **voxel grid** is built inside each scene at build time and serialised. At runtime the frustum is tested against the scene bounds, then against the voxels.
+- **[doc]** Custom **bounds volumes** per object, and **facing planes** — a plane where the object is only active if the camera sees its front. Their example limits a spotlight's bounds to where the light actually lands.
+- **[doc]** The same bounds subdivide a scene into sections, so activation happens at that granularity rather than whole-scene.
+- **[doc]** All five must pass: scene in the visible set, scene in the frustum, active voxels in the frustum, section visible, object's own bounds visible.
+
+### Spreading the cost over frames
+
+- **[doc]** **Pre-awake**: load the scene inactive so initialisation hasn't run, cache the initialisation steps at build time, then run **one step per object per frame** before activating. Whatever remains in the real initialisation must be fast.
+- **[doc]** **Late awake**: a frame delay after activation for parts that can afford to appear slightly later. This is what removed their last stutters.
+- **[doc]** Unloading is time-sliced too — a bottom-up destroy of small pieces. A **scheduler** distributes all this work across frames by priority, with unload ranked below activate.
+- **[doc]** Work moves to build time wherever possible, and shaders and expensive data structures are pre-warmed during the initial load, before gameplay starts.
+- **[doc]** **Death and chapter load are used as cover** for the expensive collection and asset-unloading passes that would stutter during play. This is the same instinct as the audio scene change in §11 — do the costly thing behind the curtain.
+
+### The tools, which are half the talk
+
+- **[doc]** A **safe-point profiler**: load a scene, place the boy at a checkpoint, let culling settle, sample. Repeated at every safe point in the game. Because nothing is moving, the result is a **base cost per location**, and the profiler's slider scrubs through *places* rather than time.
+- **[doc]** Run nightly on the target hardware by the build server, which gives a **history** — per-subscene performance over the project, so regressions are visible rather than discovered.
+- **[doc]** A **subscene lifecycle profiler** measures load → activate → deactivate for one subscene with all other systems disabled, which is where a load spike shows up.
+- **[doc]** **Automated playback**: recorded controller input replayed between safe points, with profiling modules attached. The game is not fully deterministic, so the character drifts and needs positional correction to stay in sync.
+- **[doc]** The playback modules map onto the game's linear path — a frame-rate graph drawn along the character's route in the scene view, memory with garbage-collection events visible against frame spikes, and a subscene state timeline. That timeline has a state worth stealing: **loaded and then unloaded without ever being activated**, which flags a visible set or culling bound that was set up wrong.
+
+### Unity-specific, noted for honesty
+
+- **[doc]** A **zero-garbage policy** — no per-frame allocation, and an entire playthrough fitting in a 400 MB pre-allocated managed heap.
+- **[doc]** They modified Unity's source: time-sliced scene integration and animation initialisation, faster object activation, and a garbage collector changed to run only when the heap is full rather than at around 20% usage.
+- **[doc]** Their micro-optimisation list is mostly about avoiding the engine: build your own update manager instead of per-object update callbacks (**worth one to two milliseconds a frame**), never `foreach`, avoid runtime instantiation, cache transforms, prefer local position and rotation, avoid string concatenation, and replace C# events — internally a linked list for thread safety they didn't need — with an array.
+- **[doc]** Asked how they learned all this: the profiler, repeatedly, chasing each source of garbage to the script that caused it. "Practice and a lot of work."
+
+**When they did it matters more than what they did.** Garbage was kept in check from
+early, but the bulk of the optimisation happened in the **final year of a six-year
+project**, once the art was in and the game was, in their words, something most people
+would have called finished a year before it shipped.
+
+**Why they stayed on Unity, in their own words:** because they don't design up front.
+They set things up, try them, discard around 70%, and a game emerges. Fast turnaround
+mattered more than raw efficiency, and they judged that a less flexible engine would
+have cost them quality.
+
+**Almost none of this is a solo dev's problem yet, and that's the point.** Streaming a
+seamless world is a system to plan, not a side effect of building one big level. Two
+things do transfer now, both free: splitting a level into mutable gameplay and
+immutable environment so a respawn only reloads what changed, and doing expensive work
+behind whatever curtain the game already has.
 
 **Takeaway:** continuous-world streaming is a real engineering problem, not a free
 consequence of building one big level. If the project wants seamless space, that's a
@@ -585,6 +705,10 @@ allocate in a per-frame path.
 | Make wrong solutions obviously wrong; delete puzzles that fail this | Free | Take it |
 | Breath as one signal: gameplay → audio → animation | Medium | Take a reduced version |
 | Debanding + volumetric fog + one strong key light | Low | Take it |
+| Clamp fog intensity so bright sources still read through it | Free | Take it |
+| Blue noise over white noise or a Bayer matrix, wherever you jitter | Low | Take it — the eye forgives noise, not patterns |
+| Colour a stacked effect once on read-back, not per sprite | Low | Take it |
+| Flipbook: sequential columns, random rows | Free | Take it |
 | Checkpoints so no puzzle is ever repeated | Low | Take it |
 | Respawn into a running audio loop | Low | Take it |
 | Freeze the audio engine across a level load, then let it catch up | Low | Take it — this is how respawn-into-the-loop actually works |
@@ -612,6 +736,9 @@ allocate in a per-frame path.
 | Physics-driven creature (huddle) | Very high | No |
 | Custom renderer / custom TAA | Very high | No — Godot defaults plus tuning |
 | Seamless streaming world | High | Only if the design needs it |
+| Split scenes into mutable gameplay vs immutable environment | Free | Take it — makes respawn cheap |
+| Do expensive work behind a curtain the game already has | Free | Take it |
+| Profile at fixed checkpoints for a per-location base cost | Low | Take it once there's content |
 
 ---
 
@@ -621,7 +748,7 @@ Unanswered. Fill in or delete as you learn.
 
 - How exactly are the curving depth sections implemented — spline constraint, or invisible collision shaping a still-flat movement space?
 - How are camera transitions triggered and blended?
-- Is the checkpoint system manually placed or driven by puzzle state?
+- Is the checkpoint system manually placed or driven by puzzle state? *(Partly answered: the streaming talk shows safe points as fixed, named locations used by their profiling tools, and respawn reloading only the dirty gameplay scenes. Placement itself is still not described.)*
 - What's in the Danish-language animation talk? Not yet watched.
 - How did Wwise communicate state back to the engine? Andersen was asked this directly in the Q&A and said timeline markers were used during development but replaced by something else for the final game. The captions destroy the answer. The slides or the Wwise Tour talks may have it.
 
@@ -639,7 +766,7 @@ Slide decks mirrored in their GitHub repo:
 
 Individual talks:
 
-- *Low Complexity, High Fidelity: The Rendering of INSIDE* — GDC / GDCE 2016, Gjøl & Svendsen. The rendering source of truth.
+- *Low Complexity, High Fidelity: The Rendering of INSIDE* — GDC / GDCE 2016, Gjøl & Svendsen. **Watched and transcribed.** The rendering source of truth and the source for section 7. Read alongside the slides, which carry the shader code the talk refers to.
   https://www.youtube.com/watch?v=RdN06E6Xn9E (non-paywalled GDCE version)
 - *Temporal Reprojection Anti-Aliasing in INSIDE* — GDC 2016.
   https://www.youtube.com/watch?v=2XXS5UyNjjU
@@ -657,7 +784,7 @@ Individual talks:
   https://www.youtube.com/watch?v=gRF8Gt5hys4 (2, Voice) · https://www.youtube.com/watch?v=TcSuVzUjmLw (3, Scene Change)
 - *The Boy From INSIDE* — AES 2016. Sound design of the main character.
 - *The Playdead Approach to Audio* — ITU 2016. Wwise/Unity setup.
-- *Tools, Tricks and Technologies for Reaching Stutter Free 60 FPS in INSIDE* — Unite 2016.
+- *Tools, Tricks and Technologies for Reaching Stutter Free 60 FPS in INSIDE* — Unite 2016, three Playdead programmers. **Watched and transcribed.** The source for section 12. Much of the detail is Unity-specific.
   https://www.youtube.com/watch?v=mQ2KTRn4BMI
 - *Subtleties of INSIDE* — Konsoll 2017, Martin Fasterholdt. **Watched and transcribed.** The best source on game feel, control, and animation layering. Section 9 is drawn almost entirely from it.
   https://www.youtube.com/watch?v=3pzgnN3pK_8

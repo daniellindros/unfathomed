@@ -16,10 +16,10 @@ article that cites it, not here.
 |---|---|---|
 | `subtleties-konsoll2017.txt` | Subtleties of INSIDE (Konsoll 2017, Fasterholdt) | **Yes** — §9, almost entirely |
 | `game-that-listens.txt` | Inside: A Game That Listens (GDC 2016, Andersen) | **Yes** — §11 rewritten from it |
-| `rendering-gdce2016.txt` | Low Complexity, High Fidelity: The Rendering of INSIDE (GDCE 2016) | No — §7 is from slides only |
+| `rendering-gdce2016.txt` | Low Complexity, High Fidelity: The Rendering of INSIDE (GDCE 2016) | **Yes** — §7 rewritten from it |
 | `turn-it-down-90-vfx.txt` | Turn It Down 90% — INSIDE VFX (Control 2016) | **Yes** — §8 rewritten from it |
 | `huddle-up.txt` | Huddle up! Making the [SPOILER] of INSIDE (GDC 2017) | **Yes** — §10, §2 |
-| `stutter-free-60fps.txt` | Stutter Free 60 FPS (Unite 2016) | No |
+| `stutter-free-60fps.txt` | Stutter Free 60 FPS (Unite 2016) | **Yes** — §12 rewritten from it |
 | `unbreaking-immersion-2.txt` | Wwise Tour 2016 — Voice (2 of 3) | **Yes** — §11 |
 | `unbreaking-immersion-3.txt` | Wwise Tour 2016 — Scene Change (3 of 3) | **Yes** — §11, §12 |
 
