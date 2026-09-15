@@ -11,13 +11,16 @@
 //   -o DIR   output directory        (default: transcripts)
 //   -l LANG  preferred language      (default: en)
 //   -i FILE  list file for no-arg    (default: talks.txt)
+//   -d MS    pause between videos      (default: 2500)
 //   -f       refetch even if the output file already exists
 //   -h       show this help
 //
 // Accepts full URLs (watch, youtu.be, live, shorts, embed) or bare 11-char IDs.
 //
-// Note: YouTube rate-limits bursts. Failed videos are retried with backoff;
-// if one still fails, rerun later — finished files are skipped.
+// Note: YouTube rate-limits bursts and will eventually demand a captcha, after
+// which everything fails until the block lifts. Requests are paced (-d) and
+// retried with backoff. If a run still fails wholesale, wait and rerun later —
+// finished files are skipped.
 
 import { YoutubeTranscript } from 'youtube-transcript';
 import { readFile, writeFile, mkdir, rename, unlink, access } from 'node:fs/promises';
@@ -156,13 +159,14 @@ async function readList(file) {
 }
 
 function parseArgs(argv) {
-  const opts = { outDir: 'transcripts', lang: 'en', listFile: 'talks.txt', force: false, help: false };
+  const opts = { outDir: 'transcripts', lang: 'en', listFile: 'talks.txt', delayMs: 2500, force: false, help: false };
   const rest = [];
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i];
     if (a === '-o') opts.outDir = argv[++i];
     else if (a === '-l') opts.lang = argv[++i];
     else if (a === '-i') opts.listFile = argv[++i];
+    else if (a === '-d') opts.delayMs = Number(argv[++i]);
     else if (a === '-f') opts.force = true;
     else if (a === '-h' || a === '--help') opts.help = true;
     else rest.push(a);
@@ -190,12 +194,27 @@ async function main() {
     : await readList(opts.listFile);
 
   let failed = 0;
+  let walled = 0;
+  let first = true;
   for (const { name, raw } of jobs) {
+    if (!first) await sleep(opts.delayMs);
+    first = false;
     try {
       await fetchOne(name, raw, opts);
+      walled = 0;
     } catch (err) {
-      console.error(`FAILED ${name || raw}: ${err.message.replace(/\s+/g, ' ').slice(0, 160)}`);
+      const msg = err.message.replace(/\s+/g, ' ');
+      console.error(`FAILED ${name || raw}: ${msg.slice(0, 160)}`);
       failed++;
+      // Once the IP is captcha-walled everything fails alike. Grinding through
+      // the rest only deepens the block and misreports the reason — a walled
+      // request can come back as "transcript disabled".
+      walled = /captcha|too many requests/i.test(msg) ? walled + 1 : 0;
+      if (walled >= 3) {
+        console.error('\nThree captcha failures in a row — the IP is blocked, stopping.');
+        console.error('Wait a while and rerun; finished files are skipped.');
+        break;
+      }
     }
   }
 
