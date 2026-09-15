@@ -1,6 +1,13 @@
-# source: https://www.youtube.com/watch?v=1_OFJLyqlXI
-# caption track: en
-# fetched: 2026-09-15  segments: 1125
+---
+title: Godot UI Basics - how to build beautiful interfaces that work everywhere (Beginners)
+author: Godotneers
+source_url: https://www.youtube.com/watch?v=1_OFJLyqlXI
+date_added: 2026-09-15
+date_published: unknown
+type: Video transcript (auto-generated captions)
+caption_track: en
+segments: 1125
+---
 
 hello Golden Ears making a user interface for a game can be quite challenging but every game
 needs one to give the player Vital Information and to make your game easy to use a user

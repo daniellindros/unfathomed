@@ -1,6 +1,13 @@
-# source: https://www.youtube.com/watch?v=W8gYHTjDCic
-# caption track: en
-# fetched: 2026-09-15  segments: 1632
+---
+title: Godot Components - how to structure a game into manageable parts (Beginner/Intermediate)
+author: Godotneers
+source_url: https://www.youtube.com/watch?v=W8gYHTjDCic
+date_added: 2026-09-15
+date_published: unknown
+type: Video transcript (auto-generated captions)
+caption_track: en
+segments: 1632
+---
 
 hello goners when you are creating a game in gdau it is often hard to decide how to structure
 all your notes and scenes which notes should go into which scene which notes should talk to each

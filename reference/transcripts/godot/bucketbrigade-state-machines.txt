@@ -1,6 +1,13 @@
-# source: https://www.youtube.com/watch?v=LmT2UgWOQis
-# caption track: en
-# fetched: 2026-09-15  segments: 410
+---
+title: The State Machine Video Of All Time ( Godot 4.7 )
+author: BucketBrigade
+source_url: https://www.youtube.com/watch?v=LmT2UgWOQis
+date_added: 2026-09-15
+date_published: unknown
+type: Video transcript (auto-generated captions)
+caption_track: en
+segments: 410
+---
 
 Hey guys, welcome back to another video. Today, we're going to be going over how to create a
 nodeless state machine in Godot. We're also going to be going over how components can interact

@@ -1,6 +1,13 @@
-# source: https://www.youtube.com/watch?v=EvRkJAxlgPg
-# caption track: en
-# fetched: 2026-09-15  segments: 151
+---
+title: The basics of signals in Godot
+author: Recursive Dev
+source_url: https://www.youtube.com/watch?v=EvRkJAxlgPg
+date_added: 2026-09-15
+date_published: unknown
+type: Video transcript (auto-generated captions)
+caption_track: en
+segments: 151
+---
 
 Welcome back to another video. In this video, we're going to look at signals and how you can use
 signals to create different UI, different events that trigger actions in your game. Let's just

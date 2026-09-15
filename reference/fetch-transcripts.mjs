@@ -50,6 +50,19 @@ export function extractId(s) {
 
 const exists = (p) => access(p).then(() => true, () => false);
 
+/** Title and channel from YouTube's oEmbed endpoint. Never fabricates. */
+async function fetchMeta(id) {
+  const url = `https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${id}&format=json`;
+  try {
+    const res = await fetch(url);
+    if (!res.ok) return { title: 'unknown', author: 'unknown' };
+    const j = await res.json();
+    return { title: j.title ?? 'unknown', author: j.author_name ?? 'unknown' };
+  } catch {
+    return { title: 'unknown', author: 'unknown' };
+  }
+}
+
 /** Fetch one transcript, preferring `lang` but accepting whatever track exists. */
 async function fetchTranscript(id, lang) {
   let segments, tag, fellBack = false;
@@ -96,18 +109,25 @@ function wrap(text, width = 96) {
   return out.join('\n');
 }
 
-function render({ segments, tag, fellBack }, id, requested) {
+function render({ segments, tag, fellBack, meta }, id, requested) {
   const head = [
-    `# source: https://www.youtube.com/watch?v=${id}`,
-    `# caption track: ${tag}${fellBack ? `  (requested "${requested}" — not available)` : ''}`,
-    `# fetched: ${new Date().toISOString().slice(0, 10)}  segments: ${segments.length}`,
+    '---',
+    `title: ${meta.title}`,
+    `author: ${meta.author}`,
+    `source_url: https://www.youtube.com/watch?v=${id}`,
+    `date_added: ${new Date().toISOString().slice(0, 10)}`,
+    'date_published: unknown',
+    'type: Video transcript (auto-generated captions)',
+    `caption_track: ${tag}${fellBack ? ` (requested "${requested}", not available)` : ''}`,
+    `segments: ${segments.length}`,
+    '---',
   ];
   if (fellBack && tag !== requested) {
     head.push(
-      `#`,
-      `# WARNING: this track is tagged "${tag}", not "${requested}". If the speech is`,
-      `# actually English, YouTube transcribed it with the wrong language model and`,
-      `# names and technical terms will be badly mangled. Verify every specific.`,
+      '',
+      `WARNING: this track is tagged "${tag}", not "${requested}". If the speech is`,
+      'actually English, YouTube transcribed it with the wrong language model and',
+      'names and technical terms will be badly mangled. Verify every specific.',
     );
   }
   const body = segments.map((s) => s.text).join(' ').replace(/\s+/g, ' ').trim();
@@ -129,6 +149,7 @@ async function fetchOne(name, raw, opts) {
 
   console.log(`fetch  ${label.padEnd(26)} ${id}`);
   const result = await withRetry(() => fetchTranscript(id, opts.lang), label);
+  result.meta = await fetchMeta(id);
 
   // Write to a temp file so a failure leaves no truncated transcript.
   const part = `${out}.part`;

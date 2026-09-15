@@ -1,6 +1,13 @@
-# source: https://www.youtube.com/watch?v=4vAkTHeoORk
-# caption track: en
-# fetched: 2026-09-15  segments: 2094
+---
+title: Data models - using data to create extensible, maintainable games in Godot
+author: Godotneers
+source_url: https://www.youtube.com/watch?v=4vAkTHeoORk
+date_added: 2026-09-15
+date_published: unknown
+type: Video transcript (auto-generated captions)
+caption_track: en
+segments: 2094
+---
 
 Hello Golden ears. When you start out with Godot, you often build all your game logic with
 Godot's nodes. And this works for a while, but when you add more and more features, it often

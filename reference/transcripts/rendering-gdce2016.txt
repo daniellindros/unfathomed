@@ -1,6 +1,13 @@
-# source: https://www.youtube.com/watch?v=RdN06E6Xn9E
-# caption track: en
-# fetched: 2026-09-15  segments: 1583
+---
+title: Low Complexity, High Fidelity: The Rendering of INSIDE
+author: GDC Festival of Gaming
+source_url: https://www.youtube.com/watch?v=RdN06E6Xn9E
+date_added: 2026-09-15
+date_published: unknown
+type: Video transcript (auto-generated captions)
+caption_track: en
+segments: 1583
+---
 
 [Music] hello and uh uh welcome um my name is uh Mel I'm a graphics programmer this is Mikel
 who'll do the second half of the presentation uh Mikel is a uh a very technical artist uh as

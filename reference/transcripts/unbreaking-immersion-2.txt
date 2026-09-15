@@ -1,6 +1,13 @@
-# source: https://www.youtube.com/watch?v=gRF8Gt5hys4
-# caption track: en
-# fetched: 2026-09-15  segments: 407
+---
+title: Wwise Tour 2016 - Playdead INSIDE (2 of 3) - Voice
+author: Audiokinetic
+source_url: https://www.youtube.com/watch?v=gRF8Gt5hys4
+date_added: 2026-09-15
+date_published: unknown
+type: Video transcript (auto-generated captions)
+caption_track: en
+segments: 407
+---
 
 would all right so I'll just give a quick introduction to our technology so this is a Unity game
 and using wires of course we are using the plug-in but we modified it quite a bit I'll talk a

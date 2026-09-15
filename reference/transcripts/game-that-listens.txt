@@ -1,10 +1,17 @@
-# source: https://www.youtube.com/watch?v=Dnd74MQMQ-E
-# caption track: da  (requested "en" — not available)
-# fetched: 2026-09-15  segments: 777
-#
-# WARNING: this track is tagged "da", not "en". If the speech is
-# actually English, YouTube transcribed it with the wrong language model and
-# names and technical terms will be badly mangled. Verify every specific.
+---
+title: Inside: A Game That Listens
+author: GDC Festival of Gaming
+source_url: https://www.youtube.com/watch?v=Dnd74MQMQ-E
+date_added: 2026-09-15
+date_published: unknown
+type: Video transcript (auto-generated captions)
+caption_track: da  (requested "en" — not available)
+segments: 777
+---
+
+WARNING: this track is tagged "da", not "en". If the speech is
+actually English, YouTube transcribed it with the wrong language model and
+names and technical terms will be badly mangled. Verify every specific.
 
 Good afternoon to people Martin sters from Denmark compos sounder inside finish the game I need
 to break P I have to have rem to switch ces and before I get started to mention the audio Team

@@ -22,6 +22,13 @@ them and the other should point at it.
   `[obs]` (observable), `[guess]` (inference). Never treat a `[guess]` as settled,
   and never treat anything here as a requirement — most of it was built by a funded
   studio of 25 over six years. Nothing here is a task until it's a work item in Plane.
+- `docs/godot/` — **what we've learned about building things in Godot.** Patterns and
+  trade-offs, not a copy of the manual — for anything the official docs answer, query
+  those instead, they're live and this would rot. Tagged `[docs]` / `[video]` /
+  `[ours]`. `README.md` is the index. Community tutorials, not requirements.
+- `docs/answers/` — **reasoning worth keeping.** When a question gets worked through
+  properly, the answer is written here instead of being lost with the session. Read the
+  index before re-deriving something. Says *why*; `decisions.md` says *what*.
 
 ## Work tracking
 
@@ -35,7 +42,11 @@ them. Not in the repo. Two labels carry meaning:
 
 ## Reference material
 
-- `reference/transcripts/` — raw auto-generated transcripts of Playdead talks.
+- `reference/transcripts/_INGESTED.md` — **the register.** Every transcript, and
+  whether anything has been made of it yet. Read this before hunting through the folder.
+- `reference/transcripts/` — raw auto-generated transcripts of Playdead talks;
+  `transcripts/godot/` holds Godot tutorials, which feed `docs/godot/` and never
+  `inside-reference.md`. Each file opens with a frontmatter block naming the source.
   Third-party source material, not project decisions. Read on request or when
   verifying a claim in `inside-reference.md`. Auto-captions contain transcription
   errors — verify names and technical terms against the slide PDFs before relying

@@ -1,6 +1,13 @@
-# source: https://www.youtube.com/watch?v=gFkYjAKuUCE
-# caption track: en
-# fetched: 2026-09-15  segments: 1200
+---
+title: Huddle up! Making the [SPOILER] of INSIDE
+author: GDC Festival of Gaming
+source_url: https://www.youtube.com/watch?v=gFkYjAKuUCE
+date_added: 2026-09-15
+date_published: unknown
+type: Video transcript (auto-generated captions)
+caption_track: en
+segments: 1200
+---
 
 [Music] obviously it's a massive spoiler warning you're gonna see not the entire end of the game
 but yeah towards the end of insight this happens the huddle a compound fully humanoid blob of

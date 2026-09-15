@@ -1,6 +1,13 @@
-# source: https://www.youtube.com/watch?v=nyFzPaWAzeQ
-# caption track: en
-# fetched: 2026-09-15  segments: 1567
+---
+title: Welcome to Shaderland - An introduction to shaders in Godot
+author: Godotneers
+source_url: https://www.youtube.com/watch?v=nyFzPaWAzeQ
+date_added: 2026-09-15
+date_published: unknown
+type: Video transcript (auto-generated captions)
+caption_track: en
+segments: 1567
+---
 
 hello goners shaders are a very powerful tool that can be used to create interesting effects for
 your game unfortunately they're also a bit intimidating to get into so we're going to learn the

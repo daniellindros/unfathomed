@@ -1,6 +1,13 @@
-# source: https://www.youtube.com/watch?v=2Gh5WxuAMkw
-# caption track: en
-# fetched: 2026-09-15  segments: 127
+---
+title: How to Make State Machines FAST | Godot 4 Tutorial
+author: Quilled
+source_url: https://www.youtube.com/watch?v=2Gh5WxuAMkw
+date_added: 2026-09-15
+date_published: unknown
+type: Video transcript (auto-generated captions)
+caption_track: en
+segments: 127
+---
 
 So, starting with our Godot project, we want to create two scripts. Our first script over here
 will be named state machine. And then we create the script, and then we'll create our second

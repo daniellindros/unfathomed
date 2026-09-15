@@ -1,6 +1,13 @@
-# source: https://www.youtube.com/watch?v=vA3uFC2p8eo
-# caption track: en
-# fetched: 2026-09-15  segments: 524
+---
+title: Turn It Down 90% – INSIDE VFX
+author: ctrl500.com
+source_url: https://www.youtube.com/watch?v=vA3uFC2p8eo
+date_added: 2026-09-15
+date_published: unknown
+type: Video transcript (auto-generated captions)
+caption_track: en
+segments: 524
+---
 
 hi so as our MC announced my name is Mickel and i will get plated i started some time into in
 size production after limbo was done and i did a few things on inside but most notably most

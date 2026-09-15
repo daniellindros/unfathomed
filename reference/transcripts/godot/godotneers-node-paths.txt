@@ -1,6 +1,13 @@
-# source: https://www.youtube.com/watch?v=KzvkrpA5Y3M
-# caption track: en
-# fetched: 2026-09-15  segments: 290
+---
+title: Node paths - find any node in your Godot scene (Beginners)
+author: Godotneers
+source_url: https://www.youtube.com/watch?v=KzvkrpA5Y3M
+date_added: 2026-09-15
+date_published: unknown
+type: Video transcript (auto-generated captions)
+caption_track: en
+segments: 290
+---
 
 hello girl Denise accessing notes is essential for every game created in Godot but if you're new
 to Godot it can be a bit confusing so we're going to explore how node paths work and how you can

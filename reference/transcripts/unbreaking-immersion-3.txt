@@ -1,6 +1,13 @@
-# source: https://www.youtube.com/watch?v=TcSuVzUjmLw
-# caption track: en
-# fetched: 2026-09-15  segments: 377
+---
+title: Wwise Tour 2016 - Playdead INSIDE (3 of 3) - Scene Change
+author: Audiokinetic
+source_url: https://www.youtube.com/watch?v=TcSuVzUjmLw
+date_added: 2026-09-15
+date_published: unknown
+type: Video transcript (auto-generated captions)
+caption_track: en
+segments: 377
+---
 
 and now we are to talk about the sea change that I mentioned in the introduction and the reason
 why I chose this demos because a lot of things are going on and as sort of a pulse in the

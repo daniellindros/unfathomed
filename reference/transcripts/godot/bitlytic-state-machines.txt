@@ -1,6 +1,13 @@
-# source: https://www.youtube.com/watch?v=ow_Lum-Agbs
-# caption track: en
-# fetched: 2026-09-15  segments: 250
+---
+title: Finite State Machines in Godot 4 in Under 10 Minutes
+author: Bitlytic
+source_url: https://www.youtube.com/watch?v=ow_Lum-Agbs
+date_added: 2026-09-15
+date_published: unknown
+type: Video transcript (auto-generated captions)
+caption_track: en
+segments: 250
+---
 
 Let's say you're designing an enemy. You want this enemy to wander until it spots something,
 then chase that target, and if it gets close enough, give it an attack. How would you program

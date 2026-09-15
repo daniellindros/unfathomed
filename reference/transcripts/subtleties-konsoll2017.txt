@@ -1,6 +1,13 @@
-# source: https://www.youtube.com/watch?v=3pzgnN3pK_8
-# caption track: en
-# fetched: 2026-09-15  segments: 1203
+---
+title: Konsoll 2017: Martin Fasterholdt - Subtleties of INSIDE
+author: Konsoll
+source_url: https://www.youtube.com/watch?v=3pzgnN3pK_8
+date_added: 2026-09-15
+date_published: unknown
+type: Video transcript (auto-generated captions)
+caption_track: en
+segments: 1203
+---
 
 so we are at our last talk for the day and our next speaker worked on the game inside which is
 one of my personal favorites this is super nice and kind of weird but that's a good thing and he

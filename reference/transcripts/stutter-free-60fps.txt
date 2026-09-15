@@ -1,6 +1,13 @@
-# source: https://www.youtube.com/watch?v=mQ2KTRn4BMI
-# caption track: en
-# fetched: 2026-09-15  segments: 1428
+---
+title: Unite 2016 - Tools, Tricks and Technologies for Reaching Stutter Free 60 FPS in INSIDE
+author: Unity
+source_url: https://www.youtube.com/watch?v=mQ2KTRn4BMI
+date_added: 2026-09-15
+date_published: unknown
+type: Video transcript (auto-generated captions)
+caption_track: en
+segments: 1428
+---
 
 hello everyone and uh welcome to this talk about uh tools tricks and Technologies for reaching a
 stterre 60 frames per sec second in inside my name is uh Christian and uh these two gentlemen
