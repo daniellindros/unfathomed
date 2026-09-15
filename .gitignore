@@ -9,7 +9,3 @@ export/
 
 # Transcript tooling
 node_modules/
-
-# Verbatim third-party conference transcripts — fetched locally, not published.
-# Delete this line if you decide they belong in the repo.
-reference/transcripts/

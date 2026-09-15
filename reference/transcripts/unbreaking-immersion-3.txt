@@ -1,0 +1,151 @@
+# source: https://www.youtube.com/watch?v=TcSuVzUjmLw
+# caption track: en
+# fetched: 2026-09-15  segments: 377
+
+and now we are to talk about the sea change that I mentioned in the introduction and the reason
+why I chose this demos because a lot of things are going on and as sort of a pulse in the
+gameplay which is like a six second loop and it's really important for the player to have a feel
+for this loop to experience a loop in order to survive because every six seconds that's kind of
+a shockwave blowing and if the boy the character is out of car cover its blown into small pieces
+so that's both different scene changes that I wanted to occur like when the Boyle survives and
+that's obviously on a on a shot way I want to kind of change the whole sound but that also comes
+for death respawn because you've died out of time in this section so if you die and the music
+would stop and start again then you would have to spend time adjusting to this loop again so we
+spend quite a lot of time of making it possible for the loop just to continue and it was really
+difficult because there's a lot of game mechanics that your that is suggested to to the loops
+which means that if you died and respawned then the game mechanic will actually clock itself to
+the music time at the point with you spawning and that's that's no trivial task in but apart
+from those things I've just sure all kind of different stuff because of but what I really like
+about this section is that it was a it was saying it's just blending together and it's really
+organic I'm going to show some sidechaining as well and how we also change this river that's a
+lot of rebirth things going on and we just like if you survive possible that we just change the
+river life doesn't make sense but it's what we do I think I'm just gonna play back the time yeah
+let's look into the Y's project so first I want to show I don't know if you got like when he's
+gets out of cover the sounds gets bright and dangerous and when they gets in cover it gets ya
+muffled in a way and I just want to show that legal bear City so I made a small sound cast
+decision just in order to to show that so if actually launched the game it's a trigger yeah this
+is when he exits to cover and then related to what I said before like if he dies then the fate
+will be six seconds which corresponds to the length of the loop so that means that when he dies
+aggressive but then when you respawn you are on a peg in the muffled mode display how that
+sounds that one going to sit sitting but we are mottled again so that the happens even though
+the game is unloading and loading again this kind of happens across that and take a look in this
+event you see this is prior to a newer version supplies where they have like envelopes so we
+creating envelopes here to be actually saying that when the shock wave is occurring then we are
+turning up the reader then turning it down again because what we like is the sensation that the
+world is open and then just two seconds before the shock wave it just goes sucks in and them out
+again and I'll just play also the ambient sound how its side chain to the shock wave just to
+kind of make this kind of almost like pumping effect connect if you see it here and here at
+least I can also sort of the river it's this one I was looking for so the image is basically
+just sides into the shockwaves sort of a river actually here when he's sittin covered that's a
+very small reboot when he gets outside and here I'm just tipping outside in the other space it's
+really big it sounds rather rough now but mixed with the other sounds it's just it's this
+impression of getting sucked in also the updates that I interact with you try to Salou this you
+take the game down a bit again it sounds a bit distorted out there so we have the shield here
+how are we with the time salmon sorry sorry 15 you need some so I would also like to solo the
+boy just to hear how he behaves in this scenario because there's a lot of hit movie movement
+going on like looking into the camera and looking away and also there was this sidechaining of
+the voice that I've showed you earlier for the for the shockwaves so let's hear how it sounds
+it's basically the louder the shockwaves are the doubter his voice is it's kind of the basically
+principle may have the released reading when he survived his shockwave and he's gonna France it
+when you say outside he said if panic that like like a small noise and then one thing I like to
+do also is steak mix like the boys so you think if I can find the proper area whoops area here
+see this is the highlight that's the exit one and when I it's about the person now this one but
+get activated and I was showing him them like twelve T P and that's just to underline the change
+and I'm not really interested in hearing his footstep in that particular moment so that would be
+like six seconds where I won't hear his footsteps so that's next time I survived chuckling I
+will see you over here changes and then it's the next impulse this is first step second now we
+actually changed the whole we go to when here lens yeah you get like a big it always kind of
+adds in a musical way and if about two minutes of the blast you see the flesh you see in the
+background is actually triggered by the sound so in the music system you can see either I put in
+some markets for flesh so because all the different variations obviously different them have
+different rhythmic elements so I can decide when the flesh should each trigger them in the game
+so that's kind of the opposite usually you could sound two events from the game but now the the
+the game can play can create things based on the events triggered by the sound and also to
+quickly show you because this what you hear now the pulse is basically in the music system but
+on the top you have this kind of throw many things going on and that's something I call state
+ambient and I just so many things yeah just cheat a bit now and that shift that we had some
+harmonics coming in so that's basically like if you so loved that one just like to like quiet
+sounds and then I randomized the volume just to make it a bit alive like - its to be and also
+the duration by which they a trigger I randomized was like five seconds as well so some other
+pros here same principle randomized the volume and the duration it's like every force second its
+trigger then there's a random of three savings as well so we get this kind of ongoing variation
+on top then I found a little detail the light that you hear yeah I like to pitch the different
+sound effects to the music so just find it in here and see weakening the sound Pizza like 300
+sent down see I have sounds just like you written samms we bid on this way yeah all right so I I
+just want to follow up on that respawn death we spawn problem that we want the music in the
+atmosphere of where you are when you die we want that to carry on while we're doing the very
+practical thing of unloading and loading scenes which has to be done so when you die you we
+unload all the non static scene so everything that can be messed up by physics in logic and we
+love them so we want order to have the same states and I mean that in a general sense so
+everything should remain the same while that is happening and when you know this done we want to
+switch immediately to the new state of where you respawn that includes aliens rebirth and
+environment sounds and everything so call this the scene change because it reminds me of what
+goes on when you close the curtains in a theater and a lot of dudes run around and move stuff
+and put in new revenge and pull back and it's like nothing ever happened so we have these events
+defined in the game so we die so brief period then it fades out it's done failing out that's the
+person being close people running around unloads stuff new stuff starts to fade in everything
+has to be ready when that helps that's pulling the curtain and so the orange part here is what
+all the scene change that's where all the practical stuff has for him so when the boy dies we
+say that I send the death event to Martin so he can kind of prepare for whatever he needs to do
+and we already know where we are going to respawn so we also get that events appropriate event
+that can start to set up stuff then when it's the screen has gone black we stop calling render
+audio twice which has the that is the absolutely simplest way to keep it and made it retain its
+state and not update based on what whatever else happens so that makes it very easy to then we
+unload stuff we stop sounds that are placed in the scenes we note new scenes and it'll start
+triggering trigger boxes and all that and post a spawn event that kind of sets up everything
+ready to go and then we start calling render audio again so we have accumulated this buffer of
+commands inside wise and then it has to execute all of those in a single only frame which is not
+without problems but I'll get into that a little bit but it does work so what we get from this
+is that the state remains the same all you keep saying everything's good we want to get glitches
+or anything we accumulate months and yeah what'd I just say so this is kind of the illusion
+that's actually while the curtain was drawn we nothing really happens but when the curtain is
+pulled back who we are in the new place and actually the whole thing was happening while the
+curtain was and that leads me to my final things about this game so just a quick notes I had
+more of this but to cut for time but I had to learn how to kind of debug this game efficiently
+so since this to be gameplays has a very limited state space so we had this kind of predictable
+and very testable performance so we can get fairly close to the boundaries without fearing that
+it we go over the boundaries so we can profile an entire playthrough if we set the right
+settings and wise and we can analyze the data down yeah I have an example where I'm comparing
+two playthroughs which requires me to start another instance of ice and that virtual machine the
+only way I could figure out how to do that and then we had these ditches which was a related to
+the scene change thing I talked about form which were like these barely audible 256 simple
+blocks of zero which Martin said they were there and no that's not possible and it's not
+listening for them and they were indeed there and figured out that the easiest way to to keep
+track of them was actually to always be recording in audacity while digitally from the game
+while I was testing it and have a spectrogram and then a vertical line is one of those places
+that's very easy to see you even though we can't hear so when the CPU was one concern we you
+might be surprised that we are actually using all the CPU we came on the Xbox it's because
+Martin Knights I think all convolution reverb I like it too we're losing quite a lot of it and
+that means we spend a lot on that and a wonderful gift from all the kinetic was that virtual
+voices just removed so many of the sounds that weren't necessary we didn't have to do anything
+intelligent at all we just say okay let's enable this on everything and we've got some free
+performers there so you should this should be your default if it's not already I think and then
+you can always treat from them the scene change was I've talked about we accumulate the commands
+and they and my still has to do all of those in one audio buffer and it turned out that for what
+we were doing on the Xbox the standard 512 sample buffer size was not enough so we we doubled it
+and it's a reasonable if the delay is not really something you notice so I think that's a
+reasonable number 2 megabyte might be too much I think there was before we started really
+reading out unnecessary stuff and now the mice unity plug-in is while it is very cool that you
+can use it in unity there are some performance issues and those performance issues all stem from
+the unity shop stuff so main thing is that the MT API calls are unreasonably slow so you have to
+kind of avoid use using them and using your own code as much as possible it's a reps as
+implementation and that whole thing apparently has thought of it so another thing is that you
+were almost encouraged to just allocate stuff wherever you go in unity but unfortunately the
+price is paid along the line with gaps collection that freezes the entire game and giving you a
+horrible frame spike which in like almost all the the lower tier unity games so we want to avoid
+that so no allocations at runtime is the basic rule that you should try to follow so the slow
+API calls I removed all that I could from the wise rapper so there is a concept where you have
+to have a eight a game object behavior on your objects and instead of adding it if it's missing
+I just assume that it's there and if it's not there it's an error so we have this code in the
+editor that is basically the standard wise the unity API but I just say it's only in it that
+this really does a lot and then another issue was that we were allocating memory whenever we got
+one of those Martin wanted to send a slash user cue from the music and I should receive it and
+recognizes but that allocates string in the strings in the YMCA plugin so in order to get around
+that we has them in the plugin source and then we has the one we're looking forward and on the
+user side we just compare those so we don't have to allocate extra memory for that and then we
+can reuse all the data structures so we eliminated most of the alligators yes so in summary of
+that is virtual voices good you should enable them should be named by default and on that might
+be a reason for that and pitch is caused by large command cubes you might not run in so that's
+that might be just us if you but might consider adjusting the buffer size on certain platforms
+and general units it don't use unitive now calls it environment and in this case don't allocate
+memory and we hashed the strings to avoid that problem you

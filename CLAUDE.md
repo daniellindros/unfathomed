@@ -40,8 +40,8 @@ them. Not in the repo. Two labels carry meaning:
   verifying a claim in `inside-reference.md`. Auto-captions contain transcription
   errors — verify names and technical terms against the slide PDFs before relying
   on them. Never authoritative over `docs/decisions.md`. Fetched by
-  `reference/fetch-transcripts.mjs` (`cd reference && npm install && npm run fetch`);
-  git-ignored by default — see `.gitignore`.
+  `reference/fetch-transcripts.mjs` (`cd reference && npm install && npm run fetch`)
+  and committed to the repo.
 
 ## Conventions
 

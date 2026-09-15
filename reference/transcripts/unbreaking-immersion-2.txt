@@ -1,0 +1,164 @@
+# source: https://www.youtube.com/watch?v=gRF8Gt5hys4
+# caption track: en
+# fetched: 2026-09-15  segments: 407
+
+would all right so I'll just give a quick introduction to our technology so this is a Unity game
+and using wires of course we are using the plug-in but we modified it quite a bit I'll talk a
+little bit more about that later using playmaker for state machines sometimes we wish we didn't
+because it's doesn't perform that well but but we integrated it anyway so so the voice sequencer
+you just heard is a really simple sequence are implemented in in just Unity scripting using the
+callbacks from Y so it stitches these sound events together stitches in the sense that it tries
+to put them as close together as possible but it's not zero sample stitching it works fine for
+for these kinds of sounds and of course it's inhaling exhaling - inhales in a room would be
+weird which sound we're playing we had different situations before we had like crawling and
+pushing and all that and we have an action that defines that we have emotions for certain
+situations and we have intensity which is like the out of breath Ness or how emotional you feel
+about something these are all values we can modify while the game is running yes so we have two
+basic modes I will talk about both of them the continuous mode is the one you heard when the boy
+standing still or when he's doing most things all of them running when he's running he does this
+rhythmic breathing thing that I'll explain later the continuous mode goes like this we have a
+switch we update for like a switch is a discreet wise variable so you can set it to a set of
+values we have in inhale and exhales we just alternate between those we have a we have switches
+for actions and emotions and we have so-called RPC which is a word for variable that you just
+like a number that you set for intensity then we posts an event and we specify that we want a
+callback when the event is finished and when we get that the sound has finished playing so we
+are ready to play a new one and so as Martin said this these recorded sounds now Kyle kind of
+defined the rhythm of the breathing they are uneven and sounds natural and good now as we are
+getting these callbacks we might as well use them for other stuff as well so we have this kind
+of additive breathing animation for the boy so we used to call back and we trigger those inhales
+and exhales to effect his his pose as well if you look closely at him you can concede and even
+in these pictures it's too subtle to see if actively but it is that promise so we had to take a
+special care of jumping we felt like you are you hold your breath while you are in the air jump
+so if you are inhaling then that was your last inhale before you land and you'll just stop the
+sequence if you are exhale you want to do a quick inhale so you are kind of full of air for for
+when your land so we do like a quick inhale and then hold our breath when we when we land we we
+start the breathing with the exhale that must take place at that point and we have a special
+action for that and if based on the impact which is also just a value we sent based on speed we
+have either normal inhale of this kind of grunts when you land and as Martin demonstrated we
+have these different kinds of we have the normal normal actions and then we have these engaged
+ones where you grabbing hold of something preparing to do physical work that's that's passive
+engagement and we have active engagement when you are actually doing work like you're pushing a
+box and now Martin will show some wise stuff and basically show how the things are set up in in
+wise if I can get the wire out here something that like many other areas of the the project the
+breathing is actually based on one event that's just called both book like the boys vocal and
+it's the very top of this switch hierarchy here but if you look from the very top just to see
+what kind of things applies to the boy then we have like basic panning here much to live in
+there just no space and we're doing 2d so we don't have any front left the game is actually
+mixed in the old-fashioned stereo and on the vocal we have different things of course distance
+to the camera but also this one is a bit more interesting it's actually the angle of the boy's
+head so if he's looking into the camera it's actually lot louder than if he is looking into the
+image and this one actually represents the the reverb that we are using so when he breezes into
+the away from from us the rebirth goes up and also have a voice can fit volume and that's one I
+can control the triggers in the game and state machines and there's also a side chain which show
+later on so at the very top we have just reset everything and you can see the different actions
+here so that's the the first level it's the actions acid I motion and gates active and passive
+the jump lamed lamed rep and step so those are two different actions that we can switch between
+and I can switch them yeah so if you take the step go down and explore this step often when I
+named the switches I get a bit confused about you know what's what's switch itself and what does
+it contain so you can see here I call it the last word is action and then the next last word in
+the container below it is step which is the action and then what it contains is the theme and
+then we have two different themes down here which is basically normal and sneak and it's because
+it's pretty much a kind of a stealth game so that's a lot of times where I have to hide and
+that's something that will always you know me when I'm playing a stealth game and the character
+says well when he jumps stuff like that so the character really is in kind of a stealth nose
+pose versus vocal I know this is Foley so if we go a step further down here we'd see we have
+different emotions so death panic that's usually if he gets chased by a dog or something and the
+dog is like 1 meter from him he will be like totally desperate I'll also show an example later
+on where you can hear that so that only happens like very short like other he survives he dies
+and we have alert if he and we have determined like if he feels like confident he will reach
+like confidently through his nose we're frantic and relaxed relieved like if he passes a puzzle
+survives and even that's kind of a breathing that's also one money gets strangled you just look
+into the normal relaxed one you can see the next step we have the cycle so that actually lies in
+the bottom of the whole hierarchy whether he's inhaling exhaling but from the top here should be
+able to choose a different emotions here and actually the intensity you can see I'm using the
+musical terms dynamic like for the mid surf or in the mid soupy and do that for all sounds also
+physics sounds because like 1 to 10 I want to fire what does it mean but when I hear something I
+can always tell the lights piano MIT's folder so I always use that for reference then we could
+look into a few other like jumping I think that one is interesting because usually a lot of time
+the the jump sounds is the same no matter how exhausted you are but but this one kind of leads
+to the intensity so if you're standing still and jumping he will just build like and make us
+more like like almost nothing but if he's exhausted then he will make a louder one and many of
+the sounds are split into two so you can hear the breathing and then there's a small like
+through click so that's the jumps and then we have like different different lengths sounds
+obviously like and I called this one bypass because again if he's just like jumping like this
+you shouldn't make a noise like that bacillus what the game trigger so it actually just plays a
+regularly hierarchy here and if he lanes by Craig grabbing a ledge and it's more like a screen
+sound nothing I've just wrapped this one thing I should notice is that she notes should mention
+most of them switches as a few switches that are and exposed TN this because they're based and
+at CPC as Jakob mentions mentioned before is one of those it's the the intensity so that's a
+switch and it basically mets the parameter into different switch levels so 0 to 25 is piano and
+so on yeah just playing a fan and example of the voice and I just wanted to connect to the game
+and then so you can see the intensity level does just look for the boy here and now we can see
+his intensity yeah and you can see the intensity level only changed every time he takes the
+breast and I think that's performance related I said before I would only make like a quick
+inhalation if his exhaling while he's before his jumping allow him to relax what she should also
+know which is Giacobbe is going to talk about now is when he starts to run he will align his
+breathing the rhythm of his breathing with the footsteps with the sound of the footsteps now
+that he is frantic breathing in strength and now I have to follow up on that all right rhythmic
+breathing is what we heard when he was running so he was we wanted him to breathe on every other
+step I ran a few rounds around the office to ensure to myself that that was also a thing that I
+did which kind of worked got our breath really quickly but I'm a programmer so it's fine so we
+wanted it to footsteps and we you are switching from this continuous sequencing where we are
+trying to stage the sounds together to spacing them out because that's how it turned out that
+you had more space between the sounds when you were kind of matching it to your feet so yes one
+breath for every two steps was the goal so the basic thing is trivial to just look for an
+animation event and then player play a breath sound at that point but the tricky thing was the
+transition between we didn't wanted to switch immediately because that would sound very forced
+so we wanted a gradual transition from the continuous sequencing so how to do that well I kind
+of saw it as a frequency face type of problem so the run cycle has a defined face to be a full
+run cyclist runs from 0 to 1 and every step is half of off the face so it's just resets when you
+when you have step number two wrap that around looks like this nothing new here the breathing
+was half the frequency of the run speed so we just have one breath in a full cycle but it's
+supposed to go around at the same speed as the other one so for the continuous breathing we can
+kind of get a face and a frequency based on as long as we have an inhale and an exhale we can
+say okay what's the distance between those that gives us the frequency and how is that Alliant
+in relation to the footsteps which are fairly even beats so you have these kind of faces that
+are displaced in relation to each other so we have these two spinning things and we want one to
+gradually align with the other and in general we wanted to align frequency and phase for what
+one said of those with another seven of those and who knows about aligning two spinning things
+well the DJ's do especially this guy and so then the idea was to use like what would be the
+pitch adjust on a turntable you could say okay this is slower than this beat is slower than this
+beat so I'll just adjust the pitch but then this is offset so this is behind so I over at just i
+over compensate for the face being off and then they will align and if you keep doing that
+slowly you will mess them up over time and it sounds very natural so we end up with something
+that looks like this it's like the other continued sequencing but we kind of analyze the rhythm
+get a frequency and if a face we beat match the breathing based on what rhythm the breathing
+already had to that and update phase from frequency and then we breathe when faces here and it
+worked unfortunately so now we kind of trigger the sounds at the right moment but we now we just
+have a general policy quench our voice sequencer that we can use but we need to kind of instruct
+the boy on how he should sound in the different parts of the game so I call that voice direction
+sounds like something you would do in a theater or in the movie and Martin would be the director
+and the actor is this sequencer and he tells them how to behave based on either location or when
+something happens so if you can get scared you'll quickly react by being sounding it scared we
+have a few mechanisms for that we have basic triggers you can put into a scene we have the state
+machines so we have the playmaker machines and you can have an action where you can define voice
+configuration we can do it from scripts and we can control the parameters we talked about before
+trigger box would look like this now obviously the game use C is a 3d environment but the
+gameplay is 2d so just places set equal zero plane and you should be fine so we can kind of
+select which things we want change so we have you can set an emotion if you want or you can not
+do it and it'll just keep whatever had you can set intensity and you can set different actions
+we make and sound that sound like he's landing even though he's playing a custom animation where
+it's not defined as landing and this is the same thing without the fancy colors but it's the
+same controls but in a state machine so when we reach a certain point in the game we can define
+the same settings now intensity is one that is it's a very expressive tool throughout the game
+and Martin showed it before so his movement is generating exhaustion so like step one is how
+quickly is he running then he games it faster and etc so the voice intensity is just like a
+filtered version of that so we get a smooth version of how much energy is using at a time and we
+use that to select the sounds as Martin sure and the pension depending on the emotions we have
+selected it can either just be how exhausted is he but it could also mean that he's little bit
+scared of Barry scared for example so controlling that the game just provides the basic curves
+based on his movement so if you want to control it in the scene we have to claim that value to
+something so we have this control where we could say okay we want it to be between 50 and 75
+which in Martin terms would be much further - or metal to metal for me and just clamp the day so
+the intensity based on that we can also do it we can interpolate those values in space so if you
+have an area that gets scarier the more you go to what's the right you will kind of go to what
+the the maximum intensity so this is super scary to what the right but it's he's trying to be
+quiet along the lift so we can kind of morph those values we can do the same thing but over time
+so if we just want him to be super scared and then relax regardless of where he is in the scene
+we said this morph flag and we can say okay he starts out being claimed to being maximum
+intensity and it'll just relax over five seconds and it'll get back to wherever he is physically
+at that point okay so to summarize we have one event and we have this hierarchy of switches that
+determines which sounds to actually play we have a continuous sequencer that uses callbacks to
+keep going and we have rhythmic breathing that it matches the breathing through footsteps we can
+specify this voice direction with trigger boxes and state machines we can control the intensity
+by clamping it and we can interpolate that clamping to define a something in time or space you
