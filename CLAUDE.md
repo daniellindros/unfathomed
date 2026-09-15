@@ -15,12 +15,12 @@ them and the other should point at it.
 **Before proposing an approach, check `docs/` for an existing note on it.** Most of
 what's been researched or decided is already written down somewhere in here.
 
-- `docs/design.md` — **what the game is.** The pitch, following the concept-document
-  template: title, concept statement, genre, audience, selling points, style, platform,
-  scope. A snapshot, rewritten in place. One page; if it's growing, say so.
-- `docs/gdd.md` — **how the game works.** The detailed GDD: status, key moments,
-  progression, world, UI, systems, game objects, tools, technical risks. Present tense
-  and real numbers, or an explicit `?`. Never repeats `design.md`.
+- `docs/design.md` — **what the game is, and how it works.** Both standard templates in
+  one file, broadest first. Part I is the concept: title, concept statement, pillars,
+  genre, audience, selling points, style, platform, scope. Part II is the detailed GDD:
+  status, key moments, progression, world, UI, systems, game objects, tools, technical
+  risks — present tense and real numbers, or an explicit `?`. Part I is one page; if
+  Part I is growing, say so. Part II grows as the game gets built.
 - `docs/decisions.md` — **settled questions only.** A dated, append-only ledger.
   **Binding.** Read before proposing an approach. Don't re-litigate what's in here;
   if something in it looks wrong, say so rather than quietly working around it.
