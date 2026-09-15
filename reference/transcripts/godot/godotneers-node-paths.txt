@@ -1,0 +1,105 @@
+# source: https://www.youtube.com/watch?v=KzvkrpA5Y3M
+# caption track: en
+# fetched: 2026-09-15  segments: 290
+
+hello girl Denise accessing notes is essential for every game created in Godot but if you're new
+to Godot it can be a bit confusing so we're going to explore how node paths work and how you can
+get access to other nodes in your scene at the end we'll cover a very useful technique which can
+greatly simplify accessing other nodes and can make your game more robust to changes this is a
+beginner level tutorial it is enough if you can read a bit of 2D script to understand the
+concepts of this video so we start with a very simple example right now we have a player scene I
+can see that we have a player node and below the player node there's a Sprite now and what we
+want to do is we want to change the color of the Sprite by changing its modulate property down
+here so maybe to red but we want to do this in a script so first thing we do is we attach the
+script to the player node and then we remove everything that we don't need and we're going to
+write our code here in the ready function so it will immediately execute okay so now we want to
+change the color of the Sprite how do we get access to this fry and get out there's two ways in
+which you can get access to another node one is the get node function again no and the other one
+is the so-called dollar notation so you can write dollar and something behind it and these two
+are the same thing the dollar annotation is just a different way of writing get node but under
+the hood they're exactly the same thing they do the exactly the same stuff so you can use either
+one most people tend to use the dollar annotation because it's shorter but you can use either
+one so how do we now get this right now we can write get node and then we need to write what is
+called a node path a note path is as the name says a path to a node and it is always relative to
+denote where the script is on right now our script is on the player node so this node path is
+relative to the player node we want to have the Sprite note which is below the player note and
+we can just write its name so we can say Sprite Sprite is the name of this node and that's why
+get nodes right gives us this right now and now we can write modulate equals color red let's try
+it out okay that works fine now if you want to write this in dollar notation it is the same
+process so you write dollar and then the note path the node path is to say so we can just write
+all the Sprite note that with the dollar annotation you don't actually need the quotes all the
+time there are some cases where you need the quotes which we will come to but for most cases you
+can just write the name okay let's try that out that also works now what would happen if we want
+to access this right node but it's not directly below the player but there's a few notes between
+them so let's quickly add a few notes so if we run this again it will not work because now the
+Sprite node is two levels down and it's not directly below the player node anymore so you get an
+error invalid set index on null instance and the interesting part is this on base null instance
+which tells you okay we tried to write the modulate property on something that was not found
+right the null instance means it couldn't find a node and now this thing is not so we need to
+use another node path again we first start with get node and you see already how the editor
+gives us some Clues so we start with node a and then we write a slash which means okay now find
+something below node a and we want to find node B little download a so that is node V and
+another slash which now means okay find something below node B which is Sprite let's try if that
+works and it works just fine if you write this in dollar notation it's basically the same thing
+you can write dollar node a slash node B slash Sprite okay now the note that we want to pick is
+not below the current node but it's rather above it so let's maybe move this Sprite here and
+move these two nodes below the Sprite and then we put this script on the Node B how would we
+access this right now we cannot write node a node B because we don't want to go down we want to
+go up there's a special note plot building the double dot so again we write get node two dots
+which means go up one level so we start at node B we always start at the node where the script
+is attached double dot means go OneNote up so we are now at node a then a slash and we want to
+go one note up again so another double dot let's try that up and it also works and if you write
+it with the dollar notation so dollar double dot slash double dot the GD script compiler is
+unhappy about it it says about something expecting a node path this is one of the cases where
+you actually need to use the quotes with the dollar annotation as I said earlier because the GD
+script compiler it cannot know okay which which of these dots now belong to the node path and
+which belong to the rest of the color and with the quotes you can clarify this you can say okay
+the notepad starts here at the first quote and it ends here at the second chord so now this is
+the note part and now the Jesus could compiler is happy and we find the note there's also
+another way in which you can access nodes that are above you which is the get parent function so
+you can do get parent to get the parent of the current node so right now we are at node B again
+script is attached at node B so the parent is node a and we can just call get parent again now
+we would call get parent on node a which gives us the Sprite let's try it out and this also
+works okay so now we know how we can find a node below the current node and find the node above
+the current node so what about the node that is on the same level if I move node B up here how
+would I find this right you may have already guessed the answer we can use a combination of both
+methods so we can just write get node we're currently at node B and what we do first is we go up
+one level now we add the player node and now we go down one level again Sprite so this tells it
+okay go up to the player node and then find the Sprite below the player now let's try that and
+it works just fine and if you want to use the dollar notation if you have dots in it it's a good
+idea to use quotes So that also works there's one more thing which is what if we want to access
+the node where the script is at so if I move this script to the Sprite node and I want to access
+the Sprite itself how would I do that there's another special note buff which is the dot so we
+can do get node and Dot means this no no up no down this exactly let's try this out okay that
+works however that is a lot to write there's also a built-in keyword in GD script which refers
+to this node so you can just say self and self means okay use this node let's try this out it
+also works the GD script compiler is actually pretty smart it can even know that you mean this
+note without writing self so you can just leave that out and it will still work so now we have
+found out quite a few ways in which you can write node paths to access nodes that are on the
+tree and we also have seen that the node paths are different depending on whether the node you
+want to access is above below or at the same level wouldn't it be nice if there was a way that
+would always work the same way because right now every time we move a node we need to change the
+code if I move this script to the player I need to change the code I need to write get node
+Sprite what if I move the script elsewhere or if I move this Sprite node elsewhere my script
+breaks it's no longer the correct path so how can we fix that we can fix that by using a feature
+called scene unique nodes we can right click on this write node and select this axis as unique
+name option and you can see the Sprite gets a little percent icon and now what we can do is
+instead of writing get node and then some node path to the Sprite we write get node Sprite with
+the percent icon in front of it well let's try it out if that works okay and the cool thing
+about this is that it works no matter where in the tree your Sprite is located so if I put node
+a here and node B there and this right now below this it still works if I move this script to
+node B it still works if I move the Sprite above node B it still works so dissertation is really
+really useful to access a node without having to think about where the node is in your current
+scene and it's also very nice that you can reorder the nodes and you don't need to fix up your
+scripts there's also a short notation for this which is just writing percent Sprite so this is
+the equivalent to the dollar annotation again it's all the same thing it doesn't matter if you
+write percents right or get node in the end everything is a get note we learned in this video
+that we can access nodes with the dollar notation and the get node function both of which are
+just two different ways to do exactly the same thing we learned how to build node paths to other
+nodes and how to pause change when you move the nodes around we learned that node paths are
+resolved relative to the node which runs the script and we learned how seen unique nodes and the
+percent notation can simplify node axis and make our scripts more robust against changes in the
+node structure I hope this has been helpful if you have additional questions please post them in
+the comments if you like this video please give it a thumbs up and maybe consider subscribing to
+the channel to get notified when new videos are posted thank you very much for watching and
+happy gardenering

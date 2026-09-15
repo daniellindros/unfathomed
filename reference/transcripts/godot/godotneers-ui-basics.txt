@@ -1,0 +1,414 @@
+# source: https://www.youtube.com/watch?v=1_OFJLyqlXI
+# caption track: en
+# fetched: 2026-09-15  segments: 1125
+
+hello Golden Ears making a user interface for a game can be quite challenging but every game
+needs one to give the player Vital Information and to make your game easy to use a user
+interface must also adapt to different screen sizes and resolutions so players with all kinds of
+different Hardware can play your game thankfully Godot has a quite powerful UI system built in
+so we are going to have a look into what godose UI system can do and how you can use it
+effectively there's a lot of ground to cover so this video is quite long feel free to take a
+break every now and then and come back later when you are refreshed this is a beginner level
+tutorial we are going to do everything with the editor so you can even follow along if you don't
+have any knowledge of GD script so we are in guitar and I have created a small scene which we
+will use to explore godot's UI system as an example we are going to use a city Builder or
+strategy game where your units will collect resources and then build something of course we're
+not going to build the whole game here so what I have done is I've just created a little
+backdrop which simulates the game running below our user interface and I have also added a
+camera to D so we can move the camera and see what is happening in a game like this your units
+usually collect resources and what we want to do is we want to show the player which resources
+currently have been collected so the player can use them I have prepared a few icons for these
+resources so we have a little flash icon which can maybe be energy maybe we move it here I have
+also a barrel which could indicate food or maybe oil because these are robots and they probably
+don't need food and we have of course a cogwheel icon which is maybe spare parts right these
+robots need to repair themselves so okay so we zoom in and you can see this boundary here which
+shows us how big the screen will be when we play our game so let us quickly push the button and
+play it and you see uh what we get in our window is exactly this boundary okay so now we can use
+this to set up our little dashboard if you will so here and maybe also make this a bit smaller
+move it here make this a bit smaller and move it here and we may be also adding some labels so
+let's add a label also a label can help us to display text and maybe give it a number maybe we
+have 100 of this energy so labels up here everything you add is up here so now we can duplicate
+it Ctrl D or command D is duplicating it moving down duplicate again okay so now the text is
+pretty hard to read so we can maybe add a little background there's another note for this which
+is a panel and again you notes appear in the upper left so maybe resize this a bit and then over
+here the panel is now above everything which is not what we want when it's on the bottom of the
+tree it renders above everything else and if I move it up it renders below now we have a UI
+isn't that great have a look great it works so are we done yet well not really this only works
+for a little example if I choose a different resolution or Go full screen you can see how this
+completely falls apart it's no longer in the upper right corner it is way too small to read in
+full screen it's just not good so how can we make a UI that works for all resolutions and all
+aspect ratios Godot approaches this problem with a thing called a reference resolution so what
+Godot does is it allows you to design everything in one resolution that you think most players
+will have and then good though will scale it up and down According to some rules so where can we
+set up this reference resolution we can do this in the project settings so we go to project
+project settings window and there you have it if you put width viewport height so this is the
+reference resolution which one should we pick or we can't use any resolution that we want but
+it's a good idea to use a resolution that most players will likely have because then what you
+design is what most players will immediately get without having to care about scaling so which
+resolutions do most players currently have well we can have a look at the steam Hardware survey
+that is the survey that steam does every quarter and they collect information from all of their
+players what kind of Hardware are they using and they're also having information about the
+resolutions that they are using so if we are looking at the screen resolution in the hardware
+survey you can see that the most popular resolution right now is 1920 by 1080. so let's go back
+into Godot and we start with 1920 by 10A then we close and you can see that our screen rectangle
+has not updated oh now it has if it doesn't update for you sometimes it does sometimes it
+doesn't you can go to Project reload current project save and reload and now we're back great
+now we can just move everything over to the new right and play again and great we are done no
+we're not done because what I have just shown you is the worst way in which you can build a UI
+the first problem that we have is that this does not work very well with cameras if I take my
+camera and if I move it a bit maybe here and I play the game again you can see that our UI moves
+off screen and the reason for this is that our UI lives in the same space as our game so if I
+move the camera the game moves and the UI also moves how can we fix that we can fix that with a
+canvas layer node so we go to add node search for canvas layer add this node and we put it in
+here below our game because we want to render our UI above the game and we saw earlier that when
+you move stuff up in the tree it renders below and when you move it down in the tree it renders
+above we take all of this and we move it inside of this canvas link camera is still Offset you
+can see it here and you see that now our UI is in a completely separate layer which is not
+affected by camera movement and that is much better okay let's have a look at our little
+dashboard up here it looks pretty rack because all the icons are not really aligned and the text
+is also not really aligned so it looks pretty bad and we can of course try to fix this by moving
+it around with the mouse until it looks right but this is not very efficient there's a much
+better way of doing this which is using containers Godot has some very useful nodes built in
+which automatically align components According to some rules if we look at this it looks a bit
+like a grid we have a column and the second column and we have three rows and there is a
+built-in container inkido which can layout components in a grid and this is called a grid
+container so we add this look for grid container and again new components always end up here so
+we moved is over here and you can see it's not really visible and that is because containers
+just lay out their child components and do not display anything by themselves so we move the
+container maybe up here and remove all of these things as child nodes and you can see something
+very interesting happening it looks like it aligned our labels but it did not align our icons
+and the reason for this is that containers only work on UI components they do not work on
+Sprites or anything else all UI components have this greenish color here and our icons do not so
+we cannot use Sprites for this we need to use something else and what would we use for this well
+we have a look into our UI components all UI components derive from control so we can look here
+at control and we can look okay what component could work we have a color rect we have a lot of
+other stuff and there's a thing down here called texture rack control that displays a texture
+which is exactly what we need so we take a texture rect and then we add our flash icon here to
+the texture at a few more of these again Ctrl or command D is duplicating and then we just
+change the textures of these the second one gets the barrel and the third one gets the wheel now
+we have that and if we have a look at the grid container you can see that it's rendering them
+all at one column when we want two columns and we can set this up here right now columns is one
+so we say we want two columns that still doesn't look right and that is because the container
+renders its children in the order in which you have given them so what we want is we want an
+icon a label an icon a label so we put icon maybe we also give this a name so we say this is The
+Flash icon and energy label and then we put here the barrel icon and the food label and finally
+we have the Cog wheel icon and the spare parts label now we have icon label I can label I can
+label but the icons are way too big how can we fix that let's have a look at the settings of the
+texture rack and you can see there's a setting called export mode and currently it's keep size
+so it will try to keep the size of this texture this texture is pretty big so what we can do is
+we change this exponent mode to something else maybe ignore size that is at least a bit better
+let's try what happens if we make this for the other two as well ignore size now it has
+completely disappeared to understand why this has disappeared we need to learn a bit more about
+how containers do their work what containers do is they ask each of their child nodes how big do
+you want to be so they asked this icon how big do you want to be they ask this label how big do
+you want to be and once they have asked all their chart components they then calculate where
+each component goes so they have asked this label how big do you want to be and the label looks
+okay I need to display this 100 so I need to be three characters wide and I need to be as high
+as my font so if I add another number here you see that the label automatically gets bigger
+because it reports okay I need more space I have more text what I have said here is ignore size
+and ignore size if we look at the documentation the size of the texture won't be considered for
+minimum size calculation so what this node will now do it will say okay I don't need any space
+thank you very much so maybe let's try a different mode maybe let's try fit with that looks a
+lot better and fit width says the height of the texture will be ignored the minimum width will
+be equal to the current height useful for horizontal layouts and this is actually what we have
+we have a horizontal layout icon label the other ones automatically got bigger why is that they
+are still on ignore size now the reason for this is that the first icon now has some size and
+this is a grid container so it gives all the icons in this column the same with no matter how
+they are set up what if I let's say hide this icon then we have the same problem again because
+this icon now says I don't need any more space and the other icons they are still saying oh I
+don't need any more space so it's best if we set all of these icons to the same thing fit with
+now we can have a look at our labels and the labels they're pretty tiny so maybe we can change
+their font size and we can change the font size if we go to theme overwrite font sizes and then
+we can say maybe we do a 32 here that is a lot better now you can see the next problem the good
+thing is is that our icon automatically has grown because now we have more height and the export
+mode fit with uses the height to determine the width however if we look at our Barrel here you
+can see that it's not looking right and we can fix this with the stretch mode setting right now
+it's set to scale so it will just scale according to whatever width and hide the container
+assigns to it but we don't want this to distort itself so we use keep aspect and we also use
+this for the barrel and the wheel so we say keep aspect and now this looks a bit better but you
+can see it is moving to the left we don't want this we want to have it centered so what we can
+do is we say keep aspect centered and now it's centered okay so now we can move this grid
+container up here so we can read it a bit better and now we have another problem and that is
+that our panel has a fixed size so when I say I have a lot of energy like really really a lot it
+will go over our panel we can fix this with another container which is called a panel container
+so we add a panel container this is the same as a panel but it has some extra functionality we
+can delete this and we move the panel container over here and now we put our grid container in
+our panel container and you see what happens the panel container it again asks its chart node
+which is the grid container how big do you want to be and the grid container says okay I have
+all these components so I need to be this big and the panel container then makes itself as big
+as is needed for the grid container so if I change the label you can see that it automatically
+resizes so it looks quite nice but still not great we have a little problem here on the right
+side where there's not really a border it looks very ugly how can we say I want some extra space
+here there's another container for this which is the margin container so we add the chart node
+you add a margin container and now what we do is we put the margin container in the panel
+container and we put the grid container in the matching container so what will now happen is
+that the margin container is asking the grid container how big do you want to be and then we can
+set up in the team overrides constant of a margin so maybe we say we want to have 20 pixels to
+the right or maybe 15 pixels to the right so the marching container will add a bit of margin and
+then tell the panel container okay I need to be as big as the grid container plus this margin
+and the panel container will automatically resize itself to fit all this and it shows why it's
+important to use containers for layout and not doing it manually because containers
+automatically compensate when the text in your interface changes it's also important if you want
+to do localization work where the length of a text can vary quite a bit between different
+languages okay so this is quite a bit better than before but it still doesn't really look nice
+if you look at the UI and you look at our game they don't really fit together very well that is
+because our UI currently uses the Godot default look that comes with Godot and while this is
+serviceable it's not really fitting the theme of our game so how can we change this well we can
+change this with a theme there is a thing called themes in Godot and we can create one with
+create new resource and then we look for theme and recreate a theme and we call this maybe our
+theme and now you can see we have a new section down here where we can change how things look
+inkedo so the first thing we want to do is we want to change how these labels look we can change
+it by using this little eyedropper icon here click on it and then click on the label and now we
+have a new type here in our theme label so we can now say the label should look different and
+there's a lot of settings that we can change for label we can change its colors we can change
+some constants for the label but we want to change the font so we go to font and we click this
+plus icon which allows us to change the font and then we can select a new font do a quick load
+and I have added a font which looks a bit more like writing on a Blackboard it's still a bit
+tiny so we also change the default font size and we say this is 32. so now you can see here how
+the label has a different look now but it still doesn't show in our game why is that well we
+need to tell our component that it should use this new theme there's three ways in which we can
+do this the first way is we just take this label and we go to theme and we drag our team in here
+and you can see it now uses this theme but this is very cumbersome because we would now need to
+change all the labels so we don't do it this way let's revert this and revert this what we can
+also do is we can set the theme at the root of our UI tree so I put it in here and you can see
+that all the labels now change and that is because if you set a theme Here then all the
+components that are below this node will also use the theme unless they have their own team but
+it's still something that we need to set up for each node and that we can forget there's a third
+way in which we can do this and this is in the project settings so we go to project project
+settings and we need to enable advanced settings for this and then we can go down here and find
+GUI theme and there we have a setting custom in which we can load our theme this needs a restart
+of the editor so we press save and restart and now you can see that our labels use the new theme
+so now our labels fit the game a bit better but still I don't like this panel container so how
+about we add a wooden border around this we can do this also in the theme but if we look down
+here there's not really a panel container visible in this case we can add a new type using this
+plus button here so we click on there we type panel container because that is the one we want to
+change and if you look at the panel container there's really only one setting that we can change
+which is the panel we click the plus button here and then we can say how the panel should be
+rendered and we have a few options here we have a style box empty a Starbucks texture a
+Starbucks flat and a Starbucks slide so empty is what it says it's just rendering nothing which
+is not what we want we have the Starbucks flat which renders a flat color similar to how it's
+done right now because right now it's using a Starbucks flat and we have Starbucks line which
+renders the line which we don't need here it's more a thing if you have separators so what we
+want to use is Starbucks texture and then we can click on it and now we can see a preview of
+here how it would look like so first thing is we need a texture I have created a few textures
+here so we take this Frame small thing and we put it in here and now we have a preview I will
+see it's a wooden frame but it renders kind of strangely here on the sides and that is because
+it just takes this texture and it stretches it but what I want is to keep the borders
+unstretched and just stretch this inner part and we can do this by setting the text from Origins
+here so if I set the texture margin here to 24 pixels on each side you can see how it now only
+stretches the inner part so we leave a margin of 24 pixels on all sides which are not stretched
+and only the inner part gets stretched we have updated our theme but our container does not
+update and the reason is that UI components don't actively monitor if the theme changes you need
+to reload them so what we can do is we go to scene reload saved scene then you can see it has
+updated and now that looks a lot nicer okay let's say we want to show the player some kind of
+mission dialogue where they can see a mission and then they can accept it or decline it how
+would we do that well we can create a second panel container and set it up there so let's add
+another panel container and move it somewhere here and then we add some label for the text so
+label so maybe we call this title and Mission and we duplicate it and we make this text so this
+should be the text and for the text I will just use some dummy text and maybe we set this to rep
+because right now it's putting all of the text in one line and we want to automatically wrap it
+so there's an order wrap setting here and we want to wrap on every word so we use that but it
+still looks not right because they seem to render on top of each other which is not what we want
+we want to stack them we want to have the title up here and then we want to have the text below
+and we can also do this with the container there's a thing called a vbox container a vertical
+box vbox a container that arranges its shot controls vertically which is exactly what we want so
+we take a vbox container we put it into panel container and then we put our labels inside of
+this vbox containers and now you can see the mission is up here and the text is up there and we
+can nicely resize this and you can see that the text is automatically flowing around here so it
+looks nice good however I would like to make a few changes first off I think this border should
+be bigger so how can I make that I have already set up how a panel container should look so if I
+change this border to make it bigger then this border would also get bigger and we don't want
+that and we can do this by adding a variant to our theme so we click on our theme and we click
+the plus button and we want to make a custom type or a custom variant for a panel container so
+we say maybe big panel container don't be confused that this is now empty you can still click
+add type and we have now made a custom type which currently is not based on any other component
+but if we go to this I can hear we can say which should be the base type and we say this should
+be some kind of panel container so we select the panel container here and now it knows it is a
+panel container now we can go here and we see we now have the panel setting we add the Starbucks
+texture click on the Skybox texture and we change the texture to frame big and again we want to
+set the margins so this time it's a bit bigger so we use 48 so now we need to tell this panel
+container that it should use our variant and we can do this by going to theme type variation big
+panel container and it uses the big border and this is how you can make variations of controls
+in your theme we want to make another variation for this Mission label I want this to be bigger
+than the rest of the text and we already know how to do this so we go to our theme and we add
+another variation and rename this maybe header and you can see godo has some variations for
+labels already which are called had a large had a medium head is small so we take this at a
+large and then we can change the font size for this header large maybe to 48. now we can say to
+this title In theme type variation header large and now we get a large header and we also want
+to have this centered so we go to horizontal alignment let me say this should be Center now we
+want to add two buttons which allow the user to accept the mission or to decline the mission so
+we add a button and we put it as an RV box container and maybe we call this okay and we make a
+second button close cancel button and the other one we call okay button and so so now we have
+these but you can see they are still using the default look and we don't want that we want to
+have nice looking buttons so we go back to our theme we already know how this works we can use
+this eyedropper here and there's a button you can also use the Plus on this side it works the
+same way but this is a bit quicker okay so the buttons they also have a font so we change this
+to our chalk font and we also change the font size to 32. and now we look at the style boxes and
+you can see buttons have quite a few of them for each state of the button it could be an
+enormous State like this button it could be in Harvard State when I move the Mars over it could
+be pressed when I click it and so on and we need to change the style boxes for each of them so
+let's start with the disabled again we click the Plus change it to Starbucks texture then I have
+already made a lot of buttons here we change the texture margins and we're done with this one
+and then we continue okay I have set up everything and again we need to reload our scene so it
+picks up the changes first we may want to save it so reload our scene and now you can see that
+we have the buttons with the new start this looks a lot nicer now we want to lay out the buttons
+in a horizontal way and just like there's a v box container there's also an edge box container
+which can do this for us so we use an edge box container container arranges its child controls
+horizontally which is exactly what we want we put it here and we put all our buttons into this
+hbox container let me make this a bit bigger so we have a bit of room to work with okay now I
+would like that these buttons have the same size okay so right now the OK button it has a lot
+smaller size than the cancel button and the reason for this is again this container asks its
+child nodes how big do you want to be and the okay button says you know I just have this okay in
+there I'm okay with this small size while the cancel button says you know I have this big cancel
+thing I need more size so how can we tell this OK button that it should use more size that it
+should not just take its minimum size we can do this in the layout settings and this is the part
+that confuses a lot of people because it's not really straightforward but we're going to take it
+extra slow and explain how it works so we're having the OK button selected we go to layout
+container sizing and then we can see some options and there's two options that we can check we
+can have this expand flag turn on and off and we can set some other Behavior which we will
+explain shortly with this expand flag you can change how much space the control requests from
+its parent container right now it is unchecked and the button will only request as much space as
+it needs to render its OK plus the little border around it if I turn it on the button says to
+The edgebox Container you know what I need only this okay thing but if you have more space then
+I would like to have it and if we look at the edge box container you can see this is all the
+space that the edgebox container right now has the OK button says I would like to have as much
+space as you can give me so what the edge box container now does is it's asking the cancel
+button how much space do you need and the cancel button says I need this little bit bit of space
+to randomly cancel and then it looks okay I have this much space to give I removed the space for
+the cancel button so I give the rest to the OK button and now the OK button gets bigger which is
+nice but we're still not having the same width so what happens if we tell the cancel button to
+also request a lot of space so we go to layout container sizing and we also say expon so now the
+edge box container has two children and they are telling him okay give me all the space that you
+can spare so what does the hbox container Now do well it looks at how much space it has and then
+it gives it evenly to all its child nodes and now the buttons have the same size but what if you
+want to have different sizes for each of these buttons so maybe this OK button should get a
+quarter of the size and the cancel button should get three quarters of the size we can do this
+with the stretch ratio setting that you can see down here and it works like this the container
+will look at all the controls that say I want to expand and then it will sum up all the stretch
+ratios of these controls so right now the OK button has a stretch ratio of 1. and the cancel
+button has also a stretch ratio of one so it will sum these up and you get two and then it will
+assign each control a fraction of the space which is their stretch ratio divided by the sum so
+okay button has a stretch ratio of 1 divided by the sum which is 2 so it gets one divided by two
+it gets half the space and the cancel also gets one divided by 2 which is half the space if we
+want to give this one quarter and this three quarters then the sum of these stretch ratios needs
+to be 4 because we want to give quarters right so divided by four so we set the stretch ratio
+here to three and we get the correct result again all the stretch ratios are added so okay
+button has one cancel button has three some of this is one plus three is four so we have four
+and now the OK button gets 1 divided by 4 which is one quarter and the cancel button gets three
+divided by four which is three quarters and we maybe make another example let's say the OK
+button should have two thirds and the cancel button has one third how do we do that well again
+we want thirds so the sum needs to be three so we give the cancel button one and we give the OK
+button two and now the OK button has 2 divided by the sum which is three so two thirds and the
+cancel button has one divided by three which is one third so now we know how this export flag
+works so what is this fill thing I'll just flipping it only works if you have this exponent to
+show it better I will temporarily hide this cancel button and we only work with the OK button so
+right now it is set to fill and fill means make me as big as all the space that I have requested
+and say you want to have this button in the middle oh you can change it to shrink Center so the
+button will still request all the space because what it requests is decided by this expand flag
+so if expand is off it will only request the minimum size if it's on it will request all the
+size it can get and this Flag controls how the button uses the size it has gotten right so the
+container says okay fine you can have all of this space and now the button says okay I take all
+of the space but what do I do with it do I fill it out or do I shrink myself and go to the
+center or do I shrink myself and go to the beginning or do I shrink myself and go to the end but
+if you don't have this expand Flex set then the container will only give this button as much
+space as it needs so it says okay I only need as much space as this this is this is all the
+space we have and now I can set whatever I want here because I only have this tiny bit of space
+it doesn't really matter what I said here because everything will look the same and this is what
+confuses people because it says fill here but if you just do fill it will not fill this space
+right so again this expand Flex says how much space do I want and this other flag says what do I
+do with the space that I got okay so let's add the cancel button again what I want now is that
+this button and the cancel button they have the same size we already know how to do that so we
+set both to expand and we give them the same stretch ratio so now everyone has one but I want
+them to be centered how can I do that there's a few ways in which I could try this so there is
+for example a center container Center so we move it up here and maybe we put the hbox container
+inside of the center container so see this Center container and now this is the hbox container
+another the buttons so they're now centered but they don't have the same size anymore so why is
+that well the reason for this is that the center container only gives its child nodes as much
+space as they need so you see while this Edge box container is inside of the center container I
+don't even have an option to export the center container does not supported so the Xbox
+container only gets as much size as its short notes need so there's no space to export because
+the center container will not give the edge box container enough space so this is not working
+let's move it up here and delete the center container because that is not working there's
+another trick which we can use to make this work and this is a spacer control and this basic
+control is really just an empty control so you use the control node will render nothing and now
+we set this control to export layout container sizing export and now you can see that it gets
+one third of the space because it's X part and it has a splash ratio of one and we have three
+components so one plus one plus one is three and it gets one third if we duplicate this and add
+another control down here it gets a fourth of the space and this effectively centers our two
+other buttons this is a nice trick which we can also use to move these buttons down here because
+the label is nice with the mission but I would like to have these buttons at the bottom we can
+again add a control and put it here above the edge box container and now we want to set this
+layout to expand there's also a second place where you can set this which is up here so we want
+to vertically expand it so if you don't want to click here you can also set it up here so now
+this expands and it takes all the space it can get all the other controls take the space that
+they need and this spacer control which we can also maybe name spacer it's always a good idea to
+rename your nodes so you know what they do so space two and this basic control will grow and
+Shrink depending on how much space is available so if I make this really small there's no more
+space so it will be really small but if I make it bigger it will automatically grow and push the
+buttons down so we have now made our UI much better by using containers to automatically layout
+our controls but there's still a problem if I run this and if I change the size of my window the
+UI does not what I would like the first problem is that this thing should always be in the upper
+right corner no matter how I change this window size and also I would like this to always be in
+the center no matter how I change my window size and we can do this with anchors if you look at
+this panel container up here which I have selected you can see there's these little pins up here
+and these pins tell where this container is anchored to so right now it is anchored to the upper
+left corner of the screen so when I move it the position is always relative to the upper left
+corner of the screen so what we want to do is we want to Anchor it to the top right corner of
+the screen and we can do this up here by choosing an anchor preset and you see there's a lot of
+presets already there we want to choose top right and now these pins are in the upper right
+corner and now it's anchored to the upper right so if I now move this and I run the scene you
+can see that it's now moving with the upper right corner of the screen automatically and the
+same way we can anchor this panel container here so we can say we want to Anchor this to this
+enter so if we run the game then the mission container is nicely centered no matter how we
+resize the window we're almost done but there's still one problem to solve and we can see the
+problem when we make the window smaller if a player only has a small resolution then everything
+gets squished together or cut off and that is not what we want when we want this that this
+scales with the resolution of the plane and we can set this up in the project settings so we go
+to project project settings window and we may be disable these advanced settings because we
+don't need them anymore and the interesting part is the stretch mode this controls how the game
+is scaling right now it's set to disabled which produces what we just saw so let's try something
+different we have a few options here we have disabled we have canvas items and we have viewport
+and we hover over this mode we get a little explanation so disabled we already know it doesn't
+work so we don't look at this anymore so we have canvas items or viewport and for canvas items
+it says the base size specified in width and height in the project settings is stretched to
+cover the whole screen which sounds a lot like what we want we want this space size to be
+stretched to cover the whole screen okay so let's use that and now let's make it smaller that is
+that is a lot better you see that it just scales the game up and down and it does not push our
+components together so maybe we make it big and you see if you have a huge resolution like this
+4K here then you get to use this resolution everything is crisp and automatically scale up the
+right way however you can see that we have a bit of black bars if we go to widescreen we get
+pillar boxes on the left and the right and if we scale down the other way we get letterboxes on
+the top and the bottom which we don't want so we're not fully done yet so let's go into the
+project approach settings and we have a look at this other setting here which is called aspect
+right now it's set to keep I don't want to keep this aspect I just want it to adapt to the
+aspect so let's try ignore let's see what that does okay that is not good now it looks like
+jelly so yeah it ignores the aspect so we actually want to keep the aspect but we want to grow
+we want to use the extra space that we have it should just show more of the game world so let's
+look again at the project settings let's try the next one keep with let's see what that is doing
+to the right we still seem to have black boys what happens if we move to the other way okay that
+looks more like it so you see vertically it already uses more space here if we have more space
+so the UI stays the same but we show more of the game world but horizontally we still get the
+black bars okay so we have keep height which will probably work the other way around so let's
+try X part yeah that looks more like it so if we have more space horizontally it will grow
+horizontally you see the dialog stays in the middle we just get more room left and right and
+this also stays in the top right corner the way it should be so that is great and if we go the
+other direction yeah it also works the same you know our backdrop ends here but doesn't really
+matter so this is what we want in this video we have learned how we can make a game user
+interface with Godot we learned that we can use controls to represent UI elements and we use
+containers to arrange these controls for us automatically we learned that we can use the canvas
+layer to separate our UI from the game world so it does not move when we move the camera we
+learned that we can use a theme to change how our components look we also learned that there can
+be different variants of a component inside of a theme so we can for example make headlines and
+normal labels we learned that containers ask their children for their size and that children by
+default request their minimum size we also learned that if we set the expand flag then children
+will request more size than they need children then use the various ring and fill settings to
+use the extra space that they have been given we learned that we can use the stretch ratio
+setting to divide extra space among the children and we learned that we can use spacer controls
+to push other controls around finally we had a look at anchoring to pin our controls to a
+certain location of the screen and we looked at scaling settings to make our game render
+correctly at different aspect ratios and resolutions this has only been an overview on the
+basics of godot's UI system that should give you the fundamentals to build your own UI there's a
+lot more to learn that this video didn't cover nevertheless I hope this has been helpful if you
+have questions or would like to suggest topics for a new video please post them in the comments
+if you like this video please give it a thumbs up and maybe consider subscribing to the channel
+so you get notified when new videos are posted thank you very much and happy Golden Earring

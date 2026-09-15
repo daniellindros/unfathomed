@@ -1,0 +1,50 @@
+# source: https://www.youtube.com/watch?v=2Gh5WxuAMkw
+# caption track: en
+# fetched: 2026-09-15  segments: 127
+
+So, starting with our Godot project, we want to create two scripts. Our first script over here
+will be named state machine. And then we create the script, and then we'll create our second
+script, which we'll just name it state. Now, starting with our state script, we want to create
+this as a class called state, and we're going to have a variable called state machine, which is
+of type state machine, which we will be creating later. And we're going to have four functions,
+which is enter, exit, update, and physics update, where update refers to process, and physics
+update refers to physics process. Now, moving on with our state machine code, we're going to
+create a class state machine, and we're going to export our initial state, which is of type
+state, and then we're going to have a variable, which is current state. And then we're going to
+have a dictionary of all the states, which we refer to with a string, and it gives us the
+correlated state. Now, moving on to our ready function, where we set up the states, we want to
+iterate through all the children, which will be where our states would be, and then we check if
+that child is a state, then that state machine variable, we refer to this state machine, and
+then we add that state to our dictionary, and we can also make the text lowercase, so we don't
+have to worry about any case sensitivity with calling the states. Now, we just check if we have
+an initial state, and if we do, we use enter on that initial state, and we set that initial
+state to our current state. Now, moving on in our state machine, we want to create our process
+functions and our physics process functions, and we just check if we have a current state, so
+then we call update on that current state and throw in the delta, and we do the same thing for
+our physics process function as well. Now, finally, we want to create our change state function,
+where we have our new state name, which will be a string, and we get the new state name using
+the dictionary from before and we make sure we use toLower to avoid case sensitivity. Now we
+have an assert function to check that if we actually found a state or not. This is just useful
+for debugging. After that we check we have a current state so then we exit that current state.
+And then we enter our new state and then we change that current state we had before into our new
+state. Now to implement the state machine I've created a basic player class over here with a
+collision shape and a polygon and inside our player script we have an input direction that is
+taken from in the physics process and a basic move function that sets the velocity given these
+given parameters. Now first we want to create our state machine node and then we want to create
+a state node and with that state node we will extend the script and name the state node to idle.
+And also we're going to rename the node to idle as well. Now in our idle script we want to
+reference the player and then we're going to go ahead and implement our physics update function.
+Now we want to call player.move and have a speed of zero and and any acceleration for now and
+then we throw in delta as well. And then we can simply just call player.move and slide. Now we
+want to check if our player input direction is not zero because if it is not zero then we want
+to change state to our move state that we'll be creating now. And we do the same thing by
+creating that state node and we will name it to move and then we go ahead and extend the state.
+Now in this move state we're going to just copy the pretty much all the code from the idle state
+and make a couple of changes. Where first we want to change that our input direction we check
+once it is equal zero then we want to change the state to idle. And then we can go ahead and
+change the player move variables to more reasonable values such as 400 pixels per second and a
+better acceleration. And I'm also going to go back to idle and also change the acceleration as
+well. Now going over we want to do our final step which is in our state machine we want to set
+the initial state. So we set to idle and we can go ahead and now run the project and as you can
+see the player is able to move with the different states changing as you can see with the output
+in the console.

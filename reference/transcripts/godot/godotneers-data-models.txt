@@ -1,0 +1,724 @@
+# source: https://www.youtube.com/watch?v=4vAkTHeoORk
+# caption track: en
+# fetched: 2026-09-15  segments: 2094
+
+Hello Golden ears. When you start out with Godot, you often build all your game logic with
+Godot's nodes. And this works for a while, but when you add more and more features, it often
+becomes difficult to make these features play with each other. Often the same objects need to be
+used in different situations. For example, a weapon in your game may appear in the game world,
+but should also be used in an inventory dialogue. Modeling all of this with nodes only can
+become really difficult over time. So, in this video, we are going to explore how you can use
+data models to represent items in your game, and how this greatly simplifies the development
+process. We're also going to explore how you can extend and combine these data models to add new
+features to your game. Finally, we're going to look at some tools that can help you with
+maintaining your data models, so that you can easily tweak and balance your game based on player
+feedback. This is an intermediate-level tutorial. To make the most out of it, you should have a
+basic understanding of GDScript and Godot's node and scene system. It will also help if you are
+familiar with Godot's user interface system, because we will build a few dialogues throughout
+this tutorial. So, we start with this little game, and this could be some kind of RPG or
+crafting game where the player can move around and pick up stuff and craft new items. Here we
+have our player, and we call him Mr. G. And Mr. G can only move around and collide with stuff,
+and that is about everything Mr. G can do. Now, we want to implement a new feature where Mr. G
+can pick up stuff from the ground. Before we can teach Mr. G how to pick up stuff, we need to
+have something that Mr. G can actually pick up. So, I have prepared this little pickaxe here.
+Now, how would we implement picking up an item? Well, the first thing we need to do is to be
+able to see the thing that we want to pick up. So, we need to put this little pickaxe into our
+world. And now, when Mr. G walks over this pickaxe, he should automatically collect it from the
+ground and put it into his inventory. We're going to do the inventory part later and start with
+the collect from the ground part. For this, we need to detect when Mr. G walks over the pickaxe.
+And we can use an area 3D for this. So, let's add a new node 3D, so we have a root node that
+keeps everything together, and then we put our pickaxe below this node 3D. We also add an area
+3D, so we can detect something. So, control A to add a node, area 3D, and there it is. So, this
+area 3D will detect our player, and we need to add a collision shape to it, so the physics
+engine knows how big the area is. Over here in the inspector, we can pick a shape, and let's use
+a capsule shape for this one. Okay, that looks nice. So, now when Mr. G walks into this area,
+the area will fire an on body entered signal, and we can react to this signal and then tell Mr.
+G to pick up the pickaxe. So, we create a new script and add this to our root node 3D here, and
+we name this pick up.gd, and now we can connect the on body entered signal of this area 3D to
+this new script. So, we select the area, and then we go to signals, and then we connect this on
+body entered signal to our code. So, now when Mr. G enters this area, then the area will call
+this new function on area 3D body entered. Okay, for starters, let's just print out something,
+so we can see that it has worked. We can try it out. So, we move around and we walk over the
+pickaxe, and it works. Nice. Now, we're able to detect that we have walked over this pickaxe,
+but what do we give to Mr. G when he walks over this pickaxe? We surely do not want to give Mr.
+G this whole 3D scene here, because it contains a lot of stuff that we do not really need in an
+inventory. We don't need this area, we don't need this 3D model, and we also don't need this
+whole script thing around picking up items. So, it seems that we need some kind of object that
+represents a pickaxe, but isn't directly shown in the world. And this kind of object is often
+called a data model. It is just a simple object that stores information about an item, but it is
+not concerned with how the item is shown or how it is used in the game. So, let's create a data
+model then. A very simple way to do this is to just have a dictionary that holds all the
+information about the items in our game. So, let's create a new script, and we call this
+items.gd. This script is going to be our items database. Well, now we're going to delete all of
+this, and we can give it a class name, so we can use it in other scripts. So, let's call it
+items. Now, we create a dictionary, which we call database, and this dictionary is going to be
+our data model. So, let's add an item to the dictionary. The first item would be our pickaxe,
+and we need to give this item an identifier or ID, so we can later refer to that item. Now, we
+want to store a bit of information that describes our pickaxe, and for this, we can just put a
+dictionary inside of our dictionary. And now, let's think about which data would be interesting
+here. Well, the first really obvious thing is that we need a name for the thing, so let's add
+this information. And the name of this item is going to be pickaxe. So, this should be enough
+information for now. We can go back to our pick up code and try to give this item to Mr. G. So,
+how does Mr. G actually pick up the item? Well, currently only the pick up knows that Mr. G has
+entered its area, so it somehow needs to tell Mr. G, "Hey, there's a new item for you. Would you
+please pick this up?" And we can implement this by defining a contract for the pick up. And the
+contract could be, "If you want to be able to pick up items, well, you need an on item picked up
+method." So, in our code for the pick up, we can just check if the body that has just entered
+this area, in our case, Mr. G, has an on item picked up method. And if this is the case, well,
+then we call this method, and we give it the ID of the pickaxe as a parameter, so Mr. G knows
+what he has picked up. And this is the ID that we have specified in our items database. Okay, so
+now we need to add an on item picked up method to Mr. G's code. So, we open the player.gd file,
+and then we add a new method here, on item picked up. And this method takes a string as a
+parameter, which is the ID of the item. Mr. G currently does not have an inventory, so we are
+just going to print out the name of the item that we picked up, so we can see that it worked.
+Print I got a, and then we can access our items database, and we use the ID that we have
+received as a parameter up here to find the matching item in our items database. So, items,
+database, and then we give the item as a key, and now we can get its name by just typing {dot}
+name. Okay, let's try this out. We walk over the pickaxe, and we can see down here, it nicely
+prints, "I got a pickaxe." Okay, great. So, now let's also make the pick up disappear when Mr. G
+walks over it. So, we go back to our pick up code, and after we have informed Mr. G that he has
+now picked up a shiny new pickaxe, well, we can just queue free the whole pick up, and then it
+will disappear. Also, right now this code only works for pickaxes, so maybe make this item
+configurable. Let's go up here, and we add a new export variable for our item ID. This is going
+to be a string, and now we can go to the inspector and type pickaxe into our new item ID field,
+right? And now we have a configurable pick up. And then we can use this item ID down here in our
+script where we give it to Mr. G. So, we change this on item picked up, and instead of the
+hard-coded string, we put in the item ID. Okay, this is great, but in our 3D world, we still
+show the pickaxe, no matter which item ID we have configured here in the inspector. And it would
+be really nice if our pickup would automatically show a 3D representation of the item that we
+have configured here in our inspector. So, how do we tell our pickup which 3D scene it should
+show? We could make another export, but then we would need to configure two things and is very
+easy to mess this up. So, a better way would be to add the 3D scene as some information to our
+items database. So, let's go back to items.gd. And here we add a new property to our pickaxe
+which we call scene. And then we can just drag in the pickaxe scene and Godot will automatically
+create a string with the path to the scene. So, now we can go back to our pickup code and use
+this information. We add a ready method. And in there, we first load the 3D scene from our item
+database. And we can do this very similar to how we got the name of the item. So, our scene is
+load. And then we go items database. We give it this item ID from our export. And then we load
+the scene. And now we have the scene in our hands and we can create an instance from this. So,
+scene instantiate. And then we can add this instance as a child of the pickup node. Okay, great.
+So, we can kill this pickaxe model from our scene because it's now automatically created in our
+ready method. And let's see if that works. And yep, our pickup shows a nice 3D model of the
+pickaxe. Great. So, maybe let's try to add a second item to our item database so we can see if
+this also works if we use a different item. We go back to our items.gd script and we add a new
+entry here. And we give it the ID sword and of course it has a name sword. And we also add a
+reference to the sword scene. So, we drag in the sword scene. Okay, so we can now go back to our
+main scene and let's reconfigure our pickup so it shows the sword instead of the pickaxe. And
+then we can run the game. Okay, something is not working. It looks like we have a typo here in
+our item ID. Well, this is not great. It would be better if there was no way to mistype this,
+but uh for now let's just correct the typo and see if that works. So, we restart the game. And
+now we can see that our pickup shows a nice sword instead of a pickaxe. And if we walk over the
+sword, we can see that now Mr. G prints out that he has picked up a sword. So, you can see that
+representing items as a data model is really powerful because we can now easily add new items to
+our database and all the game systems will be able to just use our new item immediately. So, our
+pickup will be able to show these items in the 3D world and our player will be able to pick them
+up. But our approach also has some drawbacks. Well, first of we have the obvious drawback that
+it is very easy to introduce a typo here. We have just seen this when we configured the sword,
+but it's also easy to make typos in our item database itself because there's a lot of strings in
+there. A second problem is that we have hardcoded the paths to our 3D scenes into our items
+database. And if we now move a scene to some new place or maybe we decide to rename it, well
+then our items database will just silently break. Finally, if we think about it, this dictionary
+will be really hard to maintain once we add a few hundred items to it. So, we would need to have
+a better way to structure our data that fixes all of these problems. Godot has a built-in
+feature for modeling all kinds of static data resources. Everything that is static data in Godot
+is a resource. For example, scenes, textures, 3D meshes, audio samples, animations, they are all
+resources. Godot also allows us to create custom resources so we can model data that is
+interesting for our game. So, let's create a new resource type for an item. We create a new
+script and we name it item.gd and then we're going to delete all of this. Now we give our new
+script class a class name and we name it item. And then we let the script extend the resource
+class. So, now Godot knows that this is a custom resource. Just like nodes, resources can export
+variables that we can edit in the inspector. So, let's add a few variables for our item. We
+already know that we're going to need a name and the scene that we want to use as a 3D
+representation for the pickup. So, let's add an export for the name. Export var name and this is
+a string. And the second export for the scene. And for the scene, we are going to use the packed
+scene type instead of a string. And using the packed scene has a few advantages which we'll see
+in a minute. Let's save this and then we can create a new resource in the editor. So, we right
+click, new resource. And now we can search for item and we can see that there is a new entry in
+this tree which represents the new item resource that we have just created. So, let's select
+this item and then click create and then we can give it a name. Since we want to create an item
+for the pickaxe, well, we name it pickaxe.tres. And now we can edit this resource in the
+inspector. Here we can give it a name, pickaxe, and we can select the 3D scene that should
+represent this pickaxe in our world. And because we made this field a packed scene, we can now
+use this quick load option here to quickly select our pickaxe scene. Also, Godot will
+automatically fix the scene path if we move around the scene or if we rename it. Now we have a
+resource that represents a pickaxe, but how do we use this resource in our pickup? Well, let's
+go back to our pickup script and instead of using a string here with the item ID, we can now
+refer to our item directly. So, we change the name to just item. And the type goes from string
+to item. We also need to change the rest of our code so it works with our new item resource. So,
+first we go to our ready function and we do no longer need to load the scene here anymore
+because the scene is already part of our item. So, we can delete this line which loads the
+scene. And here in the second line, we can just use the scene from the item and call instantiate
+on the scene. And down here where we talk with Mr. G, we modify our contract so that our on item
+picked up function now takes an item instead of a string. And if we now go back to the
+inspector, we can use the quick load option to select the pickaxe resource that we have just
+created. And this is a lot easier and there's no way to introduce a typo. We also need to update
+our player script. So, let's move over there and find the on item picked up method. And now this
+parameter here is not a string anymore, but it is an item. And instead of accessing our item
+through the item database, well we can just use the name directly from the item that we have
+been given as a parameter. And this also means that we no longer need our items database so we
+can delete this whole script. Okay, let's try out if everything still works. We start the game.
+And we can see that our pickaxe appears in our pickup. And if we walk over the pickaxe, we get
+our printout. So, now we have a reusable pickup and we can save this out as a separate scene.
+So, we right click the node and then we select export branch as scene and we can name this
+pickup.tscn. And to keep things a bit organized, let's also create a folder named pickup and
+then we drag the pickup script and the pickup scene into this new folder. So, now it's very easy
+to add more items that Mr. G can pick up. So, let's create a new item for a sword. And then we
+click create and name this sword.tres. And here in the inspector, we can give it a name and we
+select the sword scene as a 3D representation of the sword in our world. Now we can duplicate
+the existing pickup and change its item from a pickaxe to a sword. And let's try if that works.
+We start the game. And Mr. G walks over the sword and he also walks over to pickaxe. And we can
+see that he always picks up the correct item. This is nice, but it's not really terribly useful
+because we just print out the item and then forget about it. So, let's give Mr. G an actual
+inventory and show the inventory contents to the player in some kind of inventory dialogue. So,
+let's start with the inventory. We create a new script, right click, new script, and we name
+this inventory.gd. And then we're going to delete the contents and we can start with our
+inventory. First, let's add a class name, inventory. And an inventory, well, it could be a node,
+but we really don't need any node functionality here. So, we make it a simple object instead.
+So, extends RefCounted. And because RefCounted is the default, we can just leave it out. So,
+let's delete this line. Now, we need a place where we store all the items that are in the
+inventory. So, we're going to create a new array. So, var content, this is an array of items.
+And we are going to initialize this with an empty array, so we don't need to do any kind of null
+checks. We also need a function to add an item to the inventory. And this takes an item as a
+parameter. And in here, we can just append this item to our content array. A function to remove
+an item from the inventory would also be nice. So, let's add another function, remove item. This
+also takes an item. And in here, we just remove the first occurrence of this item here that we
+get from our content array. And finally, we add a function that just gives us the contents of
+the inventory and we call this get items. And this returns an array of item. And we just return
+this content array. Well, that is a very simple inventory. We don't have any stacks or slots,
+but for now, this is good enough. And now we can add this inventory to our player. So, let's go
+back to our player script. And here we create a new variable, var inventory. And this is of type
+inventory and we just make it a new inventory. Great. Now, our player has an inventory and we
+can use this in our pickup function. So, let's go down there to on item picked up. And here, we
+just add the item that we picked up to our inventory with the new add item function that we just
+wrote. Now, it would be really nice if we could actually see what is inside of our inventory.
+So, let's create a very simple inventory dialogue. We make a new scene. And this is going to be
+a user interface scene. And we save this as inventory_dialog.tscn. Let's rename the root node to
+inventory dialogue. And we also change its type to be a panel container. Let's first add a
+little title bar and a close button so that we can close this dialogue. So, we create an
+HBoxContainer to get a horizontal title bar. And inside of this HBoxContainer, we add a label.
+Let's call this title label and a button for closing the dialogue. And let's call this one close
+button. Now, we can set up the label. So, let's change its text to something like Mr. G's stuff.
+And we want to center this label. And the label should also take all horizontal space. So, we go
+up here and we tick the align with expand checkbox. And then we horizontally expand the label to
+fill all the available space. If you don't know how container layouting works in Godot, I
+recommend that you have a look at my UI basics video. There's a link to that down in the
+description. Okay, so now let's configure the close button. We're just going to give this one a
+little X as a label. And our title bar is done. And next is the part that actually shows the
+inventory contents. A lot of games use some kind of grid to show inventory items. So, let's do
+that as well. We add a grid container. And we want this grid container to be below our title
+bar. So, let's add a VBoxContainer. And now we can just drag the HBoxContainer with the title
+bar and the grid container into our VBoxContainer. And the VBoxContainer will just stack them on
+top of each other. Now, inside of this grid container, we want to show the inventory contents.
+So, let's first add a panel container into the grid container so we have some kind of
+background. And inside of this panel container, we put a texture rect, which is going to show an
+icon of the item that is in our inventory. Well, let's quickly load an icon here, maybe this
+sword icon. And that looks pretty nice. Now, if we duplicate this panel container a few times,
+we can see how this is going to look when we have a filled inventory. Our grid container only
+has one column and that looks a bit odd. So, let's increase the columns of the grid container to
+maybe five. And that looks a lot more like an inventory dialogue. Nice. But how would we show
+the actual contents of our player's inventory and not just a dummy like this? Well, we can do
+the same thing that we just did here in the editor, but we do it in code. So, we walk over the
+inventory contents. And then for each inventory item, we create one copy of this panel
+container. And then we set the icon to some icon that matches the inventory item. And finally,
+we put our finished item slot into our grid container. And this way, we can build up our
+inventory step by step. So, first let's extract our item slot here into a separate scene so we
+can quickly make copies of it and we don't need to build and arrange the panel container and the
+texture rect in our code. So, we right click this node and then we select save branch as scene.
+And we name this item_slot.tscn. Okay, now let's clear our grid container and then we can start
+writing a script. So, we add a script to this inventory dialogue node and we name it
+inventory_dialog.gd. And we're going to delete all of this. Let's give this a class name,
+inventory dialogue. Okay, first let's make the close button work. So, we select this button and
+then we go to the node's signals and then we can connect the pressed signal to a new function on
+close button pressed. And inside of this function, we just hide the dialogue. The next thing we
+want to do is to fill this grid container. And for this, we need to have access to this grid
+container in our script. So, let's right click it and then select access as unique name. And
+then we can control drag this grid container into our script and we get a nice on ready
+variable. So, why did we do it with a unique name? Well, the reason for that is that unique
+names have the advantage that we can move our nodes around and we don't need to change our
+script all the time because this unique name is going to be the same no matter where in the tree
+this node is going to be. So, if we decide to rearrange items in our UI a bit, well, we still
+don't break our script. Now, we need a function that opens this dialogue and shows the inventory
+contents. So, let's make a new function and we call this function open. And because we don't
+want this dialogue to be concerned with where the inventory is actually stored, we will just
+give the inventory as a parameter to this function. And then whatever code tries to open the
+inventory dialogue needs to supply the inventory to our dialogue. And this way, we can keep the
+dialogue independent of the rest of the game. So, first we show the dialogue. And we just call
+show. And now we can walk over the items in our inventory. So, for item in inventory. Get items.
+And for each item, we want to create a new item slot inside of our grid container. We already
+made a scene for this item slot, but we don't want to hardcode the path to that item slot scene.
+So, let's export this as a variable. Let's go up and we write an export for slot scene. And this
+is a packed scene. Here in the inspector, we can just drag the item slot scene into this new
+field. And this way Godot will automatically fix the path to the scene in case we reorganize our
+project. Now, we can go back to our loop and here we can instantiate our slot scene. Now, we can
+add this to our grid container. But we still just have an empty slot without an icon. But where
+do we get this icon from? Well, we can add it to our item description just like the 3D scene
+that we have added before. So, let's go to our item script. And there we can add an export
+variable for the icon. So, export var icon and this is a texture 2D. And now we can add an icon
+to the resources that we already created. For the pickaxe, we use this pickaxe icon here. And
+for the sword, well, we get the sword icon. Now, we can go back to the inventory dialog and we
+can use the icon and put it into our item slot. But how do we get it in there? Well, let's have
+a look again at the item slot scene so we can see how it is built up. We have a panel container
+at the top and a texture rect directly below that. But this item slot really is its own
+component. So, the inventory dialog should not know how this is built up internally. So, maybe
+let's add a script to our item slot and we're going to delete these two functions. And then we
+can add a new function that will actually show an item. Show is already taken as a name, so
+let's call this function display. And this function is taking the item that it should display as
+a parameter. Now, we need to access this texture rect and we already know scene unique names are
+the way to go. So, right click, access as unique name. And then control drag this into our code.
+So, now we have an onready variable which is of type texture rect. We can use this to show the
+icon of our item. So, we write texture rect.texture and this is item.icon. Great. Now, we can go
+to the inventory dialog and use this new function. So, inside of our loop here we first add the
+slot to our tree. And this is important because the onready variables of our item slot are only
+initialized after it has been added to the tree. So, we really need to add it to the tree first
+and then we can call our display function. So, slot.display_item. And that should do it. So,
+let's add our inventory dialog to the game. Our game does not have any UI elements yet, so let's
+start by adding a canvas layer and this canvas layer will contain our user interface. And we
+name this canvas layer UI root. Technically, we don't need a canvas layer in 3D games, but I
+still like to add it because this gives us a nice separation between the 3D part and the 2D
+stuff. Now, let's switch to 2D mode so we can actually see what we're doing. And now we can drag
+our inventory dialog into this canvas layer. And to keep our inventory dialog always centered we
+go here to anchoring and then we pick the center anchoring preset. And now Godot will make sure
+that this dialog is always centered no matter which resolution or aspect ratio we have. Let's
+also hide the inventory dialog so it only shows up when we press the inventory key. We're almost
+done, but we still need to add some code that actually opens this inventory dialog up. Now,
+where should we put this code? Our inventory is a component at the player. So, we could open up
+the inventory dialog directly from the player. But then the player needs to know about our
+game's user interface and I don't really like that. We want our components to know as little as
+possible about each other and I think in this case it is probably better if we have a third
+component that brings our player and our inventory dialog together. So, let's add a script to
+our UI root here. And we call this UI root.gd. Now, our UI root script needs to know about the
+player and the inventory dialog. We already know how to do that, so we make them scene unique
+nodes. And then we can just control drag them into our script. Now, we want to be able to press
+a key to open the inventory, so we need to create a key binding in the project settings. Let's
+go to project project settings and up here we select the input map tab. Now, we can add a new
+action. Now, let's call this inventory. And then we scroll down and we add a key binding to this
+action, which is I for inventory. And now we can use this key binding in our script. Let's go
+back to our UI root script and we add a new function _unhandled_input. So, this is called for
+all input that is not handled anywhere else. And in here we can check if the inventory key has
+just been released. So, if event is_action_released inventory and if this is the case, then we
+open the inventory dialog and show the inventory of the player. Okay, that was a lot of stuff,
+so let's try if this actually works. So, we start the game and then we pick up our pickaxe and
+we press I to show the inventory dialog. And great, our pickaxe has appeared in the inventory
+dialog. Unfortunately, we cannot click on our close button because our mouse is captured because
+we're playing a 3D game. We would need to show our mouse when we open the dialog and then we
+need to capture it again when we close the dialog. So, let's add this to our inventory dialog
+script. So, here after we call show, we make the mouse visible. So, we say input.mouse_mode is
+input.mouse_mode_visible. And down here where we hide our dialog, well, we just set the mouse
+mode back to captured. Okay, let's try this again. So, we walk over the pickaxe. Now, we press I
+and our inventory dialog is showing and our mouse is also showing and we can actually click the
+close button. Awesome. So, now let's pick up our sword and then let's open up the inventory
+dialog again. And well, we seem to have two pickaxes now in our inventory dialog. Why do we have
+a second pickaxe now? Well, let's look again in the open function of our inventory dialog and we
+can see that whenever we call this function we just add more and more items to our grid
+container. So, when we open the dialog the first time, we add the pickaxe and when we then
+picked up the sword and opened it a second time, well, we added the pickaxe and the sword again.
+So, now we have two pickaxes and one sword. But well, this is easily fixable. We can just clear
+out our grid container before we add new contents. And then we shouldn't get any duplicate
+entries. So let's add a loop for child in grid container.get_children and in this loop we can
+just delete each child. So, we call queue_free for each child. Okay, let's try this again. We
+walk over the pickaxe and we open the inventory dialog. Pickaxe is there. We close the inventory
+dialog and we walk over the sword and then we open the inventory dialog again and this time
+everything renders correctly. This is nice. Let's quickly have a look at what we have built so
+far. We created a data model that represents our items. It holds the name, the 3D scene and the
+icon of our item. We also built a second data model, our inventory. It just holds a list of
+items and provides a few useful functions to manage this list, but it isn't really concerned
+with how the items get in there or how they are rendered on screen. And because we have these
+data models, the rest of our game code becomes really simple. Adding an item to the inventory is
+one line of code in the player script. Showing the inventory items in a dialogue is four lines
+of code in the inventory dialogue. And because we can simply give the data model to any
+component, each component only needs to know about the data model, but is independent from other
+components. And this helps keeping our game manageable. And now let's see how we can use this
+data model to build additional systems on top of what we already have. And to do that, we're
+going to build a very simple crafting system. In general, a crafting system works like this. We
+have a recipe, and this recipe has some ingredients, and we get something produced from these
+ingredients. We currently don't have any kind of ingredients, so let's create a few more items
+that we can use as ingredients. Let's first create some iron ore. So, we create a new resource,
+and we select item, and we call this one iron ore.tres. And now we can give it a name, iron ore,
+and select an icon, and we can also select a 3D scene for that. And now we have an item that
+represents iron ore. Let's make a second item which represents an iron ingot. And this time we
+do it by duplicating the iron ore that we just created. So, we select it and press Ctrl D to
+duplicate it, and we name it iron ingot.tres. We also change the name to iron ingot, and pick a
+new icon, and we also pick a different 3D scene. Great. Now we have a few items that can
+represent ingredients for our recipes, and we can continue with making a data model for our
+recipe. So, let's create a new script, and we call this one recipe.gd. And we're going to delete
+all of this. So, let's first give this class a name. We call it recipe. And like our item, this
+is a resource. And now we need to think about what kind of data are we going to need in our
+recipe? Well, we'll probably need some title or name that describes what this recipe is going to
+produce. So, we give it a name, and this is a string. And we will also need a list of
+ingredients that go into the recipe. So, let's add a variable for that as well. This is an array
+of items. Finally, we need to have a list of stuff that is produced by this recipe. And this is
+very similar to the ingredients. It's just an array of items, so let's just copy this line and
+rename it to, let's say, results. Now we can create recipes. So, let's create a new folder that
+we call recipes. And inside of this folder, we create a few recipes. So, let's first make a
+recipe for an iron ingot. We give this a name. Let's call it iron ingot.tres. And now we can
+edit it here in the inspector. It's called iron ingot, and let's say that we need to have three
+iron ore to create two iron ingots. So, let's drag in our iron ore item here into the inspector,
+and we need three of those. So, we just create two more entries here, and then we can just drag
+down the iron ore into these two new slots. And for the result, we create two slots because we
+want to have two iron ingots. And now we can just drag in the iron ingot here, and again we drag
+it down like we did for our iron ore. And this easy, we have created a new recipe. Let's add
+another one to create a pickaxe. We can duplicate this one and change its name to pickaxe. And
+as ingredients, we take two iron ingots. And as a result, we want to have a pickaxe. How can we
+now use these recipes in our game? We can build a simple crafting dialogue similar to the
+inventory dialogue that we already built, and then we can craft in this dialogue. So, let's
+create a folder for our crafting dialogue. We name this crafting dialogue. And to save some
+time, let's use the inventory dialogue as a starting point. So, we duplicate this inventory
+dialogue scene here, and we name it crafting dialogue.tscn. And then we drag this into our
+crafting dialogue folder. Let's first rename the top node here to crafting dialogue. Then we can
+change the title label to something like, um, crafting. And then let's think about how this
+dialogue could look like. I like to draw a little mock-up before I go into making any complex
+UI. So, this is how a crafting dialogue could look like. So, we have a list of recipes here on
+the left side, and then the user can select an entry in this list, and this would show the
+ingredients and the results of the recipe here over on the right side. And then the user can
+click this craft button down here to craft recipe. So, let's get rid of this grid container and
+build this. Let's first have a look at the road strokes here. We have basically two sections,
+the left section with the list, and the right section with our ingredients and results. So,
+let's add an HBox container so we can split things up into a left and a right section. This HBox
+container should fill the whole vertical size of the dialogue, so we set its vertical alignment
+to expand, and then we can click the fill button, and you can see it expands to fit the whole
+height of this dialogue. Now, on the left-hand side, we have a little label on top of our list
+of recipes. So, we're going to need a VBox container, which will stack the label and the recipe
+list on top of each other. Now we can add the label, and we set its text to recipes. And then we
+can add an item list, which is going to hold our list of recipes. Let's name this recipe list.
+And we want this list to fill the remaining vertical space here, so let's set its vertical
+alignment to expand, and then click the fill button. Okay, that looks like we're getting
+somewhere. Let's add a few dummy items here so we can see how this actually looks when there's
+something in the list. So, we go over here to the inspector, to the item section, and then we
+can add an item, first recipe, and maybe another one, second recipe. Okay, so now we see that
+the text of our items is cut off, which is not good. It looks like that the item list does not
+request any minimum size to actually fit its items. So, we will have to set a minimum size
+ourselves. Now, we can do this here in the layout settings, and we set the minimum horizontal
+size to, well, let's say, 250 pixel. Now, that looks a little Okay. And now we can go to the
+right-hand side. And here in our mock-up, we can see that we have another vertical structure, so
+there's a label, there's a list of icons, and there's another label, and another list of icons.
+So, we start with a VBox container. And we want this VBox container to fill the remaining
+horizontal size of this dialogue. So, we set its horizontal alignment to expand, and then click
+the fill button. Now, let's add two labels, one label for the ingredients, and the other one for
+the results. And finally, we add a grid container for our ingredients. Let's maybe drag in a few
+item slots from our prepared item slot scene so we can see how this will look. And we see again
+that we need to increase the columns in our grid container so it renders the items nicely next
+to each other. Let's also go with five here, and yeah, that looks okay. Good. Now we can delete
+our item slots again, and then we can press Ctrl D to duplicate this grid container. And this
+time we drag it below our results label. So, we have the ingredients and results grids, and all
+that is missing is the crafting button. So, let's add a button. And we name it craft button.
+Now, this button currently takes all horizontal space, which is not what we want. So, we change
+its horizontal alignment to shrink end. And that will make it shrink and move it to the right. I
+also want the button to be at the bottom of our dialogue. But, because there's currently nothing
+in our grid containers, the button has moved up here. And we can fix this by adding a spacer
+control. So, control A to add a new node, and then we select control. Now, this is really just
+an empty control, and we drag this between our second grid and the craft button. And now we can
+set its vertical layout to expand and press the fill button. And we see that this control will
+grow to fill any space between our grid container and the crafting button. And this way it
+pushes the crafting button down. This still doesn't look super nice, but I think at this point
+it is workable. So, let's cut it here and get to the implementation. As a basis, we're going to
+use the inventory dialogue script that we already have. So, let's quickly duplicate that. And we
+name it crafting_dialog.gd. And then we can drag it here into our folder for the crafting
+dialogue. And we can also drag it up here on our crafting dialogue root node. So, then let's
+first fix up the class name. It's now named crafting dialogue. And we need to access the recipe
+list in our script. So, let's make this a scene unique node. And control drag it over into our
+script. We also need these two grid containers for our recipe ingredients and results. So, let's
+first give them a proper name. First one is going to be our ingredients container. And the
+second one is our results container. And then we can also control drag them into our script.
+Okay. So, now let's have a look at the function that is going to show this dialogue. What
+information do we need here? First, we need a list of recipes for our recipe item list here on
+the left-hand side. We're also going to need a reference to the inventory because when the
+player clicks the craft button, then we want to remove the ingredients from the inventory and
+put the crafted results back into our inventory. So, let's add these two things to our open
+function as parameters. So, first the recipes. And this is an array of recipe. And second, the
+inventory. Now, when the dialogue is opened, we want to add all of the recipes to our recipe
+list so that the player can select one and craft it. And we first need to clear the recipe list,
+just like we did in our inventory dialogue. So, recipe_list.clear. And then we can just walk
+over the recipes that we get as a parameter. And for each item, we add the title of the recipe
+to our list. Let's also remove this grid container code here, so we keep things nice and clean.
+And now when the player selects a recipe, we want to fill our ingredients and results containers
+so the player knows this is what goes into the recipe and this is what comes out. So, the recipe
+list would need to inform us when a user changes the selection. And we can do this with a
+signal. So, let's check the signals of our recipe list. We go to node. And this item selected
+signal looks about right. So, let's connect this one to our script. And we connect it to a new
+function called on_recipe_list_item_selected. Great. There's a small problem, though. This
+signal only gives us the selected index. But, this is not enough because we want to update our
+ingredients and results containers. And for this, we don't need the index. We need the actual
+recipe in our hands. So, how do we get the selected recipe into this function? Well, the item
+list has a functionality that allows us to attach additional data to each item in the list. And
+we can use this to attach our recipe to the list item. So, up here where we add the recipes to
+the list, we can call a function called set_item_metadata. And in the auto complete, we can see
+that this function requires the index of the item to which we want to attach our metadata, in
+this case our recipe. So, where do we get this index from? Well, lucky for us, the add_item
+function that we just called above returns the index of the item that we have just added. So, we
+can just save the return value of this function into a variable. And now we can attach our
+recipe to the item in the list. So, set_item_metadata, and we give it the index and the recipe.
+And down here in our on_recipe_list_item_selected we can now get the recipe from the list by
+calling the get_item_metadata function. So, recipe_list.get_item_metadata. We give in the index.
+And this gives us back the recipe. Okay. Now, I need to fill the ingredients and results into
+our grid containers. And this is going to be very similar to how we did this in our inventory
+dialogue. So, this is something that we could extract into a separate component and then reuse.
+Let's save our ingredients container as a new scene. And let's also create a new folder here,
+item_grid. And we put the new scene into this folder. Let's open it up. We rename our root node
+here to item_grid. And then we can attach a script, and we name this item_grid.gd. And all of
+this goes away. Let's also give this a class name so we get nice auto complete later. So, this
+is going to be an item grid. We already wrote the code for filling items into a grid container.
+So, let's copy that over from our inventory dialogue. So, we copy this. And we paste it over
+here. And now we just need to do a little bit of fix up. We're going to need the slot scene, and
+we don't need this grid container variable because this is already attached to a grid container.
+So, we delete this. And now we can change the function here. First, let's rename it to display.
+And instead of an inventory, it just takes an array of items. And this way we can use it for
+both our inventory and our recipes. And we don't need this line that shows the dialogue because
+it's just a component. And we also don't need this mouse handling code, so all of this goes
+away. And now we can just fix up our loops here. So, we remove the children from the grid
+container. And because this is attached to the grid container, we can just remove this grid
+container variable reference. And here in the second loop, we go over the items that we get as a
+parameter. And then we can just instantiate the slot scene and add it to our grid container.
+That would it be for the code. And all that is left is to drag this slot scene into the
+inspector field. And now we have a nice reusable item grid. So, let's first put that into our
+inventory dialogue. So, we can delete this grid container node. And then we can drag in our new
+item grid. Let's make this a scene unique node, and we rename it to grid container so it matches
+what we have in our inventory dialogue script. Let's also change the type of this variable to
+item grid so we get nice auto complete. And now we can simplify our open function here, right?
+We We don't need these two loops anymore. And we can just call the display method on our new
+item grid. And we give it the items that are in the inventory. Let's quickly test if our
+inventory still works. We walk over the pickups. And then we press I. And it looks our inventory
+dialogue is still functioning. Great. Now, we can continue with the crafting dialogue. The
+ingredients container is already an item grid because, yeah, we created it from this ingredients
+containers. But our results container is not, so let's delete this old results container. And
+then we can drag in our new item grid. We name it back to results container. And we make it a
+scene unique name. And now we can go back to our function where we fill our ingredients and
+results containers. And this is really just a one-liner. We can call the display function on our
+item grid and give it the list of ingredients. And then we can do the same thing for our results
+container. So, now I think it's time we test this out. So, let's add this new dialogue to our
+game scene. So, we move over to our game scene and then we can switch to 2D mode again so we can
+see what we're doing. And now we can drag in our crafting dialogue. Again, we center it with the
+center anchor preset. And we hide the dialogue so it is invisible by default. Then we can use
+our UI root script to open up this dialogue. We need to have a reference to the crafting
+dialogue in our UI script. So, like always, we make it a scene unique node. And we can control
+drag it in here. We also want to open the crafting dialogue with a key press. So, we need to add
+a new key to our input mapping. So, we go again to project project settings. And then to the
+input map. And here we can add a new input mapping. Well, let's call it crafting. And we bind
+this to the C key. So, back to our script. Here we can check if the player has released the
+crafting button. And if this is the case, we can open up our crafting dialogue. And now we need
+a list of all recipes. We don't have this list right now, so let's put in an empty array here.
+And we also need the inventory which we can grab from the player like we did up here in the
+inventory dialogue. Okay, so how can we get hold of a list of all recipes? This is simple way
+that we could use. We can just control drag our recipes up here into our script. And this will
+create some constants that we can use to fill our array. This is not really scalable because if
+we have like a hundred recipes, we really don't want to have a hundred constants in our script
+here. But for now, we just want to see whether or not our dialogue works, so let's roll with
+that. So, we can just fill the two constants here into our array. So, iron ingot and pickaxe.
+And that should do the trick. So, let's try it out and start the game. And now I can press the C
+key and our crafting dialogue is actually showing. We have our recipes in the list, which is
+good. So, let's see what happens if we click on a recipe. And yes, the ingredients and results
+are also nicely updated. Well, let's quickly check out the other recipe. Yeah, this seems to
+work just fine. Fantastic. Now we can implement the actual crafting. So, let's go back to the
+crafting dialogue. And to actually craft something, we need to know that the player has pressed
+this craft button. So, let's connect it to a function. So, we select the button and then we go
+to node signals and there we have the pressed signal. And we connect this to a new function on
+craft button pressed. Implementing this crafting function is pretty easy. We can just remove all
+the ingredients from the inventory and then we put all the results back into the inventory. We
+currently don't have access to the inventory in this function. So, we need to store it in a
+variable when the dialogue is opened. So, let's do that. Well, let's first go up here and create
+a variable for the inventory. And when the dialogue is opened, we store the inventory to our new
+variable. For crafting, we also need to know the currently selected recipe. And we already
+extract this recipe when the player selects an item in our recipe list. So, let's also write
+this to a variable. So, we create another variable up here for our currently selected recipe and
+this is a recipe. And then whenever the player selects a recipe, we just update this variable.
+And then we can also use this class variable here and here. Now we have access to both our
+inventory and the currently selected recipe and we can actually craft something. So, let's go
+back to our crafting function. And now we can walk over our ingredients. So, for item in
+selected recipe ingredients. And then we can just remove each ingredient from the inventory. So,
+inventory remove item. And for the results, we do a similar thing. We walk over all the results.
+For item in selected recipe results. And then we add each result to the inventory. Inventory add
+item item. So, let's give this a try and see if it works. We open the crafting dialogue and then
+we select the recipe for the iron ingot. And then we press craft. And now let's close the
+crafting dialogue and open up the inventory. And we have two new iron ingots in here. Fantastic.
+Now you have probably noticed that there is a bit of a problem here because we just crafted two
+iron ingots out of thin air. It would also be nicer if the first recipe was automatically
+selected when we opened the crafting dialogue. So, let's fix these two things. Selecting the
+first recipe in our list is actually pretty easy. So, we can call select on our recipe list and
+this will select the first item. When we select an item through code, then the item list will
+unfortunately not send a signal. So, we need to call our on recipe list item selected function
+so that this function updates our ingredients and results lists. And now for the more
+interesting problem, we need to check that the player actually has all of the necessary
+ingredients in the inventory before we allow the craft button to be pressed. So, let's add a
+function to our inventory that can check this. We go to the inventory script. And we add a
+function named has all and this takes an array of items. And it returns a boolean value that
+tells us whether or not all the items in the given array are in our inventory. But how can we
+check this? Well, let's see. We need three iron ore and this is what is in our inventory. Now we
+can walk over the content of our inventory and we check, is this an item that we need? And if
+this is the case, we remove this item from the list of items that we need. So, we start with an
+ore and we need an ore, so we can remove the first ore from the list. The next one is an ingot
+and we don't need an ingot, so we skip to the next one, which is a pickaxe. We also don't need a
+pickaxe, so we can skip to the next item, which is another ore. We need this ore, so we remove
+it from the list of items that we need and then we have a sword. And we don't need that, so skip
+to the next item and there we have another ore. So, we remove this ore from the list of items
+that we need and we're done. And if we now look at the list of the items that we need, we can
+see that it's empty. So, we know that we have all the items that we need. And if this list were
+not empty when we're done with all the little loop here, well, we know that we don't have all
+the items that we need. So, let's put this into code. The items array that we give into this
+function is the list of items that we need. Now when our crafting dialogue will later call this
+function, it will give us the ingredients array directly from our recipe. And it would be really
+bad if we deleted items from this array because then we would change the recipe. So, let's make
+a copy of this array and we delete the items from the copy. So, we make a new variable, var
+needed, and this is also an array of items. And we call items.duplicate and we get a copy of the
+items array. And now we can walk over our inventory contents. So, for available in content and
+then we remove the item that we found in our inventory from the array of items that we need. So,
+we call needed.erase available. And the erase function is actually smart about this and will
+only remove an item if it actually exists. And then we can simply check if the needed array is
+now empty. Now we have a function that allows us to check if we have all the necessary
+ingredients. So, let's call this in our crafting dialogue. So, when the player now selects a
+recipe, we can ask the inventory if it has all the necessary ingredients and only then we enable
+our crafting button. We need to have access to the crafting button. So, let's make this a scene
+unique node and control direct this into our script. And then we can disable our button when the
+inventory does not have all the necessary ingredients. We're also going to have to check this
+after we have crafted a thing because then we have used up items in our inventory and we may no
+longer have enough items to craft this recipe. So, let's copy this line into our crafting
+function as well. Let's give this a try. We open the crafting dialogue and now our first recipe
+is automatically selected, which is great. And also the craft button is now disabled because we
+don't have the necessary ingredients. So, we need to add a bit of iron ore to our world so we
+can actually craft something. Now, let's do that. We take this pickaxe here and we duplicate
+this and we change the item to be an iron ore. And then let's create two more copies of this
+pickaxe so we have three iron ore in total. Now, that should do it. Now, let's start the game
+again. And then we can pick up our three iron ore and now let's try to craft something. And we
+can see that we can now craft an iron ingot because we have all the resources. But if I switch
+over to the pickaxe recipe and we can see that we cannot craft it right now because we don't
+have any iron ingots. So, let's then craft the iron ingots. And now our craft button has been
+disabled because we no longer have the necessary iron ore. But if we switch over to the pickaxe,
+we can actually craft this because we have converted our iron ores into ingots. So, let's craft
+this one and then let's have a look into our inventory and there we can see that all the
+crafting has actually worked and we are left with a pickaxe. Great. Okay, that worked fantastic,
+but we still have a little problem left over. Remember when we wrote the code for opening the
+crafting dialogue that we needed to get all the recipes in our game? We postponed this for later
+and later is now. So, how can we actually get a list of all recipes without having to create a
+constant for each of them? If we look at our folder structure here, we can see that all our
+recipes are inside of this recipe folder. So, we could load all the resources that are inside of
+this folder. Unfortunately, Godot does not have a built-in way to load all resources inside a
+folder, so we need to do this ourselves. Let's first create a variable where we are going to put
+all the recipes. So, var all recipes and this is an array of recipe and we initialize this with
+an empty array. Now, we can create a ready function and to list all files in a folder, we create
+a loop for file in DirAccess.get_files_at then we point to res://data/recipes. So, this will
+look for all files inside of the data/recipes folder in our current project. This file variable
+will contain the name of the file. So, we can now combine the folder name and the file name to
+get the full name of the file. Now, we can ask Godot to load the recipe from here. So, we say
+var recipe = load resource file as recipe. And finally, we add the recipe to our list. So, all
+recipes.append(recipe). Okay, great. So, now we can get rid of these constants and down here
+where we open our crafting dialogue we can use the new array that we have just built. Okay, that
+wasn't actually so hard. So, let's try if this works. So, we open up the crafting dialogue and
+it looks like our recipes are here. Fantastic. We can ship our game now. So, let's export our
+game and see if everything still works after we have exported it. So, we go to project, export
+and I have already installed the Windows export templates. So, let's export this to the desktop.
+And we're going to ignore all of these warnings for now because this is really just a test. And
+if we now look at our desktop we can see that we have a new test executable. Well, actually we
+have two. One that opens up a console and another one that doesn't. So, let's use the one with
+the console so we can see what's going on. So, we start the game and we are already greeted with
+two errors. Well, that doesn't look good. So, it looks like our game is not able to load the
+resource files which contain our recipes. Let's open up our crafting dialogue to check this. And
+indeed, we don't have any recipes in our crafting dialogue. Why is this happening? It worked in
+the editor. Well, when Godot exports our files, then it will do some reorganization and
+optimization of the file structure. You see here on our desktop, we actually don't have any
+folders for our exported game. We just have this PCK file which contains everything neatly
+packed together. There's a tool called PCK Explorer and we can use this tool to have a look
+inside of these pack files. There's a link down in the description if you would like to try it
+out yourself. So, this is the PCK Explorer and we can open our PCK file by just dragging it in.
+And well, there seems to be a lot of stuff inside our PCK file. So, let's use this filter
+function up here to find our recipes. So, we type recipe in here and press enter. And now we can
+see all the files that have recipe in their name. So, it looks like our resource files which
+should end in .tres have disappeared and instead we got some .remap files. Well, this is really
+not great because it totally breaks our loading. We could of course do some kind of hack and
+say, "Okay, we know that all our resource files are getting renamed to .remap and then account
+for this when we load them." But this is really a hack because this packing is an implementation
+detail of how Godot creates an export and we really don't want to rely on this behavior because
+it can change at any time and then our game silently breaks. So, what can we do then? To solve
+this problem, I have created a small plugin called Godot Resource Groups. Let's install this
+plugin and then let's see how it can help. So, we go to the asset library and we search for
+Godot Resource Groups. Click on the link here and then press the download button. We don't need
+the examples that come with it. So, let's click up here. And now we can choose which parts we
+want. So, let's uncheck this examples folder and then click install. Then we need to enable the
+plugin. So, we go to project, project settings plugins and here we check the check box to enable
+it. And finally, after installing a new plugin, it's always a good idea to reload the project.
+So, let's do a project reload current project. Okay, so with the plugin, we can create a new
+kind of resource which is called a resource group. Let's add one. So, here in our data folder,
+we right click, new resource, and then we search for resource group. We want to access all our
+recipes, so let's name this resource group all recipes.tres. And now we can set up our resource
+group. First, we need to give it a folder where the resource group will look for resources. We
+want all our recipes, so let's pick the recipes folder here. Now we need to tell the resource
+group which files we are interested in. We want to load all the .tres files inside of that
+recipes folder, so here in includes, we add an element, and then type in star.tres. And if we
+now save the project with control S, we can see that this paths property here now contains all
+the paths to all the recipes in our recipes folder. And the plugin will keep this list up to
+date at all times. So, whenever we add, remove, or rename a recipe in this folder, then this
+resource group will automatically pick it up. Now we can use this in our UI root script to load
+all the recipes. Let's remove this loop over the file system, which didn't work, and instead, we
+get our resource group, so we can load our recipes. Let's use an export for this, because we
+don't want to hard code the path. So, export var all recipes, and this is a resource group. And
+now we can select our resource group here in the inspector. Back to our script, here in ready,
+we can now call the load all into function of the resource group. And then we give it the list
+of recipes, and now this function will fill all the recipes from our resource group into our
+recipes array. And that's pretty much all we have to do. So, let's start our game and see if
+this works. Let's press C to open the crafting dialogue, and all our recipes are there, so this
+works fine. But, yeah, we already know we need to export it to see if it really works, so let's
+export the game again. So, project, export, and then we export our project. Okay, so let's now
+go to the desktop and start our exported game. We again use the console version, and there are
+no errors in the console, which is promising. So, let's press C to open the crafting dialogue,
+and all our recipes are there. Fantastic. Over time, your game will evolve, and you may need to
+add or change data in your resources. For example, let's assume we want to add a feature that
+allows the player to buy and sell items from a merchant in game. For this, we would need to have
+a price for each item. We're not going to implement the merchant, because this video is already
+quite long, but let's add a price, so we can see how this affects the data that we already have
+in our project. So, let's open up our item script, and here we add a new export for the price.
+And this is going to be of type int, because we charge in coins, and they can only be full
+coins. And we give this variable a default value. This is going to be the value that all the
+existing items will get. So, if we now save this, and then maybe open up our pickaxe item, we
+can see that this has now a price of five. So, adding new fields seems to be quite easy, and
+because we have a default value, we know that all the items at least have some price set. But,
+let's say we have a hundred items, and we want to set a custom price for all of these items.
+Well, then we would need to double click each item and set a price, and then double click
+another one, and set a price, and this is kind of not fun. Also, it's really hard to get an
+overview on what the prices currently are, which is really essential for balancing your game. It
+would be really nice if we could edit this in some kind of spreadsheet. So, I had a look around,
+and I found that a person made a plugin that allows us to edit resources in some kind of
+spreadsheet. So, let's install this plugin, and then let's see how this can help us to edit our
+item prices. We go to the asset library again, and then we search for resources, which will
+bring up this plugin called edit resources as table two. So, we click the link, and we press
+download. And this plugin also comes with some example data, which we don't want to use right
+now, so we again click up here, and then in the tree, we deselect this example folder. Now we
+can install the plugin, and then we need to enable it, so we go to project, project settings,
+plugins, and we enable the plugin here. Just like with the other plugin, it's a good idea to
+reload the project before we use the plugin, so project, reload current project. And now we have
+an additional tab up here, which is called resource tables. And in this tab, we can edit our
+resources in a table view. And the first thing we need to do is to tell the plugin which
+resources we want to edit. We want to edit our items, so we open our data items folder. And now
+the plugin collects all the resources in our items folder, and is showing them in this nice
+table. This is great, because now we have a good overview on what items we have in our project,
+and what their prices are. We can sort them by clicking on the table headers, so we could sort
+them by price, or by name, or any other information. And a really cool thing is that we can
+actually edit this. So, say we want to set the prices for the iron ingot and the iron ore to
+seven coins, well, I can just select these two, and here over in the inspector, I can type a
+seven into the price field, press enter, and boom, we have edited two resources at the same
+time. The plugin also has a filtering functionality, so let's say we want to find all the items
+that cost less than seven coins. Well, then we can click here on the filter process tab, and
+this brings up the filtering functionality. And here on the left-hand side, we can type a filter
+expression, and this can be just any GDScript expression. And inside of this expression, we can
+use the name res to identify the resource. So, let's type res.price is less than seven. And if
+we press enter, we now only see the resources that have a price below seven coins. So, with this
+plugin, we get a lot of control over all of our game data, and this really helps maintaining a
+larger database, and we can do this all directly in Godot. In this video, we explored how data
+models can help us to make our game more extensible and manageable. We started with a very
+simple items database that was just a dictionary, and then we switched over to resources to
+represent the items and crafting recipes in our game. We learned that resources have quite a few
+advantages over our previous approach. We can edit them nicely in the Godot inspector, so
+there's no syntax to follow. We can easily load them with the built-in load function, and they
+can directly refer to other resources, like scenes or other items, and Godot will keep these
+references up to date, which eliminates any chance for typos, and also allows us to reorganize
+our project without breaking things. We then have built a simple inventory and crafting system
+to see our data model in action, and we learned how we can use our data model to represent the
+same item in a 3D world, our game's user interface, and the game's systems, like the inventory
+or the crafting system. Finally, we had a look at how we can dynamically load our resources in a
+way that works both in the editor and the exported game. And we had a look at a plugin that
+allows us to manage a large database of items, so we can easily tweak and balance our game
+according to player feedback. Inventory items and crafting recipes are only two of the things
+you can represent with a data model. The same approach can also be used to model a lot of other
+things. For example, cards in a card game, quests and quest rewards in an RPG, dialogues, unit
+types in any kind of strategy or shooter game, weapon types, and a lot more. I hope this video
+has been helpful, and maybe has given you an idea on how data models could work for your game.
+If you have any questions, or want to share your approach of working with data in your game,
+please post them in the comments. If you like this video, please it a thumbs up and maybe
+consider subscribing to the channel so you get notified when new videos are posted. Thank you
+very much and happy go to nearing.
