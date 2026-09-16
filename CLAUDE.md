@@ -41,9 +41,20 @@ what's been researched or decided is already written down somewhere in here.
 ## Reading the docs
 
 `npm install` once, then `npm run docs` serves them as a searchable site on
-localhost. `docs/index.md` and `docs/.vitepress/` are site furniture, not notes — the
-sidebar is generated from the filesystem, so adding a file is enough and no config
-needs touching.
+localhost, with an "Edit this page" link to GitHub at the foot of each page.
+`docs/index.md` and `docs/.vitepress/` are site furniture, not notes — the sidebar is
+generated from the filesystem, so adding a file is enough and no config needs touching.
+
+**Markers.** Two inline markers annotate the notes in place, in blockquotes, table
+cells or list items alike:
+
+- `**?**` — unanswered. Fill it by deciding, not by writing something plausible.
+- `**!**` — a note or objection: this looks wrong, revisit it.
+
+`npm run open` lists every one across all docs (`npm run open -- '!'` for just the
+notes). They render as coloured labels on the site and stay plain, greppable markdown
+in the source. Use them instead of a comment system — a marker sits next to the text
+it is about, travels with it in git, and I can read it.
 
 ## Work tracking
 

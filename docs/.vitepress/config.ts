@@ -1,6 +1,7 @@
 import { defineConfig } from 'vitepress'
 import { readdirSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
+import { markerPlugin } from './markers'
 
 const DOCS = join(import.meta.dirname, '..')
 
@@ -38,6 +39,9 @@ export default defineConfig({
   srcExclude: ['**/node_modules/**'],
   cleanUrls: true,
   lastUpdated: true,
+  markdown: {
+    config: (md) => md.use(markerPlugin),
+  },
   themeConfig: {
     search: { provider: 'local' },
     outline: { level: [2, 3] },
@@ -60,6 +64,11 @@ export default defineConfig({
       group('godot', 'Godot notes'),
       group('answers', 'Answers'),
     ],
+    editLink: {
+      pattern:
+        'https://github.com/daniellindros/unfathomed/edit/main/docs/:path',
+      text: 'Edit this page on GitHub',
+    },
     socialLinks: [
       { icon: 'github', link: 'https://github.com/daniellindros/unfathomed' },
     ],

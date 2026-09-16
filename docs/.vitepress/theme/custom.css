@@ -1,0 +1,49 @@
+/* Markers: `**?**` unanswered, `**!**` a note or objection.
+   Styled rather than replaced, so the raw markdown stays plain and greppable. */
+
+.vp-doc strong.doc-marker {
+  display: inline-block;
+  min-width: 1.35em;
+  margin-right: 0.3em;
+  padding: 0 0.15em;
+  text-align: center;
+  border-radius: 4px;
+  font-size: 0.8em;
+  line-height: 1.6;
+  vertical-align: 1px;
+  font-weight: 700;
+}
+
+.vp-doc strong.doc-question {
+  background: var(--vp-c-warning-1);
+  color: var(--vp-c-bg);
+}
+
+.vp-doc strong.doc-note {
+  background: var(--vp-c-tip-1);
+  color: var(--vp-c-bg);
+}
+
+/* A blockquote opening with a marker carries prose — tint the whole block. */
+.vp-doc blockquote.doc-question-block,
+.vp-doc blockquote.doc-note-block {
+  border-left-width: 3px;
+  border-radius: 0 6px 6px 0;
+  padding: 12px 16px;
+  margin: 18px 0;
+}
+
+.vp-doc blockquote.doc-question-block {
+  border-left-color: var(--vp-c-warning-1);
+  background-color: var(--vp-c-warning-soft);
+}
+
+.vp-doc blockquote.doc-note-block {
+  border-left-color: var(--vp-c-tip-1);
+  background-color: var(--vp-c-tip-soft);
+}
+
+.vp-doc blockquote.doc-question-block p,
+.vp-doc blockquote.doc-note-block p {
+  color: var(--vp-c-text-1);
+}
