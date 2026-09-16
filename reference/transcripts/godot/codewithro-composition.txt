@@ -1,0 +1,653 @@
+---
+title: Mastering Composition for Beginners in Godot
+author: Code With Ro
+source_url: https://www.youtube.com/watch?v=e3H_nw4w5U8
+date_added: 2026-09-16
+date_published: unknown
+type: Video transcript (auto-generated captions)
+caption_track: en
+segments: 1612
+---
+
+Hey everyone, welcome back to Cod's row. In this video, we're going to be mastering composition
+in GDAU. First, I'm going to explain the concepts. Then, we'll open up a GDAU 4 project and
+actually practice in the engine itself. I'll be using GDAU 4.6 release candidate 1, but feel
+free to use any version you're comfortable with. There will be some challenges, and I'd
+appreciate if you really attempt it. If you're familiar with GDAU, these challenges might be
+pretty easy for you. I've left the table of contents on the screen for you. This video does have
+timestamps in case you want to pause and come back later. This is the new style of teaching I'm
+trying out on YouTube, so let me know your honest thoughts in the comments. Am I taking too
+long? Did you learn anything? Etc. The inheritance trap. When starting game development, I see a
+lot of people stuffing everything they know into one script, like a player.gd. You have a cool
+character with some animations ready to go, and you begin coding. You start off by adding
+movement. Great, it works. And it's already starting to feel like you're on your way to success.
+Maybe finishing the game is faster than you thought, right? Well, then you decide to add a
+double jump, a dash, sword attack. Maybe you need a dodge roll or a block with a shield.
+Suddenly, your player script is hundreds of lines long. But wait, you haven't even started
+creating enemies. Now you're just starting to give up on your project, and you'll tell yourself,
+"Maybe I should just start all over again." Let me introduce you to a very useful design pattern
+called composition. In the industry, we call this the single responsibility principle. It's a
+fancy way of saying one script, one job. The health component is responsible for life and death.
+The input component, it's only responsible for buttons. When you keep responsibility single,
+your project stays simple, which also helps you scale your games. What is composition? In
+traditional programming, we're often taught inheritance. This is the is a relationship. A
+warrior is a player. A skeleton is an enemy, but inheritance is rigid. What happens when you
+want a healing totem that has health like an enemy, but doesn't move? Or a chest that can be hit
+like a player. You end up with a mess of base classes that try to do everything. Composition
+makes life so much easier by using a has a relationship. Instead of saying a character is a
+warrior, we say a character has a movement component, has a health component, and has an attack
+component. Think of your character like a hero's backpack. If you want your hero to be able to
+swim, you don't rebuild the hero, you just put flippers in the backpack. If you want them to be
+a mage, you swap your sword for a staff. In GDAU, each item in that backpack is a separate node
+with its own script. When you combine them, you get a complex character built from simple tiny
+building blocks. There are many reasons why composition is the industry standard, but let me
+give you the top three. The big three benefits: reusability, encapsulation, and iterative
+design. Let me explain reusability. Imagine that you have a health component that you spend
+hours perfecting. You can simply just drag and drop that component onto your player and enemy.
+If your NPC are guards and maybe they fight monsters that come near a town, you can drop a
+health component on them. Want them to not ever take damage like a merchant in a shop? Don't add
+a health component. We don't really need it there. When I say reusability, it's not just the
+scope of your current project. [clears throat] You can also take your components and scripts to
+your future projects. It feels like making a plugin or an extension of the engine. Now, let's
+talk about encapsulation. Let's say your character isn't taking damage. You don't have to search
+through thousands of lines of player logic. You know exactly where the bug is. It's in the
+health component. You can even test that component in a tiny isolated scene to make sure it
+works perfectly before putting it on the player. Think about your UI. If you have a health bar,
+it doesn't need to look at your player script. It just needs to look at the health component. If
+you want to see how fast your character is moving, you point your debug label at the movement
+component. Because the data is separated into these neat boxes, your UI becomes a lot easier to
+build. It's like looking for an application in the folder you put it in rather than checking
+your entire hard drive. Now, let's expand on how this is an iterative design. Let's say you
+decide the character should move 20% slower while blocking in a monolithic script. That's a
+nightmare of if statements. With composition, the shield component simply sends a signal to the
+movement component to change the speed variable, making this very clean, modular, and easy to
+change. Communication and signals. You might be wondering, if they're separate scripts, how do
+they talk to each other without becoming a mess? The secret is signals. Think of a signal like a
+component yelling a notification. The health component doesn't need to know the animation
+component exists. It just yells, "I took damage." Then the animation component hears that yell
+and plays the hit reaction animation. This is called decoupling. It means your components are
+blind to each other, making them truly independent and easy to move from project to project. The
+GDAU way. GDAU is uniquely built for composition. Unlike other engines where everything is a
+component in a list or opinionated and inheritance base like Unreal Engine, GDO treats nodes as
+components. We can take this further with typed exports by using class name like class name
+health component. Our components can recognize each other in our scripts. We can use at@ export
+bar health component which allows one script to recognize and talk to another script without
+them being hardwired together. When you write class name health component at the top of your
+health script, you aren't just naming a file. You're telling GDAU this script is now an official
+type just like an integer or a string. The at export tells GDAU to show this variable in the
+inspector panel on the right side of your screen. And the var health is the name you'll use to
+call the component in your code such as health.take damage. And for health component, this is
+the static type. It tells GDAU that only a node with the health component script attached can be
+placed in this slot. Before this feature was popular, developers used to write code like this
+using onready varhe health is equal to get node components/halth components. The problem if you
+rename the health component to something like life system or move to a different folder, your
+code would crash because the path changed. With at export var health component, you don't care
+where the node is or what it's named. You simply click on your player node, look at the
+inspector, drag and drop the health node into that empty slot. Now, if you move the node later,
+the connection stays perfectly intact. To make this even more bulletproof, GDAU provides scene
+unique names by right-clicking a component and enabling access as unique name. A percent sign
+appears next to the node. This allows your UI to find the component instantly, no matter how
+deep it's buried in the scene tree. This is the game changer for composition. It tells our
+player script, "I don't care if the component is moved deep into a folder or hidden under five
+other nodes. Find it instantly with this name." It turns your backpack into a smart backpack
+that always knows exactly where tools are located, no matter how much you reorganize. This also
+assists us developers with autocomp completion and safety. Because you told GDAU that the
+variable is specifically a health component, the script editor becomes much smarter. When you
+type health inside your player script, GDAU will show you a list of every function and variable
+inside that component, like current health or died, you don't have to guess or keep switching
+tabs to remember what you named your functions. If you accidentally try to drag a movement
+component into the health slot, GDAU will block you. This prevents those silent bugs where your
+code tries to run a jump function on a health script and crashes. Lego building. Imagine you
+have two different characters. The hero needs a health component and a stamina component. A
+wooden crate needs a health component, but not stamina. By using at export var health component,
+you can write one damage logic script and apply it to both. The player script just looks for any
+node that fits the health component mold. By using typed exports, you are creating a socket on
+your player. You can plug in any component that matches that socket type, allowing you to build
+characters like you're assembling a computer rather than writing a book. performance and
+philosophy. Beginners often hear that more nodes equals more lag. While modern GDAU is highly
+optimized, viewers might be scared to add 10 nodes to a single player. Some of you might be
+thinking, "Wait, if I have a 100 enemies and each have 10 components, isn't that 1,000 extra
+nodes? Won't my game lag?" Well, in GDAU 4, the answer is no. Nodes are incredibly lightweight.
+The performance cost of a few extra nodes is nothing compared to your 5,000line player.gdscript
+a GD script that you're too afraid to touch. Composition saves your brain and your CPU won't
+even notice a difference. Components should be selfish. They shouldn't care who owns them. The
+gold standard for a component is being stateless or context agnostic. My movement component
+doesn't know it's helping a player save a kingdom. It just knows it has a speed variable and a
+direction vector. This is why it works on a skeleton just as well as a hero. When you write your
+components, ask yourself, if I put the script on a literal rock, would it still function? If the
+answer is yes, you've mastered composition. The orchestrator. Now, you might worry that if
+everything is a component, your player script becomes useless. Actually, it gains a much higher
+purpose. It becomes the orchestrator. The player script is the brain. It doesn't do the heavy
+lifting. It just manages the state. It's the one that says, "Hey, movement component." The input
+component says we're pressing the attack button. So, I need you to stop moving while the attack
+component does its job. The player script stays short and readable because it's just the manager
+overseeing a team of expert workers. Now that we have the blueprint and we understand how these
+pieces fit together, let's actually get into the project and build it. Let's use this starter
+kit provided by Cinti that's now available in GDAU. We're going to configure the project
+together from scratch. So, don't worry if you don't know what's going on. You can find the
+download link in the description below. Go ahead and open the project and we're going to build
+our first components from scratch. Live building and challenges. I'm going to head to
+cintistore.com to actually just find the GDAU project to open up. But you can actually see what
+collections they have available for GDO by going to collections/GDO asset packs as it says over
+here. And currently they have the city pack, dungeon pack, battle royale pack, the starter pack
+which we'll be using, and the shops pack. and they have that GDAU icon listed on the top left,
+also showing what other engines it's available for. So, in this case, we're going to start with
+the Polygon starter pack because it is free. So, I'm going to go ahead and click on this and
+just add this to cart. And I'm going to go ahead and check this out. And now, after going
+through with the order, it's free. So, uh there's really nothing much to it. I'm going to go
+ahead and download the Polygon starter for GDO 4.5. So I'm going to hit download over here and
+I'm just going to go ahead and extract it to my desktop. Cintiq GDAU. You can extract this
+wherever you are comfortable with. And I'll go ahead and click on this and then click extract
+all just going to extract it into this same folder. And now I have this polygon starter. And
+this is going to be called the just a lot. I'm just going to go ahead and change this to starter
+project. And I'll go ahead and leave this as so. And I'm going to go ahead and open up GDAU. And
+now with GDAU open, I'm just going to go back to my starter project. So desktop/60/GDO. And I'm
+just going to drag this in over here. And now it says polygon starter as it says here. I'll
+double click to open this up. It does say 4.5, but I'm just going to open it with uh 4.6 RC1.
+And now when we open it, we can see this really beautiful looking level. So, we see clouds,
+skies, we see these car assets. It looks really nice. Let me see if I can uh full screen this a
+bit. And then we have these uh standard kind of t-osing characters along with this bean
+characters that we'll be using for this tutorial. We also have these weapons. And I have
+collisions on. I think I can see all the collisions over all these meshes. And then we have
+these kind of like circles in the sky that looks like giant hula hoops with planes going through
+them and some targets and a very nice environment. And we already have a camera in the scene. So
+I'm guessing when we hit play, we'll be looking out of outside of that camera. Um I want to fix
+this. So in order to fix this, so I I do like to play my games on uh borderless full screen
+personally. So, in order to fix that, I'm going to head to project project settings. And then
+under display, I'm going to go to window and change it from window to uh maximized. And then
+I'll go ahead and click play to make sure it is maximized. So, yes, it looks a lot better. And I
+can't move because yeah, it's just a still camera just looking out into our beautiful
+environment. Going to exit out of that. And now I'm going to get out of full screen by either
+hitting this or clicking control shift1. and let's actually start our project. So, let's start
+learning composition together with some in-game practices. So, the first thing that I'm going to
+do is actually just enable some inputs. Uh, I like to start with my WD. So, I'm going to head to
+project project setting, go to input map, and I like to do it in the order of my WD. So, I'm
+going to do move up. I'm going to add in move left, move down, and move right. And then I also
+want to test, we're also going to be building a health composition. So let's test um heal and
+hurt as well. Let's also add a jump. And now let's go ahead and click on these plus buttons to
+actually configure these. So I'll do my W A S D. And for jump, I'll do space. For heel, I'll do
+something like J. And then for her, I'll do something like H. And this looks pretty good to me.
+So, go ahead and copy this on the screen. Gonna go ahead and hit close over here. And now, let's
+actually start off by building our player. So, I'm going to go ahead and see what player to
+actually use for this tutorial. So, I kind of want to use something simple. So, I'm probably
+going to go with one of these bean-shaped characters. And we are going to be building a top down
+perspective in this tutorial. So, I'm just going to go ahead and check out what characters are
+available in this Cinti asset. So, I'm going to go through down. So, we have this polygon
+starter uh prefabs and characters, and then I can just double click these beans to kind of see.
+So, we have this uh nice looking cop with his frowny looking mustache. We got this cowboy. He
+kind of looks like he has a lot of swag, so I might have to go with him. We have her um this
+librarian looking character. And then we also have your standard male and female blue characters
+that they have. So, pretty cool. And then we also have a bunch of assets and so on. So, let's
+actually just start off with um by building a player. So, I'm actually going to exit out of
+these. I forgot these opened into new tabs. I'm just going to go all the way to the right where
+it says demo. Right click on it and close tabs to the right. Kind of like it's a web browser.
+So, now I'm going to go ahead and add a new scene by clicking CtrlN or clicking this plus sign
+here. And for the root node, we're actually just going to want to create a simple character. So,
+in order to start with a character, I'm going to be using a character body 3D. And if you want
+to know more about the character body 3D, you can click on this description over here. We can
+actually click on character body 3D here, and it'll take us directly to the documentation that's
+in our browser. And it tells us it already has functions such as move and slide. It already has
+a physics body 3D. We already have our uh variables instantiated for us like velocity and so on.
+And we're going to go ahead and just start with this character body 3D node. So, I'm going to
+just go back, select character body 3D, and I'm going to rename this to player, and I'm actually
+going to go to the 3D scene here because we don't have any scripts. And I actually want to save
+this into a scenes folder, not under assets. So, I'm going to right click, and I'm going to
+create two new folders. One will be for scenes. And then another one will be for scripts. And
+this is just how I like to organize my project mostly, and they do branch out quite a bit. um
+they'll eventually go to items and then different attacks and weapons and pickups and so on. But
+for now, this is pretty much all we need. So, let's go ahead and uh save this. And I'm going to
+save this as a player.tscn, which is our extension for scenes in GDAU, and save this into the
+scene folder. Go ahead and click save. And now I can see my player here. Now, the first thing I
+want to do is let's actually add a little model that we can take a look at. So, I'm going to
+rightclick and instantiate a child scene. And I'm just going to look for that cowboy bean that
+we saw earlier. So, yeah, this guy looks beautiful. Uh, complete swag, amazing outfit and so on.
+Let's go ahead and um go with this character. You can choose whatever bean you want or you can
+even use the tea posing characters if you want, but we are not doing animations in this just
+yet. Maybe in the next video. So, over here we have this warning. It says this node has no
+shape, so it can't collide. So, let's go ahead and add a collider for this player. And I'm going
+to go ahead and click control A again. Or you can click on this plus sign. And we're going to
+look for a collision shape 3D. And this is perfect because this bean is in the shape of a
+capsule. So, I'm just going to go to shape, look for a capsule. And you're going to see the
+capsule is a bit low. So, if I were to play this character like this, he'll kind of float off
+the ground a bit. So, I'm just going to go to transform and move the Yaxis up by one. So the
+bean or the capsule completely wraps around this bean. So this is pretty perfect. And now I just
+want to go ahead and add a camera. So the first thing I'm going to do is actually uh go ahead
+and add a blank node 3D. And then with this node 3D, I'm going to call this the camera anchor.
+And I'm going to move this anchor up to its head just so we kind of focus on uh the head. And
+that's going to be determining the center of our camera. And then I'm going to go ahead and add
+a camera 3D under this node of the camera anchor by hitting control A while this is selected.
+And now this is just going to be our camera 3D. And now with our camera 3D selected, I'm just
+going to head down on the right under the inspector tab to just edit some of our properties. So
+if I go ahead and hit preview, you're going to see that we are looking at the very bottom butt
+of our bean and we don't want that. So first what I'm going to do is just change the FOV to
+something like 20. You can of course change this to however you want. And then for the transform
+for the position.y, let's set it to something like 12 so that we're a bit high in the sky since
+we are making it top down. And then for the Z-axis, I want it to come back a bit behind the
+character. So I'll set this to 20 like so. And then for the rotation, I'm going to set it to uh
+let's try 45 or negative 45 because now I'm looking to the sky and I still can't see my
+character. So, let's go ahead and Oh, there we are. So, -30 seems to be about the sweet spot.
+Uh, this is pretty cool. So, I do want to see a little bit above my character just so that we
+have we can kind of see what direction we're going to. And of course, you can create some sort
+of camera component where the camera kind of shifts towards where you're walking just for some
+smooth polishness. But, let's go ahead and stick with this for now. So, this looks pretty good
+to me. And now I'm just going to drag my player over into my demo. So with my demo scene
+selected, I'm going to drag my player.tscn over onto main like so. So he's going to spawn right
+here in the middle. I'm going to go ahead and hit F5 to just play my game. And now we can see
+our beautiful player in the middle of our game. And yeah, this awesome scene. And we can't do
+anything. We can't move. Inputs don't work. All that stuff. And let's go ahead and actually
+start setting up our input component. So now I'm going to start by adding our input component
+because first we need to register our inputs in order for our player to know what's going on. So
+I'm going to go ahead and create a new script by right-clicking my scripts folder, hitting
+create new, hovering over create new, and then selecting script. And I'm going to call this
+input_component.gd. And right before where it says extends node, let's go ahead and add a class
+name called input component. So this class name input component is going to register this script
+as a global type name. And the name is input component. And this is so that other scripts can
+reference it by its type. Kind of like how we have string and integer as mentioned earlier in
+the tutorial. And the extends node just shows that this component is a simple node type. It
+doesn't have movement or collisions. And if we were to make things kind of like a hitbox or a
+hurt box, then we would want to extend something like an area 3D. So you're not just limited. So
+let's go ahead and change that back to node like so. Now let's go ahead and create a variable
+for the move direction. So I'm going to call this var move dur. And this will be a type vector 2
+because we're going to have a 2D direction which is like an x or y because it's a top down game.
+And we're going to set it to vector 2.0. And the zero just means no movement input. And then
+I'll also create another one for our jump input which is going to be called jump pressed. And
+I'll just set this to false for now. And this colon equals means we're also setting its type. So
+this is going to be a boolean. So jump pressed is a boolean which is currently set to false. Now
+I need to create a function which we're going to call every physics frame to refresh our input.
+So I'm going to call funk update. And we're not going to return anything. So I'm going to go
+ahead and uh type void. And now we're going to set our move direction to be the input.get get
+vector. And now over here we're going to see that we have the negative X positive X and we have
+to basically fill in our inputs for our WD. And if you can't see the full screen, go ahead and
+hit control shift F11 to just extend it. And now I can see my entire screen. So I'm going to
+start with my uh negativex which is move left, move left, and then move right. And then our
+negative Y in GDO is actually going to be move up. and our positive y which is move down which
+is which might be backwards from other game engines that you're used to. And now I'm just going
+to call the jump pressed whenever we actually press the action called jump. So I'm going to set
+jump pressed is equal to input do is action just pressed and look for jump like so. And this is
+basically going to be set to true only for the frame we press jump on, not for holding jumps.
+But it will tell us that jump is pressed. And this is all we need. And now when I go back to my
+player in the 3D tab over here and hit control shift1 so I can see my scene and the inspector
+and so on. Let's actually add this input component over onto our player. So I'm going to select
+my player and hit control A. And now because we set its type to be input component, now I can
+actually search for the input component. And under node, you'll see that I have an input
+component with the script already attached. So I'm going to go ahead and hit create and just
+leave the name as input component. And now let's actually try this out in game. And you're
+probably wondering, well, why isn't this working? I'm clicking WD and I actually set it as my
+input component. Well, the components don't work alone. Remember earlier we talked about needing
+an orchestrator and that's the point of your player.gd script. So, let's actually go ahead and
+create that player.ggd script. So, I'm going to click on player and I'm going to click on this
+script with a plus button on the bottom right to attach a new script. And I'm going to go ahead
+and call this player. And now we have this extends character body 3D. So now what we want to do
+is actually just update our input based on whatever we put in the input component over here. And
+this will be pretty simple. I'm just going to call this class name player extends body 3D just
+so our player is its own type. First I'm going to drag input component over my script and then
+hold control and let go of my left mouse button. So the on ready just means we're going to wait
+until the scene is fully loaded and then find whatever we are looking for, which is the input
+component. Because we set the class name as input component, there's only going to be one input
+component on this player. So it's basically just securing it that we never accidentally put
+another class or type here. So we won't have any bugs or crashes. And now I need to add some
+sort of function that's going to update every frame. So we already have this thanks to us using
+our character body 3D. We have the funk physics process over here and I can hit enter to
+autocomplete and we can see our function physics process is going to be processing our frames
+every second. So now from here I can just call our update function that's in our input component
+over here. And that's pretty much all I really want to do. So down here I'm going to do input
+component dot update. And you're going to see the update function already pops up because now
+we're treating it like a smart type which is the type of input component that we defined
+earlier. So what this is going to do is actually just go ahead and read our controls. So I'll
+comment this here just so uh you guys can understand and go back to it. So now every frame we
+are going to be reading our input controls. And now it's time for our first challenge. I want
+you to print out our move direction or our jump press variable when it's pressed. I want you to
+think about where you're calling the debug log, where the print's going to be, and how it's
+being read. And I'll explain that right after this. Feel free to pause the video here, and if
+you need any help, no worries. We're going to go over it in just a second. All right, welcome
+back. Let's go over how I would print our movement direction and our jump. So, in our tutorial,
+we already placed the input component.update in to our player.gd. And because the player.ggd is
+connected to our player script and our player is in the demo scene over here, we're already
+going to be running this physics process function every frame. So all I need to do is go over to
+my input component and under update I can just add print and moved dur. And then I can also just
+print and print out the jump press like so. And now I'm going to hit F5 to actually play the
+game. And I want to look at my debug over here. So, it's going to print out false and 0 0
+because we're currently not moving. But if I hit space, it is very fast, but we can find a true
+over here. So, yeah, over here it does say true indeed. And that's for that one frame that I
+pressed it on. And it's a lot harder to catch these jump press. But for the move direction, it's
+going to constantly update when I hold my WD. So now we can see it being one 0.7 because it's
+automatically normalized. And then we have our down, which is 01. our up 0 negative 1 and so on.
+And that pretty much covers our input component. And now we can start creating our movement
+component. So that whenever we do something with our inputs, we can actually move left, move
+right, move up, and so on. I'm going to go ahead and create the movement component the same way
+I created the input component. So I'm going to right click on scripts, hit create new, go over
+to script, and let's go ahead and call this movement component. Like so. This will extend the
+node as well. And I'm just going to give it a class name which is going to be the movement
+component. And this looks pretty good. So from here, now that we have already initialized this
+class name, I can head over to player and just go ahead and uh control a onto my player. Look
+for movement component and add that. And we're still going to be editing the script, but I'm
+just going to rightclick my movement component and access this as a unique name. And then when I
+go to my player GD, because this is the orchestrator, I'm going to go ahead and add that on
+ready variable for the movement component. Just hold this, hold control, and then left click.
+Let go of the left click while you drag this in. And this looks good. And I can start
+configuring my movement component. I'm going to create a few export variables. So we can
+actually in use the inspector and drag our player, the visual model, and how fast we go and so
+on. So let's go ahead and start with creating some export variables. So in order to do that on
+the next line I'm just going to create an at export and then create a variable called body. And
+this body will be the type of a character body 3D because that is exactly what our player is.
+And now you can see on the right that we can actually assign our body over here because we set
+the type to character body 3D. When I go ahead and click assign, I can only select my player. I
+can't select anything else because this is the only character body 3D that's allowed as it
+states up here. So I'll go ahead and select my player. Now I want to create another variable. So
+this will be the variable of the model itself. And this model uh I can just select a node 3D. So
+now when I click the assign button, you're going to see everything that's related or an
+extension of a node 3D which is just going to be any 3D object in this case. And because the
+model that I'm using is this bean character. I'm going to go ahead and select that. So and now
+we'll do our basic. So, what we want to configure with the moving component is it's going to be
+in charge of the speed, how high we jump, and in this case, I'm also going to have it be in
+charge of gravity, uh, just because I want to I'm not going to make anything like a separate
+gravity component for this game because it's just a pretty simple top down. So, let's go ahead
+and create those variables. So, let's do at export bar speed. And I'll just do a default of
+something like eight to test out. Then we're going to create a jump velocity which is going to
+be uh let's set it to 12 on how high we can jump. And then an at export var gravity multiplier.
+And this will be I'll set it to 3.0 for now. So now when I hit save, you're going to see it pop
+up on the right. And we can also adjust the variables here on the right. And for example, if you
+adjust it here and it's 8 12 and 3 in the code and I ship the game with let's say 10 20 and 5,
+the whatever's in the inspector will actually take priority. So let's say you like it over here
+and you don't want to go back and change the code because these are just default values. Then
+when you do ship the game, it will use the 10, 20, and five variables. So I'm going to go ahead
+and just return these as is. And now I'm going to create a couple lines. And actually, I want to
+go ahead and set a movement direction for our movement itself, so we know which way we're going
+to be going. And again with the jump. And you're probably thinking, isn't that the same as input
+component? Well, sort of, but not really, because this is only checking if we're actually
+pressing the input. And again, we're leaving the input component to only check for inputs where
+the movement will actually be in charge of moving our character. So, let's go ahead and create
+those variables. So I'm going to call this bar direction which is going to be a type of vector 2
+and I'm just going to set this to vector 2.0. So right now uh movement direction will come from
+the input and the x and z plane is going to be stored as a 2D. And then over here I'm going to
+do var want jump. And we're just going to set this to false because we don't want to constantly
+be jumping. And now I need to create a function to actually check uh the movement component will
+check for our player moving. And we're going to create a funk tick. And I'm going to pass in
+delta bloat. And we're not going to return anything. So I'm going to write void. And now we're
+going to look for if. And now I'm just going to add a safety check, which is basically if we
+forgot to plug in the body, then we're not going to do anything or else it could probably crash
+the game. So in order to add a safety check, I'm going to check if there's a body present. If
+there is no body present, if body is equal to equal to null, then we're just going to return
+basically just get out of this function. We don't need to do anything. And if there is a body,
+then we're going to basically skip that if statement. And from here, we're going to try to move
+on the X and Z plane. So top down movement will really start here. And now what I'm going to do
+is just set the velocity of the body. So body.velocity.x X is going to be equal to the direction
+dox time speed. And that's because we set the speed up here. And then we also want to do the do
+the same thing for the Z-axis. So I'm going to look for body.velocity.Z is equal to direction
+time speed as well. Like so. And this is basically just going to tell us that we're going to be
+moving in the X and Z direction or the velocity is going to be the X and Z, but we're going to
+convert it to an X and Y because we're a top down character and we're going to go as fast as our
+speed variable or whatever we set here. And now let's go ahead and check for gravity. So the
+character body uh 3D already comes with these amazing functions such as checking if the body is
+on floor. So we're going to create this if statement that's going to say if not body. on floor.
+Then we're going to do body.locity plus equals to body.get gravity time delta time gravity
+multiplier which is the variable we created here. And if you don't know what the get gravity is,
+if I go ahead and control leftclick onto it, it's going to show us that we have this get
+gravity, which just returns the gravity vector computed from all sources that can affect the
+body, including all gravity overrides from area 3D nodes and so on. And you can read more about
+it in the documentation itself, but yeah, it is using our body 3D. So, I'm going to go ahead and
+exit that and go back to our movement component. this if statement that says if not body is on
+floor. This just means we're going to start applying gravity whenever we're in the air. And now
+let's actually create a jump. So I'm going to comment this jump. And let me actually comment
+this over here to be gravity. Remember to make code readable. And I'm going to click on the
+output over here to uh so we can see the entire thing. And I'll hold control shift f11. I
+probably should have done that from the start of creating this component, but maybe this is a
+little more readable now. Going to zoom in a little just so it's easier to see. And now let's
+create our jump. So from our jump I'm going to do if and then copy this variable. If wants jump
+and we got to check if the body is on the floor. So I'm just going to copy this and body is on
+floor. Then let's see now I want to set the y velocity which is going to go which is the up and
+down of our character to be the jump velocity that we have created over here. So I want to uh
+use this jump velocity of 12. So I'm going to just simply do that by So now body.velocity.y is
+equal to jump velocity. And this will basically set an upward velocity because this is a
+positive number. And then I'm going to set once jump is equal to false. And this is just going
+to be false because this is going to consume our jump request so it doesn't repeat the next
+frame. And it's going to make sure we only do jump once. And now the last thing I need to do is
+that our character body needs to be able to move and slide. So I'm going to call body.ove and
+slide. And if you want to learn more about move and slide, go ahead and control-click. Uh this
+is a built-in function by GDAU to actually uh help move our character. So now when I go ahead
+and hit play, so I'm going to hit F5. And I actually forgot to add the Did I add the component
+to my character? Oh, no. I didn't add it to my player. GD. So my character does have a movement
+component, but I didn't add it to my player. GDD. So let's go back to the player.gd and go ahead
+and read these. So let's uh let me take a look at the movement component. So I have in my
+movement component. Uh I need to create a class movement component which I already did in player
+GD. It's called movement component here. And now I'm just going to let's see read movement
+component. And now I just want to check the let's see. So now I want to read the direction and
+once jump and then I'll call my tick function which is over here and just pass in the delta
+because that's exactly what it requires here. So now let's go ahead and do exactly that and
+we're going to connect it with our input. So what I'm going to do is move component because that
+is the class of our movement component up here dot direction is going to be equal to input
+component dot and I believe I called it moved der let me just double check. Yeah. So now we're
+going to match our movement components movement direction to our input components movement
+direction. So moved over here like so. And that looks good. And now let's go ahead and call the
+movement component again. And I want to check the wants jump. And it already autocomp completed
+for us because we have created the class and it's smart. And input dot jump pressed or input
+component.jump pressed like so. And it is under a physics process. So all of this will compute
+every frame. And now I just need to call the function from my movement component over here. So,
+I want to call I want to pass everything here over to our player because our player is the
+orchestrator. So, now it'll be movement component.tick. And I want to go ahead and pass in that
+delta or else it's going to give us an error because um this does require a delta as stated over
+here. And I can just pass in this delta here so that we are computing every frame properly. So,
+we don't have uh movement issues when we have lower or higher FPS. And this looks great. So now
+I can actually go ahead and test our player. So I'll hit F5. Going to open this up. And now when
+I move, great. My character is moving and I can jump. So that's really nice. And now I have a
+little issue. My character isn't looking where I'm going. He's kind of um just staring at me as
+if I did something wrong. So let's go ahead and add a look at rotation or wherever we're going.
+So, so back in my movement component, because the look at function is something that I want to
+include into my movement component, I don't want to create a separate um a separate function or
+a component for that. Uh I'm just going to go ahead and start creating let's call this a face d
+face movement direction. So, first I'm going to check if what I'm going to be moving is actually
+our model itself. So if the model and I also want to check the length of the direction direction
+squared is greater than 0 or 0.001 then we're going to go ahead and make sure that we are facing
+the proper direction. So the model just checks if we if there is a model present and the
+direction.length length. squared is it avoids rotating when the direction is basically zero and
+is faster than length. So now I'm going to create a variable called look direction or look and
+this is going to be the type of a vector 3 and what I want to pass in for my x and y is going to
+be my direction.x and then the y will be zero because I'm not ever going to rotate looking up
+and down only uh horizontally and vertically. And then on the Z-axis I will pass in the
+direction.y as my Z because we are doing a top down direction. And then I just want to add a
+dotnormalize to make sure that our speed is pretty consistent like so. And I meant to do
+direction length underscore squared not a dot. So go ahead and fix that. That's why the error
+was there for so long. Uh length squared. So if we go ahead and click on this it returns the
+squared length. Okay, maybe I didn't need to go over that, but we do have a look direction. And
+the reason why we created the variable in this if statement is because it's going to constantly
+be recreating this look direction every time we look in a different direction. And that's
+exactly what we wanted to do because if I instantiated look up here or if I created look here,
+then I would only be stuck looking in one direction while moving in other places. And this just
+creates the variable. And now we actually need to set this to our model. So I'm going to drag
+the model down here or I'm going to type in model.look at which is already a function that GDAU
+gives us. And then I want to look for the global position plus the look direction that we
+created. And then I want to go ahead and pass in vector 3 up. So the look at function, it points
+the models towards a target position, which is our current position plus our look at direction.
+So basically, it's going to be staring at from where we are to where we're going. And then the
+vector 3.up is telling our game to keep our character upright and do not tilt. And this looks
+pretty good, but I want to show you what happens uh in GDAU when I go ahead and hit F5. Some of
+you may have this issue. So when I use WD, it's actually backwards. Look, I'm going right and
+I'm looking left. I'm going I'm stuck between these fat coins. I'm going up, but I'm looking
+down and vice versa. And it just looks weird. But why is this happening? It's because in GDAU,
+uh, the actual axis for a character coming from Blender is on a negative is facing a negative Z
+axis. I put gravity in. I just spell gravity. All right. So, the easy fix for this is just
+setting negative direction.x. So now our left and right are swapped backwards. And then same
+with our Y over here, which is actually on our Z-axis, but no need to be that technical. So now
+when I use WD, it's looking exactly where I'm going. I can jump exactly where I'm looking at.
+And it looks perfect, and this looks great, except there was no collisions on this cube. I'll go
+ahead and let Cinti know about that. But I'm stuck. And that's pretty much how we create our
+movement component. And now we created a little top- down model. But one thing I want to go
+ahead and do is actually in the demo scene. There's a lot of stuff in the sky kind of getting in
+the way of my camera. I'm going to go ahead and delete this cloud ring, all these hula hoops or
+plane rings. So, I'm just going to search for it. Shift select all of them. Delete all these
+nodes. And then I'm going to delete this plane as well. Why can't I? Oh, I'm selecting a little
+piece of it. Okay. Delete this stunt plane. And I think that looks pretty good. So now when I
+hit F5, it should be a bit more clear for me. Yeah. So I'm not getting stuff in the in the way
+of my sky. And I can just go ahead and hop around and look pretty. And yeah, so pretty cool. And
+now we have a movement component on our character. So let's go ahead and exit out of that and
+head back to the character. All right. So now it's time for challenge number two. What I want
+you to do is create a script called health component. The same way we've been creating scripts
+before. I also want you to add a class name called health component and go ahead and add the
+component to your player. I also want this component to be accessible by its unique name. And
+for a bonus, if you want to learn about how to add signals, go ahead and add a signal called
+health change and a signal called died to your script. Pause the video here and let's go over
+this together. All right, let's do this together. So, first, uh this is not part of the
+challenge, but I'm just going to uncheck the preview. uh just because he looks pretty nice like
+this. Beautiful. So, I'm just going to go ahead and rightclick my scripts and create a new
+script and call this healthc component like so. And I'm just going to add a class name health
+component which extends the node. Going to go ahead and save this. And then I'm going to click
+on player, hit control A, look for health component. Go ahead and add that. Right click and then
+just access as unique name like so. And then for our signals, it's actually pretty easy to add
+signals. I'm just going to go ahead and just call uh two signals. So, one is going to be called
+signaled health changed and another one is going to be called signal died. And that's pretty
+much the challenge. And now, let's start creating some variables. So, let's think about what our
+health component needs. So, we're going to need a max health and a current health uh just to
+make sure that we can't go below zero and we can't go above our max health. We don't want to
+overheal to the point where we have an infinite amount of HP. So, let's go ahead and add those
+variables. So, I'm going to create an export variable called max health. And I'm just going to
+set this to 100 as default. So, now I'm going to go ahead and hit save and click health
+component. And it's going to show up on the inspector on the right here as max health. Now, I
+can go ahead and create another variable called current health. And I'll just set this to 0.0
+zero for now because what I want to do is when I load my character and it loads this health
+component, I'm just going to set my current health to be my max health. So, let's go ahead and
+create a function that runs when the node enters the scene tree. GDAU already gives this to us
+with the ready function. So, funk ready with no return. So, I'm going to type in void. And then
+we're going to set the current health to be max health. And I'll hit control save. And now if I
+were to just simply print our current health and our max health. And if I hit F5, it should just
+show our current health and max health. Oh, it's actually being overtaken by our input. I'm
+going to go ahead and get rid of the print commands in our input component. Just hit control
+save and rerun my scene by hitting F5. And now you'll see that when I start, it'll say 100.0
+100.0. I didn't put a space in between that in my health component, so it looks a little
+finicky, but yeah. So it is printing. it is setting our current health to our max health uh when
+this character is ready and loaded into the scene. So that looks great. And now I actually want
+to go ahead and emit this using signals. So over here I'm going to create a function called
+emit. And this emit isn't going to return anything. So I'm going to say emit void. And now what
+we're going to do is health changed which is the signal that we're going to be passing here. And
+now we need to actually emit something. So, I'm going to be emitting a current health and a max
+health. And up here, we have signal health change. And I actually want to pass two variables of
+a type float, which is going to be our current and max. So, I'm going to type a parenthesis and
+call this current and set it to the type of float and a max, which is also going to be a type of
+float, just so whenever we do signal this health change, it's going to pass these two variables
+and our player will catch it, and we're going to print it out. So, I want to print it out every
+time we emit. So, over here, I'm just going to simply print out our HP by typing in print HP
+colon. Let's do a percent D slash percent D. Uh, just like that. And then I'm going to do
+percent and then in our square brackets, current health, comma, max health. So, we're going to
+be passing these two in in place of percent D in that appropriate order. So this current health
+will go to the first percent D and then max health will go to the second percent D. And now
+every time we emit, we're going to be printing out our current and max health. But we don't
+actually have a way to emit. As soon as ready starts, I'm just going to call this emit function.
+And now over in my player.gd, I didn't create a health component just yet onto my player.gd. So
+let's go ahead and do that. Just drag this in while holding control. And just as simple as that,
+it's pretty ready. And from here we can actually go ahead and hit play. And our HP should emit
+from our health component because we are calling this emit function and calling the signal
+called health changed. And this component will be in charge of it. So let's go ahead and hit F5
+to play it. And it should say HP 100 out of 100. Just like that. And that's pretty perfect. So I
+can go ahead and cancel out of this. And now I want to go ahead and create two functions in my
+health component. I want them to be a damage and a heal function. So what we're going to be
+doing is first we're we'll create the damage function. So I'll type in funk damage and we're
+going to pass in amount which is going to be a type of float. We're not going to return
+anything. And then I'm just going to do a current health. So we're going to set our current
+health to a new variable every time we take damage which is going to be clamped. So we can't go
+below zero. Current health minus amount which is the damage that's going to be passing in. So
+our current health minus amount. And then the lowest we can go is going to be 0.0. The highest
+we can go is going to be max health. And then I'm going to call the emit function over here just
+so I don't have to repeat everything over here going on. And then we want to call the died
+signal. So if our current health is equal to 0.0 then we're just going to call the died signal.
+Just like that. And now I want to go ahead and create one to heal. So pretty much the same
+concept. I can go ahead and actually copy this line. So, funk and instead of damage, I'm going
+to change that to heal. And in the next line, it's going to be uh the same thing. This current
+health is equal to clamp current health, but instead of current health minus amount, we're going
+to change this to current health plus amount. Just like that. And then we're just going to call
+the emit function down here. And that looks good. And our health component looks ready to be uh
+used by our player.g. GD. So now let's start challenge number three. On your player.gd, I want
+you to try to configure a way where if an input is pressed, such as your hurt or heal, I want
+you to pass in, let's say, 10 uh for the damage and the heal. So how would you go about that?
+How would you call that function? And so on, how would it relate to your health component? And
+then as a bonus, I want you to create a function called on died. Want this to trigger when your
+character actually dies. But think about how you're going to catch this signal onto your player.
+This will be a little complicated, so no worries if you don't get it. I'll give you guys a
+second and feel free to continue the video to get to the answers. So now let's go over the
+answers. So of course, because I have an input component, I want to deal with all my inputs
+there. And I'm going to be checking for our hurt and heal just like we created in our project
+settings input map. So I have this hurt and heal over here. So I did J for heel, H for hurt. And
+I'm going to go to my input component. And now I'm just simply going to create hurt pressed is
+equal to input doisaction just pressed. And this will call the hurt function. And then same
+thing with the heel. So heel pressed is equal to input.action just pressed heel. And that's all
+we need for our inputs. And it's not declared in the scope. So I'm just going to go ahead and
+actually uh go ahead and create those variables. So var hurt pressed and var heel pressed. And
+we're going to set this equal to false. Like so. Go ahead and save that. Just like that. And now
+we have these set up. Now I'm going to go back to my player.gd. And now in our player GD, we're
+going to go ahead and actually call these components. Call these inputs. And if we do press
+them, then it's going to do something to our health component. So if our input component if our
+input component dot hurt pressed is true, then we're going to go ahead and call that damage
+function we created in the health component. So I'm going to go ahead and I'm going to go ahead
+and just copy this damage name, which is easy enough to type out, into my player GD. I'm going
+to pass in health component because that's the name of our health component variable up here.
+Dot damage because that's a function we're going to be passing. And I'll pass in a number of 10
+because that's the amount that we are taking that's going to be passed into our health component
+amount. And this amount will basically so current health minus 10 and so on. It'll do its magic
+here. And now let's go back to player.jd and do the same thing for our input component. And now
+let's do the same thing for our input component. So if input component doheelressed then we're
+going to uh health component. Heal and pass in the number of 10 like so. And now we want to call
+a function of dying for our character and actually do something with it. So I'm going to create
+a function called funk on died. And this is going to be outside our physics process because
+we're not going to die every second and it's not going to return anything. So I'm just going to
+print player died. And now we need to find a way to catch the signal. So whenever our character
+is fully loaded in which is going to be using the ready function then we are going to connect
+this died signal from our health component over to our player.gd. So basically when we load in
+then we're going to do health component died which is the signal that we used and we want to go
+ahead and connect this to a function and the callable of this function and the callable will be
+the onyide function here. So I'm going to paste the name of this in. So basically whenever we
+hear this signal then we're going to play this function. We're going to play the on diet
+function over here and I'm going to go ahead and hit control save. Now we're going to check for
+a few things. When I hit J when I click J we are going to check if our input component is
+pressing properly and passing our health component damage function and also the healing. Uh I
+think let me double check my controls. J is actually for heal. H is for hurting. And yeah, I
+should have just put that as damage or something. But this works fine, too. And yeah, we're
+calling the appropriate function. So heal will pass the heal function. Damage will call the uh
+damage function and so on. And then I'm going to go back to my health component. And I have the
+emit in these functions so I don't have to print it out in my player GD itself. It's just tied
+to my health component so it's easier for me to test. So now I'm going to hit F5 and actually
+test this out. So I have my character here. We can move properly. Health is 90 out of 100. When
+I click J, when I click J, I can't heal past 100. So that's great. When I hit H, I'm going down
+by 10. Uh, all the way to, let's see, 30, 20, 10. And now player died. So I can still move and
+everything. I haven't stopped my input controls. And I can even heal back up if I want to. And
+then go back down and die again. And so on. But now, let's actually make it a little visible
+just uh just for this is what I just like to do in testing. Um, I like to add a Q free. So I
+don't recommend this for real gameplay. You'll probably go about this a different way, but let's
+say our player died. Then we are going to add a Q free, which is going to basically just
+completely obliterate our player off the existence of its virtual plane. So now when I go ahead
+and spam H, now my character is going to disappear and my even my camera disappears because my
+camera's on my character. And that pretty much covers our intro to composition using GDAU. So
+hopefully this was a great learning lesson for you guys. So we've gone over the creating the
+input component. So all we're doing here is just setting up inputs for our characters. Our
+characters are going to be able to uh move around uh set and learn how to jump, learn how to
+heal, and then we've gone over and created a movement component to actually make our movement
+work. Uh this is really the magic of where our character is able to move. And then we have a
+health component that doesn't need to know what the player's up to. So, it just needs to worry
+about its own thing. So, it worries about healing and damage. In this case, um you'll probably
+have these on a separate you'll probably be calling signals to these components. So, for
+example, if you have a weapon that does X amount of damage, you're going to set that in in your
+weapon and it's going to pass this function over to this damage amount over here. And certain
+levels of potions, for example, a high potion versus a regular potion will heal differently and
+pass that amount over here, too. kind of like how we're calling through this player in these
+functions. We're not going to be probably not through an if statement, but more like an uh or I
+guess it could be if a player uses this item, then you'll this and so on. And yeah, just lots of
+ways you can do things. And now the best part about this is I can apply this to any character
+and make it usable. Now, of course, with AI, it's going to be a little different because you're
+not going to be using inputs on AI, but they can indeed have this uh same kind of movement
+component. And the reason why we expose these uh and the and the reason why we expose the speed,
+jump velocity, gravity multiplier to enemies is because let's say I want a flying enemy, then
+the movement component on that enemy can just have a zero gravity multiplier. Or let's say it's
+a really heavy-ish character like made of metal. I can add the gravity. I can add a lot more
+gravity and less jump velocity. I can make him really fast and so on. I can do all kinds of
+modular things simply by changing it in the inspector. So, I hope this tutorial was able to
+teach you something about composition using GDAU or just composition in programming terms
+altogether. First, I want to take some time to really thank Patreons for allowing me to actually
+make this video. You guys really do support my channel a lot and just every everyone who's
+subscribed and sharing my content left and right. I really appreciate you guys and I am trying
+GDA out. So, let me know if you like this style of tutorial or would you rather it being shorter
+and straight to the point? Did you like the challenges? Were they too easy? Were they too hard?
+Maybe both uh too easy and too hard. If you want more videos on composition, let me know what
+you kind of want to see next, whether it's like a UI system, composition in UI, composition in
+inventory, and so on. And just feel free to let me know in the comments like your honest
+thoughts and opinions on this video. And I'll be discussing this more in my Discord channel. If
+you are not in my Discord, feel free to join. The link is in the description below. Thanks for
+all your amazing support. Thanks for watching Code of the Row. Like, subscribe, comment below
+what you want to see next, and I'll see you in the next video. Thanks for watching. How to
+master composition in GDAU.

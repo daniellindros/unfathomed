@@ -46,6 +46,7 @@ Community tutorials. Not official documentation, not authoritative over
 | `godot/recursivedev-signals.txt` | The basics of signals in Godot | Recursive Dev | Yes — `signals.md` |
 | `godot/godotneers-ui-basics.txt` | Godot UI Basics | Godotneers | Yes — `ui.md` |
 | `godot/godotneers-shaders-intro.txt` | Welcome to Shaderland | Godotneers | Yes — `shaders.md` |
+| `godot/codewithro-composition.txt` | Mastering Composition for Beginners | Code With Ro | Yes — `scene-structure.md` |
 
 ---
 

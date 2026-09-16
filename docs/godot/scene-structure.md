@@ -1,6 +1,6 @@
 # Scene structure and node access
 
-Source: Godotneers, *Node paths* and *Godot Components*.
+Sources: Godotneers, *Node paths* and *Godot Components*; Code With Ro, *Mastering Composition*.
 
 ## Reaching other nodes
 
@@ -59,3 +59,64 @@ whenever two systems would otherwise need to import each other.
 `CharacterBody3D` calling `move_and_slide()` every frame already. And
 `../inside/movement.md` warns that most 2.5D bugs are the player catching on
 decoration, so Visible Collision Shapes is likely to earn its keep early.
+
+## Composition: how to split an object up at all
+
+The Godotneers video is about keeping components decoupled. Code With Ro's is about
+the prior question — what the components should be.
+
+- **`[video]`** The failure it prevents: a `player.gd` that grows through movement, double jump, dash, attack, dodge, block, and is hundreds of lines before any enemy exists. At which point starting over feels easier than continuing.
+- **`[video]`** Inheritance expresses *is a*, and goes rigid fast — a healing totem has health like an enemy but does not move, a crate can be hit like a player. Composition expresses *has a*: a character **has** a movement component, a health component, an attack component.
+- **`[video]`** One script, one job. A health component owns life and death; an input component owns buttons and nothing else.
+- **`[video]`** Reuse is the payoff: the same health component goes on the player, an enemy, a guard, a crate. An invulnerable shopkeeper simply doesn't get one. Components travel between projects.
+- **`[video]`** Node count is not the cost people fear. Godot 4 nodes are cheap — a hundred enemies with ten components each is fine, and far cheaper than one script nobody dares edit.
+
+### Typed exports as sockets
+
+The mechanism, and the part worth taking:
+
+```gdscript
+class_name HealthComponent extends Node      # now a real type
+
+# in the owner
+@export var health_component: HealthComponent
+```
+
+- **`[video]`** `class_name` makes the script a type the engine knows, like `int` or `String`. `@export` with that type gives an inspector slot which **only accepts a node carrying that script** — dragging the wrong component in is blocked outright, which kills a class of silent bug.
+- **`[video]`** It also replaces `@onready var health = get_node("Components/HealthComponent")`, which breaks the moment the node is renamed or moved. A typed export is a reference, not a path, so rearranging the scene leaves it intact.
+- **`[video]`** And the editor can autocomplete the component's own functions and variables from the owner's script.
+
+### The two approaches disagree, and it matters
+
+`scene-structure.md` already carries Godotneers' contract — ask
+`body.has_method("take_damage")` and call it if present. That is a *different*
+decoupling strategy from the typed export above, and the trade is real:
+
+| | Duck-typed (`has_method`) | Typed export |
+|---|---|---|
+| Caller knows the type | No | Yes |
+| Autocomplete and type checking | No | Yes |
+| Wiring needed | None | Drag into the inspector slot |
+| Works on anything | Yes — unknown objects included | Only what you wired up |
+
+**`[ours]`** Use both, for different jobs. A projectile hitting an unknown thing
+should duck-type, because it genuinely cannot know what it hit. A player reaching its
+own health component should use a typed export, because it knows exactly what that is
+and the safety is free. Reaching for `has_method` on your own children is throwing
+away type checking for nothing.
+
+### Two heuristics worth keeping
+
+- **`[video]`** **The rock test.** A component should not know what it is attached to. "If I put this script on a literal rock, would it still function?" If yes, it's a component; if no, it's owner logic wearing a component's clothes.
+- **`[video]`** **The owner becomes an orchestrator.** It stops doing the work and starts managing state — telling movement to stop while attack runs. It stays short because it coordinates rather than implements.
+- **`[video]`** Components communicate by signal, not by reaching for each other: health emits "I took damage" and does not know whether anything is listening. See [signals.md](signals.md).
+- **`[video]`** Exported tuning values make one component serve many entities — a flying enemy is the movement component with a gravity multiplier of zero; a heavy one is more gravity and less jump velocity.
+
+**`[ours]`** Directly relevant, and it is how the time-dilation sketch already wants to
+work: hazards read `TimeDilation.world_scale` and know nothing about each other. Worth
+adopting before the player controller exists, because retrofitting composition onto a
+grown `player.gd` is exactly the situation the video opens with.
+
+**`[ours]`** Note the version drift: that video runs Godot 4.6 RC1 on a 4.5 project,
+and this project is pinned to 4.7. `class_name` and typed `@export` are long-standing,
+so nothing here is version-sensitive — but the editor UI in the video will not match.

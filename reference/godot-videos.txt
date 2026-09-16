@@ -23,6 +23,9 @@ bitlytic-state-machines      ow_Lum-Agbs
 # Signals
 recursivedev-signals         EvRkJAxlgPg
 
+# Composition
+codewithro-composition       e3H_nw4w5U8
+
 # Playlists these came from, not fetched:
 #   Node paths   list=PLEbADkZjuNUR9CYUZB2KWE5IPWsZHqg4R
 #   Components   list=PLEbADkZjuNURk2-S1fu8GLurgaHX0zHvk

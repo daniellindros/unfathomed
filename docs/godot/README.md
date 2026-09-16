@@ -35,7 +35,7 @@ enough that it won't exist in an older 4.x — is on-version for us.
 | File | Covers | Sources |
 |---|---|---|
 | `state-machines.md` | Three ways to build one, and what they trade | Bitlytic, Quilled, BucketBrigade |
-| `scene-structure.md` | Node paths, scene-unique nodes, keeping components decoupled | Godotneers ×2 |
+| `scene-structure.md` | Node paths, scene-unique nodes, composition, keeping components decoupled | Godotneers ×2, Code With Ro |
 | `signals.md` | Connecting, custom signals, editor vs code | Recursive Dev, Godotneers |
 | `data-models.md` | Separating data from nodes | Godotneers, BucketBrigade |
 | `ui.md` | Containers, the sizing model, themes, and two project settings to set early | Godotneers |
