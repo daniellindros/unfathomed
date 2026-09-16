@@ -1,0 +1,566 @@
+---
+title: Unite 2016 - Tools, Tricks and Technologies for Reaching Stutter Free 60 FPS in INSIDE
+author: Unity
+source_url: https://www.youtube.com/watch?v=mQ2KTRn4BMI
+date_added: 2026-09-15
+date_published: unknown
+type: Video transcript (auto-generated captions)
+caption_track: en
+segments: 1428
+---
+
+hello everyone and uh welcome to this talk about uh tools tricks and Technologies for reaching a
+stterre 60 frames per sec second in inside my name is uh Christian and uh these two gentlemen
+are my colleagues Eric and sarin and uh I want to start out with doing a special mention to some
+of our colleagues at home LESA Maria and Michael who has also been contributing to the systems
+we'll present in this talk we will split it into three parts and uh I'm going to start out with
+streaming the world of inside without frame rate stutters and uh then Eric is going to take over
+with Automation and profiling tools for ensuring a stable frame rate and son is finishing with
+10 steps to again get a 10x performance increase a little bit of uh background we are all three
+programmers from the company play it and we made the game limbo and inside and we have all three
+been with the with the company for quite a while and been on both projects today we are only
+going to talk about inside as that has been made in unity we have sort of a a a pragma or Dogma
+at play it where technology should never cause a distraction from the game experience and for
+inside that means we should be able to complete the game from start to end without any loading
+screens and we don't want any kind of uh artifacts caused by this streaming of content and most
+importantly we don't want any kind of frame rate starters running at 60 frames per second on a
+curent generation console this have sort of a peculiar consequence that only when we do our job
+perfectly no one will notice so I'm going to talk a little bit how we have done this so first
+part is we're going to split our content uh spatially and then save each of these uh Parts into
+a something we call a subscene um I'll take this sketch uh that looks similar to the game and
+then uh show how we have we will split this up into uh small parts so we take the background and
+put it into a scene which we'll call the backdrop and then we split the foreground into uh two
+sections the left part and we call that part tree and box and it has an environment which is the
+graphics and then it has the the box which is the gameplay and this is all the interactive
+elements the collision and anything that the player interacts with it's in the gameplay scene
+and then we do the same for the right side with the wall and B trap environment and we have the
+B trap in the gameplay scene and if you sort of imagine this being in the hierarchy of unity it
+would look something like this this and we have a a master scene as we call it and then we have
+all the global objects like the camera and the boy and these things and then all these assets we
+saw in the picture before with the mountains in the background trees the box and the bear trap
+they are then uh as you can see uh denoted with the boxes here and uh instead of then saving
+these objects directly in the master scene we save them out into uh separate scenes which we
+call subscenes and then we are able to load these scenes in and out of memory as uh the boy
+progresses through the through the game and inside we have 250 of these subscenes and we
+organize them in a hurric like this so we have a scenes folder which is just an empty transform
+then inside that we have all the areas of the game like Forest Farm City and so on and then
+inside those we have the individual puzzles a game start River with a darkg lake and uh inside
+these hcys we then have the actual subscenes that we saw before the gameplay the environment and
+the backdrop each puzzle span around 100 meters or one to three minutes of gameplay so they are
+fairly small and uh gameplay scenes are mutable and they are marked dirty when they are
+activated and in contrast environment and backdrop scenes are what we call conceptually
+immutable and that means that even though a tree can wave in the wind uh the state of that scene
+would always be sort of consistent um so we utilize this to only reload the dirty gameplay
+scenes uh at respawn so when the player progresses through the game we activate the scenes that
+are inside the view frrom and then in an area around the player we have what we call a prepare
+Zone and uh when an scene enters the prepare Zone we load it in and uh prepare it to be
+activated when it finally hits the view Frost room outside the prepare Zone the scenes are
+unloaded and this is what it looks like in practice if we make a 2d top down view of the first
+third of the game we have a concept which we call potential visible set which is a way for any
+part of the game uh to to select which scenes are visible from that spot and uh we do that by a
+a frrom as you can see in the picture the yellow and any scene that overlaps this frrom uh is
+going onto the list on the right side of the screen in the inspector and then a a level artist
+or level designer he can go in to this specific point in the game and then look at it and with
+his knowledge of the game he would know that some of these scenes would not be visible so he can
+manually exclude ude them and you can see that with the with the red markings in the in the
+inspector so this area goes from being eight scenes to five potentially visible uh sometimes
+your content in your scene is not divided evenly and is and is in this example you can see all
+the geometry is in the lower right side of the scene U and we use voxelization to generate a 3D
+voxal grid inside the scene PS the figure is in 2D but it's just for Simplicity but we do this
+boxel grid and then we check each of these scene objects against the the grid and if there's an
+overlap we Mark that grid cell as active and we do this at build time and serialize the result
+then at runtime when uh we play the game we test the view Frost from against the scene bounds
+and then if that is test positive we then also test against this boxal representation and only
+if the boxal representation is inside the vi Frost room we actually activate the scene we have
+one last concept to control whether an object is active or not and that's something we call a
+bounce color and it's a a custom bounce which you put around an object and then if that is
+inside the view Frost we activate the object otherwise it's inactive then sometimes in a game
+you have a wall and even though an object is inside the re Frost room you can't actually see it
+so to solve this we use the concept of facing planes which is a plane where only if the camera
+can see the front side of this plane the object would be active so in this case the object is
+actually not active and this is what it looks like in the scene View and in this case I've put a
+bounce color on a spotlight and I've limited the bounce to be only where the light is actually
+hitting the ground which is the only part of the light you can see and in this case the camera
+and the boy is to the right of this facing plane so therefore the light is active we use bounce
+colors both for sub or for deactivating and activating single objects but we also use it to
+subdivide the scenes even further and as can be seen in this example we have divided this part
+of the game into these five sections a b c d and e and now I'll go through uh with an example
+what would happen if the player progresses through this area of the game so the player starts
+out to the left of section A and then every part of this uh scene is deactivated then the the
+player enters section A and that activates he continues into section B solves the puzzle in this
+area returns into section A drops down through the floor into section D and now we can
+deactivate everything above the the ceiling because that can't be seen from that part of of the
+game then the player progresses onwards to section e solves the puzzle and continues on and now
+all these bounce colors are left in their inactive state so let's try and do a recap of how we
+control if an object is active if we take an expensive object it has to pass all of these tests
+below is the object in a scene which is in the current potential visible set if yes we also
+check if the scene is actually inside the view Frost room and if it is we then check if any of
+the active voxel are actually inside the view Frost room and if that's the case we test if the
+bounce color subdivision of that area is set visible and then finally we test if the bounce
+color for that specific object is set visible and then only if all these five tests are positive
+that object is active that concludes how we were splitting things spatially so now I'm going to
+move on to time Ing and the concept is that if you have a a chunk of work at a given frame in
+this case frame three uh that would cause a stutter we want to split this work over multiple
+frames and then ideally we actually also want to move some of this work to build time and um one
+way we do this is with a concept we call uh pre awake and it's a way to move expensive
+initialization code from from the awake into H this concept of pre- awake which that time sliced
+way of doing this initialization so the way it works is that you load the scene as inactive and
+that means the awake has not been called yet for this for these objects then at build time we
+have cached all these uh pre- awake scripts for this scene and then before activating the scene
+we call all of these pre- awakes and we do that by calling only one pre- awake step for one
+object per frame and then any code that is left inside the awake should be really fast code and
+uh we actually also have an additional concept which we call late awake which is a a mon monob
+Behavior you could put on a a part of the hierarchy in a scene and then set the delay of frames
+after the scene has been activated that this part should activate and that solves some of the
+last stutters we had in the game so now I'll try to go through this uh step by step so first of
+all move work from runtime to the postprocess scene call call back in unity and then serialize
+the result then when the game starts we utilize the initial loading and do pre-warming of
+shaders and uh expensive data structures and so on before we enter active gaml then when the
+when the game starts up we all the scenes are in the unloaded State and then we start loading a
+scene so we do that with the asynchronous loading in unity and then when that is done we start
+this time slice pre- awake as we saw before and then when that's finished we move the scene into
+the loaded and inactive State and then it stays in this stat for quite a while until it finally
+enters the view frustrum and the scene gets activated at this point it's actually mostly a
+hollow scene with a lot of inactive bounce colors uh and then as the player moves through the
+scene each of these bounce colors activate and deactivate individually and that means that the
+the activation cause we get is at the granularity of a bounce color then as the player moves on
+uh the scene gets deactivated again and then finally the scene gets unloaded and also that we do
+in a Time sliced way where we do a bottom up destroy of small parts of the scene at a time all
+the all these little chunks of work we put those into a auler that has the responsibility to
+divide them evenly over frames and it does that in a prioritized way so that for instance unload
+has lower priority than activate of a scene and uh now I'm going to talk a little bit about the
+memory management because as most of you probably know if you're getting a garbage collect in
+unity you will also get a stutter and we don't want those so the way we we got around this was
+having a zero garbage policy and that basically means that we're not allowed to generate any
+kind of garbage on a per frame basis and then also we should be able to make a complete
+playthrough of the game and only allocate uh 400 megabyte of Heap space uh and that requires
+quite a big of bit of work to do that at least for our game um and then for the unmanaged memory
+when we are doing all this loading and unloading of scenes as we prog through the game we
+actually only remove the hierarchy nodes and not the assets that are referenced by these
+hierarchy nodes and that's things like meshes and animations and so on so after a scene has been
+unloaded we do a manual destroy of each of these individual objects and we we do that manually
+because using the resources. unload unused assets during active gameplay would cause stutters
+then of course when the player dies or he loads a chapter we utilize this point in time time to
+do a GC collect and uh unload unused assets and then we did some source code changes to Unity to
+improve the streaming performance and uh one thing we did was a time slice of the scene
+integration which is the last part of a scene getting loaded then we did a Time SL time SLI
+initialization of the Legacy animation system we did optimizations to the game object activation
+and we modified the garbage collection strategy of mono to only collect when the the Heap is
+full the default behavior is sort of a smart collect where it collects at around 20% Heap usage
+then the most important takeaway points from this part of the presentation is making a streaming
+game in unity starter free actually requires quite a bit of work uh but if you do it I would
+recommend split your game into small parts using something similar to the subscene concept then
+load your scenes as inactive and use something similar to the pre- awake concept move work from
+start un enable and awake to build time uh when possible and then bounce callers works really
+well for manual occlusion calling and subdivision of scenes and reducing the granularity of
+activating and deactivating to the size of a bounce color and then I'm going to finish off with
+saying that we have a really close collaboration with unity and we're trying to improve the
+streaming performance and workflows based on all these Lessons Learned From the production of
+inside so now I'm going to hand over to Eric hi my name is Eric and I'm going to talk about some
+of the tools be used ining our performance optimization of inside so the first First Tool I'm
+going to talk about is the profile Runner which is a tool we used in combination with the unity
+profiler to get a general overview of the performance of our game so this is a view of the unity
+po profile is more less Know It uh it's a good tool for detailed frame Toof frame capture uh
+it's a tool we used a lot but it has some lags in The Wider perspective when it's when you try
+to use them that so a way to get around that is to uh divide your game into sections and then
+profile then one at a time and then try to compare it but one thing to note is then where you
+are profiling a section that is not moving or anything uh the profiling tends to stabilize at
+some point and with that assumption we can try to guess that we only need a few uh frames from
+each section which we then can combine uh into an approximation of the performance of our game
+so uh I'm going to show you a yeah um a video of a safe Point profiler which uses the safe Point
+location as the location of sampling and what we're seeing here is uh we load a scene we place
+the boy wait for the calling system to settle and then we do our sampling and this is done for
+every safe point in the game and we can see everything calling in and out and everything moving
+so yeah so back in the in the editor when we collect all this we get this view U with the save
+points and subscenes a little table of that on top uh we have the profile in the middle and in
+the bottom we have a screenshot of the select the save point so again uh little demonstration of
+how it works in the editor um we still have the same scripting overview as we did before and we
+can still drag uh the slider in the profiler only now instead of dragging it through time we are
+now dragging it through our sub scenes and locations so and this has to note a little about this
+overview is that since nothing is moving in those scenes it can be thought of as a base cost uh
+for each scam so uh yeah and automated testing since there's not a lot of manual interaction in
+this uh profile run it's a good candidate for setting up for some automated testing with that
+using an automated build system called team city which is link to SN and on a daily basis we
+would make a build U run the profile on our Target platform which was the Xbox One and then copy
+the result to a server that we could extract from from the editor uh so aside from always having
+the latest available profile data uh we got a lot of history with an automated build system so
+uh we could track our progression and regression through development and what we did was
+selected U subscene so and just took those part of the history and then flip the exis so you had
+like a history review of that scene uh so yeah a little demonstration again here of how it looks
+in the editor um so the same view as before and now we flip it to a history view uh still the
+same functionality with the with the script overview uh and now we can drag it through um the
+slide here on top uh and we can see how uh it changes in the screenshot which is uh yeah the
+history of that sub scene so um another use of the profile Runner was the sub profiler uh which
+is a profiler that measure the life cycle uh of a subscene so this is from when we started
+asynchronous load to activation and to deactivate it as well so uh how we did that was we
+disabled all game systems so character camera and just focus on loading one sub scene at a time
+uh and profiling that uh so and little thing to notice is that this of course the sampling rate
+is different uh because each sub is has different lengths uh and one thing that's interesting
+about this profiler is the entail which is where our pre- awake and activation and other time
+slicing things occurred so if that spikes too high we would get a frame Spike U when loading
+that sub scene uh here's view in the editor so what we got out of the profile Runner was the
+safe Point profile it was good uh thing for performance overview uh which helped us a lot when
+to focus on our optimization uh we have the history profiler that we use to track progression
+and regression in optimization and then we have the sub scene profiler to identify uh load
+stutterings for sub scenes so another Tool uh we used was the automated playback which is a rep
+playay tool we use for profiling uh the automated playback is essentially a controller macro in
+that uh we play a section of the game and Records uh those inputs and then use those inputs to
+replay the same section uh sometimes later so a little demonstration of how that works uh um so
+here is a safe Point playback um when someone had recorded So it plays from one safe point to
+another uh so it has recorded all the stick movements the button press and everything each frame
+and then it tries to play back from that safe point to another and when it reaches the next safe
+point it's right from the next to the third uh and so on so uh one thing to note is that since
+our game is not 100% % deterministic U the main character he sometimes drift and get out of sync
+so uh to try and prevent that we had a lot of POS error positional error correction uh to try
+and get him back into sync so and again since this there's not a lot of manual interaction in
+the automated playback it's a good candidate for sitting up for automated testing um so again
+using team City on a daily shutle we would generate an automated playback uh and this system in
+itself is a good way to exercise all your uh game systems U including like the calling system uh
+but where really shines is when we are able to attach some profiling tools to this system uh
+this was in the play in the way of playback modules that we attached to the automated playback
+uh and So based on events from the playback it would do some sampling and then stall the result
+on a server so uh this is play one playback model to that sampled the frame rate so you can see
+in the graph above we have a a frame rate graph of the entire playback so uh where the green
+bars is where we are below our Target frame rate and the yellow orange and red and is when we
+are above our a desired frame rate of 60 FPS and since our game is fairly linear uh we could try
+and map this framewor graph uh down into our game below so uh one way to do this is that we
+exposed a lot of the framework graph into some of our editor windows so this is the framework
+graph in the scene view uh as a line which Maps the traversal of the main character uh and here
+we have it in the subscene inspector uh for a selected subscene so uh we could select a sub
+scene and see how that is how that part of the game was performing later on we added other frame
+rate modules playback modules um like memory subscene events and audio stats uh and here we can
+see the memory module which tracks the amount of game objects we have during the playback uh as
+the orange line and at the purple line we have the allocated Heap which is um yeah a source of
+garbage collection as we all know garbage collection is a source of frame rate staring and here
+we can see we have four garbage collections which we maybe can map up into some of the spikes in
+the above frame another playback module was the subscene event uh which is related to a lot what
+Christian talked about earlier which is the uh state of a of a subscene uh doing that playback
+so the wide part is when subscene is U activated um sorry it's loaded and inactivate and waiting
+waiting to be activated uh the green is when it's within the view Frost room uh and the yellow
+is when it's now outside again and waiting to be unloaded and there's a red part as well which
+is when a subscene has been loaded and then unloaded without been activated which could be an
+indication that some of our visible sets or calling bounds had not been set up correctly and
+there's a little fifth one as well which is the gray versus the the pre- aait time of a sub
+scene so and this is the playback audio module uh which monitors all some of our audio events so
+uh how many audio events we send to and from the sound engine how many audio objects is moving
+in scene all which has the performance uh impact and effects on audio staring so uh just to show
+you how the a setup of the playback modules could look in the editor um so a little
+demonstration here so on the right side we have like the the four playback modules with are the
+uh frame rate memory sub scenes and audio and on the left we have our scene view on top uh and a
+gameplay camera below and one thing we try to do is to mimic the state U of the automated
+playback so you will select a frame in the playback module and then it would try to mimic it in
+the scene View and in the game camera so we could try and match that up too um yeah to our
+automated playback and just just to finish I'm going to show you development of our frame R
+graph so this is from uh J end of July last year when we begin our optimization uh this is four
+months later uh and this is from start of the summer uh just before we went into search uh the
+last one has vsync enabled which kind of even out all the the green bars so yeah with this I'm
+going to turn it off to Sun hello I am son I'm one of the game programmers of I've been doing a
+lot of stuff in um C and I'll be talking about some of the things we did to optimize our C sh
+code but before I begin I just need to do a little disclaimer I love unity and um I I say that
+because obviously I do love it and it's nice to spread the love between other lovers um but also
+when you're optimizing you sometimes get a little bit frustrated and maybe I have once or twice
+publicly said that everybody in the unity team should be thrown into a dungeon and not be taken
+out until they have tried to release a game with 60 frames per second so but I I do love unity
+sure um we had this performance budget we wanted 60 frames per second and um that means that
+with these things that we had with the streaming we wanted 4.6 milliseconds for um the the
+streaming in initialization and the head room for uh eventual spikes that could occur we wanted
+two milliseconds for for rendering uh things like fog and Reflections we needed 1 millisecond
+for calling and that left us 9 milliseconds for all the general gameplay and animation updates
+and particles and all the physics and everything else so we needed to to do a lot like
+especially if we have an area like here where we have 18 dudes running running around after you
+and we all need to do that in 9 milliseconds so that was a task and um what I will show you is
+not uh any c from the actual game I've made a little demo script that will show some of the
+biggest lessons that we learned um and they are very easy to implement you should all be able to
+make all the implementations for for these tricks to make the C run faster I'm doing it in unity
+54 uh inside was in a heavily modified version of unity 50 but most of them are about the same
+uh I just heard about the new stuff that unit is doing this morning and it seems like some of it
+will be better in 56 and and from then on but at least for now these things uh will be uh doable
+we have executed it on an Xbox One where we've done the measurements because that was our Target
+platform and we did not have IL to CPP uh in unity 5 but I've been testing this both in mono and
+in il2cpp because it will probably be what what everybody's doing from now on so this is uh my
+my test scene I have a a very deep hierarchy uh in the note hierarchy and then I have a
+extremely nice character Triple A um with uh some animation going on it's not animating but it
+has like a mesh and a lot of Bones and this is pretty representative uh for what you'll find in
+a game where you put the the character like deep in in a level hierachy um and on that character
+uh we have this is the scripts I have uh the main script to the left is kind of uh what it does
+is it's it's making a list of 100 of these characters and then it's calling update 1,000 times
+on each every frame just to get big numbers that are nice to look at and what it is doing is on
+the right you can see we have a character and it has some floats at the top to control its speed
+it has a velocity and then it's it just multiplies the velocity Vector with the with the floats
+and updates the position and then that is being done 100,000 times each frame okay so whatever I
+would do when I first wanted to uh Pro fil things like that is use the de profiler unfortunately
+it doesn't really give usable resource if you do the de profiling on the Xbox one so the Deep
+profiling here is done in editor um generally that's okay because the results are are mostly
+comparable uh in editor and and like what we get on the Xbox One not always but you can you can
+use that U and uh yeah mostly and if for instance we look at this you can see a lot of numbers
+and a lot of uh how much time it takes in D profile and uh I would just take from the top the
+things that look most expensive for instance here we can see that the top one is Vector 3
+multiply and it's been done 600,000 times and that's a little bit weird because we only have
+100,000 cars and they only have one vector that we multiply with some floats so why is why are
+the 600,000 multiplies but that's simply because I'm so stupid that I've put the the vector as
+the first parameter so what is going on that the vector takes itself and multiplies with the
+speed parameter and returns a new Vector that is then multiplied with a speed factor that
+returns a new vector and so on so there's six Vector multiplications in that line up there so my
+first optimization would be to reduce those Vector operations and you see the script on the
+right what the only thing I've done is I've put in a parenthesis that makes sure that all the
+floats are multiplied together uh before the vector and if you look at the profiler it has gone
+from 600,000 uh multiplications to 100,000 okay so here let's look at the results uh in
+milliseconds this is taken from the Xbox one we have from the mono build uh almost 23
+milliseconds and the il2 CVP has 106 milliseconds and um one thing I noticed is I would have
+actually supposed that I CPP was a bit faster but okay it's like 12 133% performance increase we
+take that um but let's see what happens when I do my optimization okay that's actually quite a
+lot that's the only thing I've done that's the parenthesis you you can go through your scripts
+and do the same thing and get this kind of optimization just out of the box okay the next thing
+use cached transforms um whenever Unity when you call transform in unity it actually doesn't
+just give you the transform it does a lot of safety code to make sure that the object has not
+been deleted or anything and that is pretty expensive so what I've done on the right here this
+time is just cach my transform on my start uh function to to a new underscore transform and then
+I'm just using that instead extremely easy you can all do it and the performance douch it's
+pretty good um so go ahead and do that the next one is not always feasible but a lot of time it
+is it is use local position if you can on the on the left I've been using the normal uh
+transform. position but uh mostly when I have a character I don't really care what's in the
+hierarchy above it uh in this case it was just for bookkeeping that all those notes were above
+my trans my character so if you just put all those uh notes to be plac in zero z0 with the
+identity rotation then you can use local position instead of normal position or you can reparent
+your character or do whatever so in most cases I've worked with I always use local position and
+the results are actually doing really wild like that's a lot um and that's that's because uh
+Unity internally stores all data as local positions so whenever you need a real position if you
+want to retrieve it want to set it un has to go all the way up through the hierachy and all the
+way down again to translate from local to to World positions and it doesn't catch it so it does
+it every single time so it's a really good idea to try to keep everything in local positions
+whenever you can okay reduce engine calls um yeah whenever you call into Unity uh you have to
+remember that you are working with managed uh code in C and unity is a C++ engine so it's
+working in unmanaged code so whenever you want some value from Unity it has to Marshal the code
+uh and make sure that you like copy the unmanaged code to your manage code um so that takes a
+bit of time so over here uh what I've done is the the local position I'm I'm setting actually to
+the left you can see I start each frame by getting the local position and then I set it at the
+the end if no one else is touching it I can just cach it myself and just use the cach local
+position I had from last frame and then just set the local position once so that's what I'm
+doing at the at the right so I've removed one uh call to get local position and that one call
+actually takes a little bit of time which is fine we can all need all the performance we can get
+okay so now said that uh calling anything in unity is slow so would that also be gets and
+Setters like it can be nice to have gets and sitters but does it actually take some time so what
+I've been doing here is I've just removed them uh my permets are still public and uh let's see
+what happens hm actually I2 CPP became more expensive that that doesn't make any sense at all um
+and I've done other test where it it does get a little bit better but it's you know when you are
+like making something into CPP and then passing that afterwards and compiling that there's some
+optimization going on so sometimes the results can get a little bit weird and that's probably
+what happened here but in all it doesn't seem like gets and sitters are that much of a deal like
+it seems like it's pretty okay to use those I get a little bit but it wasn't one of the big ones
+okay this one is going to be a little bit ugly don't use Vector math at all because we still
+have 100,000 Vector multiplications and 100,000 Vector additions and as I said whenever you do
+that you have to create a new vector and you have to populate with data and throw it back in
+your head and that takes time so there there's really no nice way to fix this but on the right
+you can see what we've been doing we take the factor that's all the floats that are multiplied
+together and calculate that first and then we set each X Y and Z uh member uh like we're doing
+there we we simply inline the code manually um it's ugly but in the end we did this in every
+Inner Loop in the entire game because yeah as you can see the performance you gain from that is
+is really wild actually I think we need to zoom in a bit to see better bring in the small guys
+dude here we go so so yeah that's it that's that's pretty much so we we yeah we don't use any
+Vector math we we just inline everything manually it's sad but that's how it end okay as I said
+calling Unity is expensive so like just getting time the Delta time that is call to Unity so if
+we just take that and store it globally so the first function that calls update it stores a
+global Delta time and the rest of the functions uses that yeah that can actually give us an an
+increase in performance so not much but why not take it okay for each for each until the next
+version of unity 55 but until that it has been making garbage and garbage is not nice we don't
+want that so we don't call for each apart from that when you call for each you're making an
+enumerator and you're moving back and force with that enumerator and that also is a bit of
+overhead so if you can avoid and you can it's pretty easy to make a for Loop that doesn't use
+for each you should do that so that's what I've been doing on the right just normal for Loop and
+the results are here are pretty nice especially in il2 CBP wonder why okay arrays and not lists
+this one is is pretty fun because uh uh in inside it it it actually looked like it was a lot
+better then when I did this test to take an array and just to take a list and just use static
+arrays instead um maybe there's been some optimization done since then I don't really know but
+the idea is simple if you have an array replace it with a list no the other way around if you
+have a list replace it with an array so it was not as simple anyway okay uh but as you can see
+here the results are not really fantastic so maybe that's not necessary you should do your own
+measurements if you consider that okay so here we have the results in the end from 106 in il CVP
+to 9.5 milliseconds that's a factor 11 yeah and I I haven't been doing any thing that changes
+the game code I've just like refactored in in hand how the C is written oh what what oh I have
+been cheating okay I have I haven't really been cheating um like the the optimizations are still
+valid but the problem is that I haven't been counting everything if you look at this code what I
+did was I took the factor and I multiplied it to the velocity vector and then I like set the new
+local position the problem is that the factor was Zero all the way through because one of the
+one of the floats was zero so the local position is zero in every update and when Unity uh sets
+the same position as last frame it it skips it which is nice it hasn't always done that but it's
+pretty nice that the unity makes that optimization for you but that also means that setting the
+position hasn't been like accounted for in this test so how how long does it actually take to
+set the position like here we are 9. 5 milliseconds with if we using the same position every
+frame and here we are with a new position every frame so yeah at least we still got these 100
+milliseconds of optimization but this is this is pretty pretty sad um so what happens is that
+whenever you set a position Unity posts messages down the note hierarchy to make sure that every
+note knows that it has been moved so that also means that if you have many notes and an advanced
+model then it gets even more expensive to move it and the penalty applies once more if you
+change the rotation so one penalty for moving one penalty for rotating um I heard this morning
+that they're working on improving that and this is also very very good and very needed because
+this is like in the end it turns out that moving the characters was by far the most expensive
+thing we did not figuring out what they were going to do just moving them um and you can't
+really do anything about it if you don't have source code access luckily we had that so there
+are these things we can do if you have that you can for instance set the position and rotation
+at the same time instead of setting it uh first position and rotation that's clever then You'
+only only pay the penalty once and the sad thing is that that function exists internally in
+unity it's just there it's just not exposed so if you have the source code you can expose this
+in two minutes and if you sit close to Unity guy you can ask him to expose it for the next
+update because that would be a nice function to have there's also get position Andro station
+this the same idea you get both at once so you don't have to go all the way up the node here
+again back again in one go and then do it again for the rotation and for as as with the other
+one that function actually also exists internally in the editor in unity they just haven't
+exposed it so the same deal you can expose it or you can ask them to do it for you and then
+actually the last one here that that function doesn't exist it is um we made a function where we
+just don't pay the penalty we don't tell the sub noes that the root node has been changed uh the
+problem is that they need to know because otherwise they won't beov moved but if you have for
+instance an animation running on on a on a on your character which you almost always have that
+animation will make sure that the the notes are being touched eventually um so we in our inside
+we just moved the character and did not tell the notes that they were moved and then the
+animation system told us uh told for us so um we got completely rid of that penalty for moving
+the character which gave a speed increase like a factor 8 to 10 from moving characters if we did
+it that way so that's also a function that I think could be cool to have so you can control this
+and and not get the speed increase unless not sorry not get the speed penalty unless you
+actually need it okay here's a little warning uh that we fell in uh I don't know if anyone of
+you noticed that I had a sign function in My Demo um sign that that takes a little bit of time
+so we we thought maybe we can make a faster sign function by making a lookup table so we did
+what you can see on the right something like that a lookup table where we put in sign values and
+then we have a fast sinus function and we just take the values in our table and it looked really
+really good actually it uh it performed a lot better in edit in editor mode and also on PC
+builds unfortunately it didn't perform better on the Xbox one uh and we didn't really test it
+because it looked so good in our PC and that's why we did most of our testing because of the
+quick turnaround times so in in the end we actually ended up uh shipping inside with a much
+slower sinus function than well than than the build-in one on the Xbox which was pretty stupid
+so the takeaway from that is remember to test your optimizations on the platforms you're
+actually releasing them for okay I have some basic tips to avoid frame spikes they don't really
+have anything to do but uh with the with the c code but don't generate garbage that's uh we've
+said that a few times and yeah that will always be a problem if you do um don't of course don't
+use instantiate at runtime uh it's expensive you must pre-allocate everything I in my opinion um
+what we found in C at least with the mono we've been using so far is that uh built-in data
+structures um that that are pretty that are modern they they perform horribly like we we we
+found that the list uh was horrible it doesn't look horrible anymore we also found out that um
+dicks they have a really big cost the first time they're used um which uh we don't like for
+spikes and event subscription is is also extremely heavy so um use oldfashioned code if you want
+it to perform well and then don't use string concatenations um if you need to concatenate
+strings run time use the string Builder class it's actually fast and doesn't generate any
+garbage at all okay and then avoid using update and fixed update what this is this is pretty
+wild because yeah that's that's a bread and butter of unity you have these update functions you
+code everything there it works but the thing is that um whenever you call whenever Unity calls
+your update function it has an overhead it doesn't show on any of the profilings it's just there
+you and it's so it's even not even really easy to detect um but you can fix it you can make your
+own update manager you can make it even like a inherit something that all your scripts just
+inherit automatically and then that update manager just is the only thing that gets the update
+and then it passes it on to everything that is like in its own lists of things that need updates
+and you should do that um in in inside we saved one to two milliseconds per frame by doing that
+so most of our scripts were actually being called internally from our update manager instead of
+taking an update from Unity gotcha okay so what did we learn today don't use Vector math and
+cache your transforms and use local position and local rotation if possible reduce your engine
+calls avoid moving objects with complex notaries and never use for each avoid update and fixed
+update and kindly ask the nearest Unity uh developer to expose the faster functions to remove
+stuff to move stuff okay so that is actually it um we can take some questions if you want or
+we'll be at the speaker Corner uh afterwards and Thursday we'll be at ask the experts from 9: to
+12 thank you yeah I think there are some uh microphones thank you so much for all of that
+performance is like a thing that I pride myself in as a technical artist so all that was like
+mind-blowing avoiding the update in VR specifically I have concerns about that like how do you
+avoid the update when your headset is dependent on the rotation and movement of your camera like
+your phone or your VR device like cuz you know I develop mostly virtual reality I do mobile apps
+but like that's more my interest is virtual reality yeah so would you have like a separate
+update to handle the VR inputs of the camera and then the input of the controllers let's say or
+the environment or how would you handle that situation probably I we're not doing virtuality
+ourselves so I have really no experience uh in the problems that might occur there but that
+could be a good idea yeah to have two updates probably okay yeah thank you okay and no one else
+it says is that a question coming or just okay I can't believe there's not more questions this
+has been one of the the best talks uh it's only the first day so I mean outstanding thank you
+guys thank you um I've heard about a lot of the things you were talking about uh like the not
+using the updates uh for each I mean these are all like lowest loow hanging fruits that all of
+us could Implement um what do you see like in the newer versions I mean plus you guys have been
+working with unity for some time so you see the improvements actually happening what do you
+think are are the best improvements for the latest version and what is what has coming down the
+pipe that you think we should start changing our design paradigms and our coding structures to
+kind of adapt for yeah like personally I'm pretty psyched about the uh transform thing I heard
+this morning that the transforms will now be able to be touched uh from like threaded code that
+that sounds like something that can really help you a lot I don't know if you have anything that
+you're looking especially forward to also the thing that Yim showed about moving transform on
+other threads would be really useful you'll definitely use that for the next project yeah to
+utilize the C better and I guess oh there's more oh perfect yeah I was going to ask about camera
+rendering but that's go ahead oh yeah so thanks so much for the talk that was incredible um I
+work on Orient of blind Forest which is a stream 2D 2D game to um and you just like solved all
+our problems but that's so one of the things we have we have much more granular scenes where we
+need to load one like every 15 seconds 20 seconds is so for us the problem is not just the
+spikes from integrating it but also just the total load time and I was wondering if you had run
+into that and if you had any done any optimizations to reduce this total lad time for a scene
+yes you so you said you had much larg larger scenes that we had was that much more much more
+granular so like we had we have been loading scenes every 20 seconds like you have 3 minutes
+before loading separate scen set okay yeah just constantly streaming in stuff in and there there
+were issues with unity so we did do some optimizations some of those that I mentioned in the end
+and uh without those as as one example is that all the instance IDs when they are updated that
+happens on the main thread as it is now and that actually takes quite a bit of time so I'm
+hoping that with the collaboration we have with unity that we're able to solve some of these
+issues yeah that helps a ton too but it's not just the spikes it's like the total loading time I
+don't know what scene loading time your scene but we had over 20 seconds for some scenes which
+meant that you were running up to the edge and we we we sort of have to keep the camera back
+since the scene just isn't loaded yet and wait until it is loaded that's huge yeah we only had
+maybe one to two seconds of loading time for most of our scenes actually maybe you could drop by
+at the experts session then we can have a detailed talk and look into your to your stuff that's
+good but yeah thanks a lot anyway great talk thank any other questions okay thanks for the talk
+by the way one uh one thing I use a lot personally is event subscription and you suggested to
+totally avoid the buil 10 one so what would you suggest as a good alternative like we made our
+own lists like we put out like you can uh just do the same and just call it from a list with an
+interface for instance um what else did we did we do uh yeah because there's one problem with
+the B and that's internally they are actually a linked list for I think it's for multi in
+security and we didn't use that because all our work is done on the main threet so we sort of
+replaced the internal data structure for holding all these callbacks from a link list into just
+an array it gets a little more manually but then you can uh really quickly uh execute these
+events instead of going through the link list and then in particular in unsubscribing and
+subscribing in active gameplay when you have a lot of subscribers can actually be really slow
+because you have to sort of uh rebuild this link list MH that makes a lot of sense thanks hi uh
+really great talk guys um I just wanted to note that this seemed like a ton of work for you guys
+and um just wondering what your thoughts are if you would have chosen Unity to do it again and
+whether it was like worth it after all that yeah you you did see my disclaimer though didn't you
+I think uh one thing that can be said about that is that it has been possible so we actually
+were able to do all these hand tailored optimizations specifically for our game being a 2d sides
+scrolling game so I think that's the strength of unity that you can actually do this uh and then
+of course we would like to take these Lessons Learned and then try and improve Unity uh so we'll
+definitely do that but I think the most important thing is that it's possible and it's actually
+even though we use a lot of time it's uh it's flexible and I think in other engines that could
+have been a little more Troublesome yeah also from a game playay point of view like in in the
+play dead we don't really design games up front what we do is like we set up things and then we
+try things and then we discard 70% of what we've tried and then we make a game in the end so uh
+the quick turnaround time is really really really important for us and I think from like for
+other engines that would have just killed the other game like the quality of the game would have
+just degraded if we didn't have really quick quality uh and turnaround time uh throughout the
+development cool hi really really nice stuff um in terms of avoiding garbage and avoiding
+overhead it seems like you guys have learned a lot of details about how to do that how do you
+how can we learn those so the question is how you you do that yourself going to how do we learn
+all those details of avoiding creating garbage and avoiding overhead of different uh features of
+unity in C yeah I think that one way of that we we did it is that we use the profiler again and
+again and again so every time we we monitor if any garbage is generated and then in the profiler
+you can actually see exactly which scripts are generating this garbage then you can dive down to
+see okay so it's this for each that generates the garbage or it's this and that and then you
+simply just get rid of every point of garbage going along I don't know maybe with the new uh net
+runtime that they are getting in at some point maybe the garbage collector would be more more
+effective we can hope but um so so so it's just a question of practice and a lot of work yeah
+yeah oh well lots of work hello is this one on sorry just a piggy back off the Garbage
+Collection then so at what point in your development process do you consider profiling your
+scripts when you have a playable gameplay when you write a certain set of functions like at one
+point in your testing phase do you start with garbage collection optimization we did that quite
+early actually uh to just not let it go completely crazy but uh most of the work was done in the
+last I think year of the production but that has to be held in U in relation to how long the
+game actually took to make and that was six years so I guess that's uh so you did a lot of devel
+M probably for the first 5 years you were designing for a little bit more optimization but then
+your hardcore optimization happened in the last year kind of Hit the performance got you so one
+all the art assets were in and when you knew where the areas of performance you needed to hit
+were at can I have that last question again so when your art assets and everything was imported
+into the game and you creating all the foundation and uh probably integrating more of the final
+features it was that where you say You' start optimizing or would it be like when the art assets
+are at placeholders or it's I think most people would have seen the game as being almost
+complete a year before we actually shipped the game but then of course the the artist at our
+company would not agree they really up into the details but for the most part the game was
+actually complete when we did all the optimizations for these things okay well thank you very
+much yeah I think we have the time is out maybe the last question um thank you so much uh so you
+guys did everything under uh 400 mes right in memory and uh you also uh preloaded all your
+subscenes in that uh 400 Megs first right and that's the mono Heap so it's not the total memory
+uses for the game it's only the mono Heap that's 400 megabytes right right and and then uh uh so
+did you you and and you you said that you didn't destroy anything right we we do uh do object
+Destroyer on the hierarchy note so when we do an unload of a scene that's actually calling
+object. destroy on small parts of the scene going Bottom up okay and and uh how does how does
+that doesn't generate garbage uh you could say that it does generate garbage because if there's
+a mono behavior on uh on one object and you delete that monob behavior and there's no references
+to it anymore then it's garbage but then we just need to make sure that all the amount of
+scripts and objects that are in the entire game is less than these 400 megab of Heap space that
+we had pre-allocated thank you very much [Applause]

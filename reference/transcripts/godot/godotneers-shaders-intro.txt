@@ -1,0 +1,591 @@
+---
+title: Welcome to Shaderland - An introduction to shaders in Godot
+author: Godotneers
+source_url: https://www.youtube.com/watch?v=nyFzPaWAzeQ
+date_added: 2026-09-15
+date_published: unknown
+type: Video transcript (auto-generated captions)
+caption_track: en
+segments: 1567
+---
+
+hello goners shaders are a very powerful tool that can be used to create interesting effects for
+your game unfortunately they're also a bit intimidating to get into so we're going to learn the
+basics of how shaders work and we're going to explore how you can create your own shaders in
+gdau this is a beginner to intermediate level tutorial you should know how to use the gdau
+editor and you should know at least the basics of either GD script or c tarp as this will help
+you a lot when learning the Shader programming language we'll also use visual shaders so if you
+don't know a programming language yet you should still be able to follow along we'll also need
+to use quite a bit of math so it will really help if you're comfortable with basic math and
+maybe functions and vectors but if you aren't don't worry we'll keep things simple and explain
+them as we go so what are shaders shaders are programs that run on your graphics cord rather
+than on your CPU they can change how meshes and textures are getting rendered everything that
+you can see in G do is actually a mesh even 2D stuff like a Sprite or text is still a mesh under
+the hood right here we have some Sprite Tod a label with text and a polygon 2D and I have
+created a second scene where I added a wireframe Shader to these so we can see the mesh that is
+used to render them a mesh has vertices and triangles the vertices are these points that make up
+the mesh the triangles are made by connecting the vertices now in order to render a mesh the
+graphics card will need to do a bit of work and part of this work is to run a series of shaders
+we start with the mesh which defines the geometry of the thing that we want to render here we
+just have a simple Sprite now the graphics card will run the first Shader which is the vertex
+Shader this Shader will run for each vertex of the mesh and it allows us to modify the vertex
+data for example we can change the position of the vertex here the vertex Shader is moving
+vertices of the Sprite to give it a swaying motion it's important to note that the vertex Shader
+can only modify the vert data it cannot add or remove vertices or triangles after our vertex
+Shader has run the graphics card now knows how the mesh is finally going to look and the next
+step is to roriz the mesh restoration surely sounds a bit intimidating so let's have a look at
+what it actually means restoration means that we put a grid on our image and then look at what
+is inside of every grid cell this is very similar to taking a picture with your smartphone
+camera here we have a real life cat holding very still so we can take a nice photo of it thanks
+buddy so let's Point our smartphone camera at the cat the camera has a sensor and the sensor has
+a grid of sensor cells now each sensor cell will measure the amount of light that hits it and
+will then produce a packet of data that we call a pixel these pixels will make up our final
+image now the graphics card will do a similar thing with our mesh here we have the mesh as it is
+after the vertex Trader is done with it and we have our output window where we want to render
+the mesh into now the graphics card will use the same technique as our camera but instead of
+using the grid of sensor cells it will use the pixels in the output window as a grid and for
+each pixel of the output window it will produce a packet of data that we call a fragment it's
+not called a pixel because it contains a lot more information than just the color of the mesh
+for example the screen location of the pixel information about the lighting normal Maps UV
+coordinates and more so after the restoration is done we got a bunch of fragments and now the
+graphics will run a fragment Shader for each of these fragments and with this fragment Shader we
+can modify the fragment data that the graphics card just collected when it roriz the mesh for
+example we can change the color of the fragment or its transparency once all the fragments have
+been processed the graphics card will use the final information from these processed fragments
+to draw the actual pixels into our output window this is all a bit simplified but it should be
+enough to understand how the Shader pipeline Works in general there are actually a few more
+other kinds of shaders that g uses but for this video we'll stick to vertex and fragment shaders
+we'll also stay in TWD to keep the math as simple as possible okay so let's first have a look at
+the weex Traders I have a patch of grass here and I want to make it wave in the wind like we
+just saw when we looked at the Shader Pip this is something I cannot really do with the
+transform settings I could try to rotate it a bit but that looks odd I could move it left and
+right but that also looks odd and this Q setting well it looks somewhat right but it moves the
+bottom part of the grass and I only want to move the top part of the grass so I would need to
+modify the mesh of this Sprite Which sounds exactly like the thing vertex shaders do so let's
+create a Shader Den we right click here we select new resource and then we search for Shader and
+we have two options a visual Shader and a Shader which is the Shader in the goodto Shader
+language we're going to start with the visual Shader for now and let's let's name it grass now
+we want to assign this Shader to our grass Sprite and we can do this while going into the
+inspector then on the material we drag our Shader directly onto this material slot now we can
+double click the Shader and we can edit it the first thing that we need to do is to change the
+Shader type up here to Canvas item because we want a 2d Shader canvas items are 2D shaders and
+then in the editor we see that by default we have the fragment Shader part of our visual Shader
+enabled and we need to switch it to the vertex Shader part so what can we do here there's a
+single note here named output that expects some output of our vertic Trader so okay we know
+where the output goes but where is the input well the input is not added directly to the Shader
+graph so we need to add it manually we can right click anywhere in the shade of graph and then
+in this window that opens we can add new nodes to the graph we want to add an input note so
+let's type input it has a drop down and in this drop down we can select what kind of input data
+we would like to have since we want to modify the position of the vertex let's select vertex the
+vertex position is a vector a vector is basically a little package that contains a bunch of
+numbers well this vertex position Vector contains two numbers you can see this by looking at the
+little icon here which reads vc2 which means Vector 2 so this is a vector that contains two
+numbers now we want to change this position so that the vertex moves so maybe let's add another
+Vector to the position and see what happens right so right click search for ADD and then we pick
+the ad node which has the vc2 icon because we want to add two Vector twos so now we can add
+something to our vertex position to do this we first drag the position into the a slot of the ad
+node and then we can type sub numbers here into the B slot let's maybe say 50 to X and 25 to Y
+well it doesn't seem to be happening a lot but this is because we need to connect the output of
+our ad node to the output node so let's do this and now we can see that the whole Sprite has
+moved to the right and down so we know the coordinates and vertx shaders work very much the same
+as everywhere else let's save our Shader now because the visual Shader editor likes to crash
+every now and then so it's a really good idea to to save off we were able to change the vertex
+position but why did all vertices move well the graphics card will call this Shader program for
+each vertex automatically but and this is really important we have no control over the order in
+which this is done it will happen in parallel for all of the vertices and this way the graphics
+card can use its hundreds or thousands of Shader processor course to do this as fast as possible
+and this is also the reason Reon why we cannot add or remove vertices in the vertex Shader
+because we only get called to modify an existing vertex okay now we are able to move the whole
+Sprite by moving all vertices but we only want to move these upper two vertices here so how can
+we find out which vertex we are currently working on well we can use the vertex coordinates to
+find out so let's have a look at the Sprite and then let's see what coordinates are we actually
+getting here the vertex coordinates are given in so-called local space which means that they are
+relative to the Sprite Center and they are in pixels so our Sprite is 256 * 256 pixels and the
+center would then be at 128 pixels to the right and down from the top left corner and this
+Center gets the coordinates of 0.0 and then everything else is relative to this Center so when
+we know this we can calculate the coordinates of all the four vertices relative to the center
+and if we look at these coordinates we can see that the upper vertices have something in common
+their y-coordinate is negative while the y-coordinate of the lower vertices is positive and we
+can use this to find out whether the vertex that we are currently working on is one of the upper
+vertices now which node would we use for that there is an if node that allows us to compare
+numbers so maybe let's add one of these so we right click we search for if and we add it so now
+the if node has two numbers A and B and the if node will return a vector three depending on
+whether a is equal to B greater than b or smaller than b for each of these cases we can
+configure what the output of the if node should be so let's first plug the y-coordinate of the
+vertex into the a input because we want to know if this is negative or positive but how do we
+only get the y-coordinate of the position because we only have a vector 2 here well we can click
+this little triangle here to get additional outputs that split this Vector two into its
+components they are somewhat confusingly named red and green and this is because of some special
+convention in the Shader language that allows us to use different names for the components of
+each Vector so X can also be named red and Y can also be named green and Zed can also be named
+Blue and so on but it's just different names for the same component and we will see this later
+when we we work with the Shader language so for now we just need to know X is red and Y is green
+so we get the green output which is the y-coordinate and put this into our if node on the a
+input the B input we keep at zero because we want to compare the Y input with zero and then we
+can set the output for a is less than b to be some value that we want to add to our Vex position
+Maybe 100.0 .0 so our if node will now return a vector 3 with 100 0 0 if the y coordinate of our
+vtex is less than zero and it will return 0 0 0 in any other case okay so we can now plug this
+into the ad node and we can see that only the upper vertices are moved while the lower vertices
+stayed in place when we look at the Shader cop again there's one odd thing the add node expects
+a vector 2 but we plugged in a vector three so what happens with the third component well in
+visual shaders the editor will automatically convert between different Vector sizes in our case
+we need a vector two but we got a vector three from our if note here so the editor will just
+drop the last component and if it's the other way around then the editor will simply add a zero
+when we look at the Shader language later we will have to do these conversions ourselves so we
+were able to move only the upper vertices but we would like these vertices to sway back and
+forth so we need to add some animation to our shade it if we want to animate the swaying of the
+grass we need to somehow change the value by which we move these upper two vertices if we set
+the x value to minus 100 then we can see that the grass sways to the left and if we set it to
+100 and the grass weighs to the right so we need to change this value from minus 100 to 100 and
+back in GD script or C we have the Delta time variable that we could use to calculate values
+that change over time so let's look in the list of notes if we can find something similar so
+right click and we search for time and here we have a Time note but the description isn't really
+telling us what is actually in this time variable is it the data time since the last frame or is
+it something else so let's have a look at the documentation switch over to the browser and here
+it reads Global time since the engine has started in seconds always positive so how could we use
+this to animate our grass in a normal script we could use some variable to store the current
+value and then maybe add some Delta to this variable each frame but in shaders we cannot store
+variables between frames everything that we calculate is lost when the Shader is done so
+everything needs to be calculated from scratch each time the Shader is run for now let's try to
+use this time variable to get a feel for how it works and let's say we want to move the upper
+vertices by the amount of time that has passed for this we need to get the time into the X
+component of this Vector but unfortunately we don't have a little triangle here like we have for
+the input Noe so we somehow need to build a vector three from components and there's a note for
+this which is called Vector 3 compose so we right click and we search for Vector three compose
+and there it is and we add it so this has three inputs for X Y and Z coordinates and it will
+return a new Vector 3 so we plug the time into our X component and then we plug this new Vector
+3 into our if node now the grass has moved but it seems to stand still maybe let's zoom in a bit
+and we can see that the grass is actually very slowly moving so we get some on animation but we
+still need to find out a way to make this grass sway back and forth and also it should move a
+bit faster so we need a mathematical function that takes a number and then returns a number that
+goes back and forth based on this time input and one such function is the sign function let's
+have a look at how this function works so let's move over here into the browser and we can see
+this is a plot of the sign function on the x- axis we have the number that we put into the
+function and on the Y AIS we have the number that we get out so when we put the number zero into
+the function well then the function will output is zero and if we increase this number I'm
+draging this here to increase then the function will return larger and larger numbers until some
+point where the output gets smaller again and eventually it gets negative and then returns back
+to zero and this repeats forever as we put in larger and larger numbers so if we put the time
+into this sign function we should get a swaying back and forth motion let's go back to gdau so
+we right click we search for sign and then we edit okay now we put the output of the time into
+the sign note and the sign note into the X component of our Vector 3 and if we zoom in very
+closely we can see that the grass is now swaying back and forth by a very small amount and this
+is because the sign function Returns the value between minus one and 1 so we only sway back and
+forth by a single Pixel this is obviously not enough so we need to increase this range and we
+can do this by simply multiplying the output of the sign function with some number to make it
+sway more pixels and we want to sway by 100 pixels left and right so we multiply this output by
+100 so let's add a multiply note right click search for multiply and we need to check that the
+output of the sign function is a float so we need to use this multiply with the float so now we
+can plug the output of the sign function into this multiply node and then we multiply by 100 and
+now the grass swings back and forth by 100 pixels oh that's great but I think it's swinging a
+bit too fast so I'd like to slow it down a bit how can we do this but what we can do is we can
+multiply the time with some number to make it faster or slower so let's say we want to make the
+time go half as fast we could multiply this with 0.5 or2 so let's duplicate this multiply node
+here can press contrl D to duplicate and then let's plug the time into the a slot and multiply
+it with 0.5 and the output goes into the sign function and that seems to work pretty well so now
+let's try if this also works for speeding up the animation so let's maybe multiply the time with
+two we change it here to two and it does okay well this is way too fast so let's move it back to
+1.0 but now we can make our grass Sway and we can also control the speed of this animation which
+is great so now that we have a functioning visual Shader let's see how we can write the same
+Shader in gau's Shader programming language why would we want to do this well there are a few
+reasons first visual shaders are somewhat limited for example we cannot use some programming
+constructs like Loops in visual shaders and we also cannot make our own custom functions the
+second reason is that almost all shaders that you will find on the internet will be written in
+some Shader programming language so if you want to use these shaders as a basis for your own
+shaders well you will need to know how to read and write Shader code but if you already know how
+to write code in gdscript or cop you will see that the Shader programming language is actually
+not that different so let's start by creating a new Shader so we right click on the file system
+we select new resource and then we search for Shader and this time we select the Shader resource
+not the visual Shader one we name it grass and we also set the mode here to Canvas item and then
+we can attach this code base Shader to our second copy of the grass Sprite so again we open the
+material slot and we drag the Shader directly onto the material slot now we can open the Shader
+by double clicking it and it will open a code editor down here and we can see that currently
+there's not a lot going on we have some instruction here that tells gdau that this is a Shader
+for canvas items so it's a 2d Shader and we have a function called fragment which is currently
+empty this function is actually for the fragment Trader which we will come to later so for now
+we can just rename it to vertex and weex is the function that is used for the vertex Shader if
+you come from C then this Shader language will actually look very familiar we have a return type
+of void the function is named vertex and it takes no parameters if you're coming from GD script
+you will notice that a few things are a bit different in the Shader language the return type is
+at the front of the function while in GD script it is at the back the Shader language doesn't
+have the funk keyword so a function is simply identified by its name also we use these curly
+braces here to Mark the beginning and ending of code blocks while in GD script we use
+indentation to Mar code blocks finally we have a command here which is created by writing two
+slashes same as in C in GD script we would use a hash sign for this if we look at the function
+we can see that it takes makes no parameters and it also returns nothing a return type of void
+means nothing same as in C and GD script so how can we get the vertex position and return a new
+vertex position to the graphics card when we have no parameters and return nothing well in the
+Shader language there are a lot of built-in variables that are used for this purpose now we can
+go to the documentation here in the browser and we see a list of all the built-in variables and
+we can see that in order to get the current vertex position we read a built-in variable named
+vertex and if we want to write a new vertex position well we will just write to this same vertex
+variable so now we know how to get data in and out of the Shader we can start to translate our
+visual Shader into code so let's get back to gdal here's our visual Shader again again so we can
+see which parts of the code correspond to which parts of the visual Shader and then let's begin
+on the left there we have the current time and the variable for this in the Shader language is
+named Time all uppercase like in GD script and C the Shader language is case sensitive so time
+lowercase is something different than time all uppercase now we want to multiply This Time by
+0.5 so we can just type that in time time 0.5 and the next step is to run the sign function this
+also works very similar to C and GD script so we just type the name of the function sign and
+then we give our slow time as a parameter in parentheses next we want to multiply this by 100 so
+we type just that now the compiler is unhappy about this in the Shader language we cannot
+multiply floats with integer numbers like we can do in other programming languages our 100 is an
+integer but the sign function returns a float so we need to convert our 100 to a float before we
+can multiply we can convert the 100 to a float by just adding a DOT and a zero like this and now
+the compiler is a bit happier and we can continue the next step is to make a vector where the x
+coordinate is this expression that we have calculated so far in the Shader graph we used a
+vector 3 for this because that is the only thing that the if node accepts but actually we only
+need a vector two because the vertex position only has two components X and Y because we are in
+2D so we we can create a vector 2 by calling the VAC 2 function and then we pass in our X and Y
+values as parameters to this V 2 function so we type V 2 and the x value is this expression that
+we just made and the Y value will be zero just like in our Vector compos here now we need to do
+the if note like in GD script and C there's a built-in if statement so we can just use that so
+we start with if and then we need to give it a condition and in the Shad language like in C this
+condition must always be in parentheses like this this is different from GD script where we can
+leave these parentheses out now let's have a look at the if note and we can see that it compares
+the y-coordinate of the vertex with zero and we can do the same thing here we just take the
+vertex built it in variable and then we writey to get its y component remember that the y
+coordinate was called Green in the visual Shader we could also access this y-coordinate by
+typing G for green as both are just different names for the same component and this feature is
+very useful because in shaders colors are usually stored in Vector fours so you can type dox doy
+doz if the vector contains a position and R.G dob if the vector contains a color and this can
+make your code a bit more readable but in our case we're going to use y because we're dealing
+with a position here now we can check if the Y position is less than zero so we just type less
+than zero and now our condition is finished and we can close the parentheses in GD script we
+would now indent the next line to start our if block but in the Shader language we use these
+curly braces we still indent the code but this is just for readability the compiler will still
+be happy if we don't do this but it looks like the compiler is unhappy about our condition we
+cannot compare ins with floats in the Shader language so we need to convert the zero into a
+float as well just like we did with the 100 again we can just add a DOT and a zero to the end of
+the number and now it will be a float now if this condition is true we want to add this Vector
+two that we calculated to the vertex position so we write vertex plus equals and then we add
+this expression now the compiler still seems to be unhappy and this is because like in CP we
+need to end every statement with a semicolon so we need to add a semicolon here and now the
+compiler is happy and we can immediately see the grass is moving so just like with the visual
+Shader whenever we change our Shader code it will immediately update in the editor and this is
+really nice because we don't need to start our game to see if our Shader works so you see
+writing shaders in code is not really that hard once you know the differences of the Shader
+language to the programming language that you already use so should we only use codebase shaders
+then well no visual shaders are really nice for learning how shaders work and they're also
+really nice for prototyping and you can quickly try out a few different things and you can see
+how they look without having to make the compiler happy all the time and if you organize the
+graph well it can actually be easier to see how the Shader works when you come back to it later
+under the hood the visual shaders are automatically converted into Shader code so there's no
+performance difference between visual shaders and codebase shaders our Vex Shader experiment was
+quite successful so let's have a look at the fragment shaders next fragment shaders allow us to
+change the fragments that the graphics card has produced when it roriz the mesh so we can change
+how things look before the graphics card will actually draw anything as an example we are going
+to make a Shader that can replace a color such a Shader is useful in a game where the player can
+select the color of their units with the Shader you can just make one unit image and then
+replace the unit color on the fly in the game so you don't have to make a lot of images with
+different color variations I have prepared a Sprite of a character and now we want to replace
+the color of the shirt that this character is wearing for this to work the shirt needs to be in
+some color that is not used anywhere else in the image so only the shirts color gets replaced
+and this is why the shirt has this nice green color I have a second copy of this image here that
+we can use for comparison while we develop our Shader we will again start with the visual Shader
+so let's create one we right click select new resource and then we search for visual Shader and
+we name it color replacement and again we drag it onto the material slot of our Sprite and then
+we can double click it to open it up in the visual Shader editor again we need to make sure that
+the Shader type up here is set to canvas item because we are making a Shader for 2D this time we
+stay in the fragment part of the shading we can see that the output is a bit different from what
+we saw on the vertex Traer the most important output is the color that the fragment should get
+we also have an output for Alpha which controls the transparency of the fragment and there are a
+few other outputs but we won't get into these for now the input works exactly like in the vertex
+Traer so for getting an input we need to add an input node so let's right click and search for
+input and edit and we can see that we have quite a few inputs we want to select color to get the
+color that the graphics card assigned to the fragment when it restorz the Sprite this is a
+vector 4 a vector with four components the first three components are red green and blue and the
+fourth component is the alpha Channel which controls the transparency we can also click this
+little triangle like we did in the vertex Trader so we can get access to each element of the
+vector color values in shaders are always given in a range between zero and one and this is
+different from how colors are usually represented in other areas where red green and blue are
+given as range between 0 and 255 for example let's have a look at the color of the shirt of this
+character I have a little Color Picker here and we can use this to pick the color of the shirt
+now we can see that the shirt's color is 0er red 255 green and Zer blue but in the Shader we
+need to give these colors as a value between zero and one so if we want to know how this color
+would be expressed in the Shader we can use the raw tab of our Color Picker so let's open the
+Color Picker again and then select raw and then we can pick and the Color Picker will
+automatically convert the color that we pick to a range between zero and one so now we can see
+that the shirts color is zero red one green and zero blue so how can we use this knowledge in
+our Shader well the shirt is the only part in this image where the green part of the color is
+one so we could try to use the if node again that we already know from the vertex Trader to
+check if the green channel is one and then replace the input color with some other color so
+let's try that we right click search for if and then we add it and then we plug the green into
+our a slot now we check if the green channel is exactly one so we put a one into the B slot and
+then let's say when a equals B we want to make the shirt blue blue would be 0 01 so we type 0 0
+1 into the a equals B slot and in all other cases we just want to have the original color so we
+plug the original color into the other two slots for a is greater than b and a is less than b
+and now we can plug the output into our output node now everything is connected but the shirt is
+still green so what's going on here now the problem is that we are comparing two float numbers
+here and there's always some potential rounding error when we compare two floating Point numbers
+and want to know if they are equal this is the reason why this node has a tolerance setting when
+we increase this tolerance then the Noe will still treat a and b as equal even if they are a
+tiny bit different so let's try to set the tolerance to something small maybe 0 001 and now the
+shirt is actually turning blue but we get this really ugly seam here where the shirt Still
+Remains green so let's find out why we get this I'm going to set the filtering on the second
+Sprite that we have here to nearest so we can see the original pixels of the Sprite without any
+interpolation now let's inspect the colors of the seam of this shirt it looks like that they are
+actually in different shades of green some are a bit darker so the pixels blend more nicely
+together with this black water uh let's verify this maybe with our Color Picker so we can see
+that the red and blue parts of the colors at the seam are still zero but the green part Falls
+below one where the shirt color is Blended into this black border so maybe we could try to
+increase the tolerance setting of our if node so it will also affect Parts where the green value
+is a bit further away from one let's try this out so we increase the tolerance slowly and then
+see what happens to our seam so this makes the seam smaller but it also does some things that we
+don't want first we can now see that the Shader affects the whole Sprite not just the shirt and
+we also see that our placement color is always a solid blue and doesn't nicely blend with the
+black border like the original Green did so this solution with the if node clearly doesn't work
+so let's take a step back and think about how we could solve this problem in a different way
+maybe we can split the image into two parts one part that is the shirt and another part that is
+everything but the shirt then we could apply the color change only to the part which has the
+shirt and leave the rest untouched and in the end we just combine our two parts back into one
+image so how can we find out which parts are the shirt and which parts aren't let's use our
+Color Picker again to see if we can find a way to distinguish them we can see that everywhere
+where the shirt is red and blue are zero and green is some value between zero and one on the
+other parts red and blue are above zero so we know that if red or blue are above zero then it's
+not the shirt which note could help us to check if red or blue are above zero the if note we
+have used only allows us to compare a single number but maybe there is another note that we
+could use let's have a look at the list to see if we can find the variant of this if node that
+can help us so we right click and then let's search for if again so it looks like there is only
+this one if node that we already know so we will need to use a bit of math to massage the data
+that we have into some form that is a bit more helpful to us what we need is some node or
+mathematical function that can take a color and then gives us a number back that tells us how
+much red and blue is in this color there is no built-in node that can do this for us so we will
+need to build something like this ourselves so let's break down the problem a bit as a first
+step it is probably a good idea to strip out the green part of the color from our color Vector
+so it doesn't get in the way when we want to calculate how much red and blue are in the color so
+let's add a multiply node we right click search for multiply and we pick this Vector 3 multiply
+node here because we want to multiply two Vector 3s now we plug the input color into a and we
+multiply this input color with 1 0 1 vectors are multiplied element by element so when we do
+this multiplication red gets multiplied by one and stays as it is green gets multiplied by zero
+and will be zero and blue gets multiplied by one and stays as it is let's plug this multiply
+node into the output node and see how that looks we see that the green color is completely
+removed from the picture everything that was green like the shirt is now black and everything
+else has its green part removed so the picture now has this purple tint to it so after our
+multiplication our Vector only contains the red and the blue components and now we can use a
+buil-in function to get a number that indicates how much red and blue are in this color and this
+buil-in function is the length function so let's add it to our Shader graph we right click
+search for length and then we add it and now we plug this Vector into the length node and the
+length Noe will now calculate the length of this Vector so what is the length of a vector to
+understand this let's have a look at some vectors I have prepared a little graph here and here
+we have a 3D diagram with X Y and Z axis we follow the conventions of Shader land so X is red Y
+is green and Zed is blue and at the bottom here we have a vector where red is one and green and
+blue are zero the length of this Vector is just a distance from the origin at 0000 0 to the tip
+of this vector and just by looking at it we can see that this length is one now let's maybe look
+at a vector which only has blue in it this would look like this red and green are zero and blue
+is one and this Vector also has a length of one just on a different axis now how would a vector
+look like when we mix a bit of red and a bit of blue well let's have a look here we have a 0.3
+red and 0 5 blue Vector this would give us some darker purple color and we can also see that
+this Vector is much shorter than the other ones because we have a lot less red and blue in it if
+we would change that color to a bright purple where the red and blue are one we get a much
+longer Vector so we can see that the length of the vector is a good indicator of how much red
+and blue are in the color so let's get back to our shape we can draag the output of the length
+note into our output note and we get some grayscale image this is because the single number that
+the length Noe returns is used for all three color channels red green and blue and if red green
+and blue are the same number then we get some Shades of Gray so now we can see that every part
+of the Sprite that has red or blue Parts in it is some shade of gray while all the other parts
+that have no red or blue in them like the shirt and the black borders are black what we have
+made here is called a mosque a mosque is a black and white image that we can ED to control which
+parts of an image are visible and which parts are not if youve worked with image editing
+programs like Photoshop or Affinity you may have seen mosques there as well so we have this mask
+from our length note but how does this help us to separate the image well remember how we
+removed the green part from our color by multiplying it with zero we can do the same thing with
+our mask let's try this out and duplicate this multiply node here we can press contrl D to
+duplicate and then let's Drag The Mask into the a input and the original color into B now we can
+connect the result to our output and see what happens so the Mosk sort of works the areas where
+the mosque was black are fully black so that part worked nicely but the other areas are somewhat
+darkened and don't keep their original color but what we want is that the areas where there is
+any amount of red or blue keep their original color and everything else just becomes black so
+how can we do this well let's look back at what the length node produces I've made a little
+visualization for this here so this is the output of the length Noe that we just saw but if I
+move the camera we can actually see the calculated length in 3D and there we can see that for
+areas where there is less red and blue we get less length and if we multiply this with the
+original color then the original color will get darker in these areas because if we multiply a
+color with a value smaller than one it will get darker but we are really only interested in
+whether or not there is red and blue in the image we don't really care how much red or blue is
+in there so how could we change this into a Masque that is black where we have no red and blue
+values but is white everywhere else like this well there's a built-in function that can help us
+with this it's called Step so let's get back to our Shader and add a step Noe this step Noe has
+two inputs one is called Edge and the other is called X to understand what this node does let's
+have another look at the step function here in the browser so this is the step function I have
+set the edge parameter of the step function to 0.1 so now let's see what happens when we plug
+the length that we calculated into the step function this part here is the shirt and it's fully
+black so the length is zero and if we plug this into our step function we get a zero because our
+zero input is less than the edge and for this part here the length is about 0.3 so if we plug
+0.3 into the step function the step function returns one because 0.3 is greater than our edge of
+0.1 so we can use a step function with a very small Edge to decide if the amount of red and blue
+is greater than zero or not so we pluck the length of the vector into the X and we set Edge to
+0.01 and now let's plug the result of the step function into the output to see what happens and
+we can see that our mask is now either black or white but we have no more Shades of Gray in it
+now we can again try to multiply this mask with our input color and what we get back is one
+separated image with the parts that we don't want to change now that is great but how do we get
+the parts that we do want to change well we can just invert this mosque and we can do this with
+a one minus node so let's add a one minus node right click search for one minus and we add it so
+the one minus node just subtracts its input from one so you take the number one you subtract the
+input and the result is the output if we put in white we get black and if we put in Black we get
+white and this is exactly what we want so let's check what happens if we multiply our input
+color with this inverted mask so let's duplicate this multiply note here and then we plug the
+original color and The Mask into the multiply node and then connect this to the output and we
+see that we get just a shirt while everything else is black okay so now we have separated our
+image and we can now start to recolor only this shirt part but how would we do this well we
+could start by just multiplying our shirt mask with the replacement color so everywhere where
+the shirt mask is one we get the replacement color and everywhere else we get black we don't
+have a replacement color yet so let's add a color constant node and now we can pick some color
+maybe this blue here and now we can multiply this mask with our replacement color well it's blue
+all right but it does not only affect the shirt but also the borders and some other parts of the
+image also there is no blending with the border every fragment gets the exact same shade of blue
+so the mask alone is not enough it only tells us where we need to apply the replacement color
+but not how much of it so what would be a good indicator of how much of the replacement color we
+need well you may have guessed it it's the green channel in the original image the more green we
+have the more of the replacement color we want but only in the areas of this mosque so we can
+use this green channel to refine our mosque let's try this we can get the original Green channel
+from our input node this is a float number the mosque is also a float number so this time we
+need a note that multiplies two floats so let's right click search for multiply and then we pick
+this one that multiplies floats and now now we can plug the green Channel and our mask into it
+and then check the result and boom we have a really nice refined mask that only selects the
+shirt and also nicely blends with the black border so now we can again try to multiply this
+refined mask with our replacement color so let's plug it in and we get a nicely replaced shirt
+color great so now we have the two parts of our final image that we wanted to have we have the
+shirt with the replaced color which has all black around it and we have the unchanged part which
+is black where the replaced shirt should go now we want to combine these two back into a single
+image and to do this we can simply add them together why does this work well because everything
+that is black is all zeros so when we add the two images together the black parts will be zero
+plus whatever color is in the other image so let's duplicate one multiply node and change it to
+an add node and now we can direct the outputs of our two multiply nodes into this new add node
+connect that to the output and voila we have a nicely replaced shirt without any seams that's
+great but we're not fully done yet in our game we want the player to be able to select a color
+for their character so we need to be able to change the replacement color from our game code
+right now it is hardcoded in the Shader so we need a way of sending data into our Shader and we
+can do this with a Shader parameter so let's right click and search for parameter and we want to
+give the Shader a color as a parameter so we use a color parameter node we can give this
+parameter a name maybe let's call it replacement uncore color and then we connect this to this
+multiply node where we had the hardcoded color now we can go to our Sprite in the material
+section and here we have a new Shader parameter where we can set the replacement color but we
+want to set this parameter from our game code and this is where our Color Picker here comes in
+we want to select a color with this Color Picker and then in our game this should update the
+color of the shirt so let's add a script to our Sprite and let's name it color replacement. GD
+and now when the player changes the color of this Color Picker we want to be notified in our
+script notification sounds a bit like using signals so let's check the signals that the Color
+Picker provides in the signal list we can see that the Color Picker has a color change signal so
+let's connect this to our replacement script and create a new function on Color Picker color
+changed inside of this function we want to change the replacement color of our Shader to do this
+we first need to get the material of the Sprite as the Shader is part of the material like we
+can see in the inspector luckily the material is available as a property so we can just type
+material the material has a function called set Shader parameter which allows us to change the
+value of a Shader parameter and as the first argument the function expects the name of the
+Shader parameter that we want to change we named our Shader parameter replacement uncore color
+so we type replacement uncore color now we need to give the function the new value that we want
+to set which is the color that our player just picked luckily enough this is given to us as part
+of the color change signal up here so we can just give this into our function and now we can run
+this and see if it works so let's select a nice color for the shirt maybe a neat red and this
+seems to work out nicely before we wrap it up let's translate our color replacement Shader into
+code so we can see how to write a fragment Shader using the Shader language so we create a new
+codebase Shader right click new resource search for Shader and we create a Shader and let's name
+it color replacement like the visual Shader that we created and we assign this to the second
+Sprite here now we can start editing and the Shader type is already set correctly to Canvas item
+we also have an empty fragment function already generated for us so let's look at our visual
+Shader and start translating we first multiply the input color with one1 so we can strip out the
+green Channel input and output in fragment shaders work exactly the same way as in vertex
+shaders so we read and write predefined variables so let's add this to our code so we write V 3
+color without green the predefined variable for color is named named color all uppercase so
+let's multiply color with a vector 3 1 0 1 we see that the compiler is again unhappy about this
+and this is because the color variable is a vector four and we cannot multiply a vector 4 with a
+vector 3 in the visual Shader this was not a problem because the visual Shader editor
+automatically converted the vector 4 to a vector 3 for us but in code we need to do this
+ourselves so we need to make a new Vector 3 which only has the red green and blue components of
+the color Vector so we create a new Vector 3 by calling the vect 3 function and then we give
+color. r color. g and colorb as arguments and then we can multiply this with our one1 Vector the
+compiler is now happy but this is really a lot to write when programming shaders we very often
+need to extract information from vectors and put this information into new vectors of a
+different size to help with this the Shader language has a built-in feature called Swizzles so
+to create a vector three with only the red green and blue components of the color input Vector
+we can just write color do RGB and this RGB is called a swizzle so this is a super helpful short
+hand notation to extract information from some Vector next we want to calculate the length of
+this Vector to find out how much red and blue are in the current fragment the Shader language
+has a built-in function for this and it's called length so we can write float amount of red and
+blue and this is the length of color without green the next step is to use the step function to
+create a mosque let's also make a variable for this maybe red and blue mque step function is
+also built in so we can just write step and as a first parameter we give the edge which is 0.01
+like in our visual Shader for the second parameter we need to use the length of the vector which
+we called amount of and blue so we copy that in so now we have our mask that masks everything
+that has red or blue components let's quickly try this out to see if we are still on track we
+can output The Mask by writing it back to the color variable so let's write color equals Red and
+Blue Mosque unfortunately the compiler is again unhappy about this this is because the color is
+a vector 4 and we are trying to write a float to it what we actually want is to write this float
+into the red green and blue components of the color so let's try if we can use a swizzle for
+this so we change color to color. RGB seems like the compiler is still unhappy because now we
+have a vector three on the left and a float on the right side so it looks like we need to build
+up a vector 3 with the red and blue MK in all three components ourselves we write Vector three
+and then we put red and blue mask for each component of the vector 3 and now we can see in the
+output that our mask is actually working creating this Vector three down here is a lot to write
+but luckily there's a shortcut for this as well if we want to make a vector 3 where all three
+components are the same we can just write Vector 3 Red and Blue Mosque okay so now back to
+converting our Shader here our processing splits into two parts in the upper part we multiply
+the mask with the input color and what we get is the part of the image that we don't want to
+change so let's do the multiplication and add a variable named retained color to store the
+result now for the lower part here we use a one minus note to invert our mosque in the Shader
+language we don't need a special one minus function we can simply subtract the red and blue mque
+from 1.0 to inverted so let's make a variable called green mask and then subtract the red and
+blue mask from 1.0 now we want to make a refined mask by multiplying this green mask with the
+green channel of our input color so we get the nice blending we can just add this to our green M
+calculation so there's no need to make a new variable let's again output this so we can see if
+we are still on the right track we can move this line down here and just change the output to
+the green mask this doesn't look right we should only have the shirt visible at this stage but
+the rest of the image is also visible so what's going on here the problem is that the Shader
+language like other programming languages follows the basic moth rule that multiplication and
+division are done before addition and subtraction so we need to put parentheses around the
+subtraction part here to make sure it is done before the multiplication and now our mask looks
+right and the next step would be to multiply this mask with our replacement C but in our visual
+Shader the replacement color is a Shader parameter so how can we make a Shader parameter in code
+the Shader language provides a keyword for this which is called uniform to add a Shader
+parameter we can go to the top of our Shader and write uniform W for replacement color the
+keyword is called uniform to indicate that the value of this variable will will be the same for
+all fragments so let's have a look at the inspector of our second Sprite and here we have the
+replacement color parameter but it is just displayed as a vector 4 input but in our visual
+Shader we had a nice Color Picker here so how can we get a Color Picker there the Gau Shader
+language has a range of hints that you can add to a uniform declaration and we can find these
+hints in the gdau Shader documentation for uniforms so let's quickly switch to the browser and
+here we have a list of all the hints that we can use we want to have a Color Picker so we can
+use the source color hint so back to our Shader and we add the source color hint to our uniform
+and now if we look in the inspector we get a nice Color Picker here but actually we only need a
+color without an alpha channel here so we can change this variable to a vector 3 and if we look
+at the Color Picker now we can see that gdau will not offer an alpha Channel anymore so now we
+can multiply our green mask with the replacement color so we write w 3 askk replacement color is
+replacement color time green MK now we have the two parts of the image that we want to combine
+one in the retained color variable and the other one in The Mask replacement color variable so
+we can simply add these variables together to get our final color like we did in the visual
+Shader we call this variable final color and then we just add the two parts together finally we
+need to assign this to the output color so we can write color. RGB equals final color and we
+have a working Shader written in the Shader programming language if we look at the code we can
+see that we created a lot of variable names so that we can remember what each step is doing it
+is also a good idea to sprinkle a few comments to explain the flow a bit better this is
+something that is very important when we write code based shaders why is this important well
+let's have a look at this code here this is the exact same Shader that we just wrote but it's
+written in a much more compact way and I think you will agree that if you look at this code 3
+weeks down the road you may have a bit of trouble understanding what exactly is going on here
+unfortunately many many shaders that you can find on the internet are written in this way and
+this may contribute to the perception that shaders are some kind of dark magic so if you want to
+make your life easier split things up a bit and add some comments that explain how and why the
+things are done it is a little bit more to write but I think it's time well spent the Shader
+compiler is actually smart enough to optimize all of these extra variables away so there's no
+performance penalty if you write your shap with some more variables in this video we have
+explored the basics of how shaders work in the gdau engine we have learned that shaders are
+programs that run on the graphics cord rather than on the CPU and that shaders are run in a
+parallel fashion we have learned that shaders run in stages in a Shader Pipeline and we have
+different shaders like vertex shaders and fragment shaders that are run during different stages
+of this pipeline we learned that we can write shaders in both a visual editor and the gdau
+shading language we learned the basics of the gdau shading language and how it compares to the
+programming languages that we use for scripting GD script and C we also learned that both visual
+shaders and codebase shaders have strengths so one isn't necessarily better than the other
+finally we learned that writing shaders is mostly about how to combine observations on the data
+that we have and clever use of mathematical functions to achieve the effects that we want for
+example we looked at the color data to only recolor fragments that have a certain color and we
+use the sign function to create an animation in our vertex Shader this video only scratched the
+surface of what you can do with shaders there's a whole universe of techniques and clever moth
+to pull off a ton of interesting effects if you want some inspiration of what is possible with
+shaders check out the YouTube channel of a guy named enigo KES especially his painting with M
+series he does some really impressive stuff there with a lot of clever techniques check it out
+there's a link down in the description if you have any questions or want to share some of your
+own techniques for creating shaders please post them in the comments if you like this video
+please give it a thumbs up and maybe consider subscribing to the channel to get notified when
+new videos are posted thank you very much and happy Goering

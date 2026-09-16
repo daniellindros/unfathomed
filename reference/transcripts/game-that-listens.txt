@@ -1,0 +1,243 @@
+---
+title: Inside: A Game That Listens
+author: GDC Festival of Gaming
+source_url: https://www.youtube.com/watch?v=Dnd74MQMQ-E
+date_added: 2026-09-15
+date_published: unknown
+type: Video transcript (auto-generated captions)
+caption_track: da  (requested "en" — not available)
+segments: 777
+---
+
+WARNING: this track is tagged "da", not "en". If the speech is
+actually English, YouTube transcribed it with the wrong language model and
+names and technical terms will be badly mangled. Verify every specific.
+
+Good afternoon to people Martin sters from Denmark compos sounder inside finish the game I need
+to break P I have to have rem to switch ces and before I get started to mention the audio Team
+grown limbo øhm we had søsken Rybjerg a couple of years ago and then we had Andreas joining Us
+two years ago and job Smith audio programmer he also did the sound for 140 the in the room to so
+catch up with him as well And also thanks to a couple of the game designers Who helped with
+setting [Musik] toate aud that going to you And also to Mel Svensen Who help me edit some video
+examples for this presentation and he actually doing a talk tomorrow at 5:30 on Visual
+programming if interested in that you should definitely go and bit of extension I'm going to
+deming the inside Wise Project at the audio kinetics Booth Thursday and Friday so if you have
+any question coming up while I present regarding the implementation side You can just come and
+ask so wrapping up the presentation recently I was kind of thinking that this presentation is
+about aud for game kind of weird in a because wpp Up Is that have to take place from the very
+beginning of the Development so this presentation regarding that is concerned with three topics
+each Which interrelate with the others one is death respa die and reincarnate another is sound
+conducting iname actions and that can be like Visual things and we can Trigger that by way of
+Markers and the audio files for example and finally audio driven gameplay which is when a game
+needs to look into the sound in order to determine state of the game and I think we all know the
+results of a death gain which can result in stumbling transitions between levels and here I'm
+thinking mostly about like music game and rythmic games that use Loops and then when they
+transition from one level to another they often synchronize in accordance to the frame rate and
+Gl you have disruptive cuts to cut scenes in middle of dialog and all kind of OD MS and
+distracting death respawn scenarios which can be like every time you respa the same musical
+Queue is playing over and over and the piece of music that you started that you initially liked
+becomes really annoying kind of reminds You of that moment when you were Stuck In The Game It
+can be Just before a joke or something hear the same joke over and over again and you probably
+want some evidence but I don't really like picking examples except I chose to use Limbo as a bad
+example when ied Limbo years ago herec I was Careful not to die Too Much disruption ass kind
+ofis experience We develop lim we had ideas how to solve this but we really have time to do it
+and Again really that Goes Deep into game fair process the fing example from Limbo the hotel
+sign features musical stops when die Ands over What happ game unload anys again I remember Loops
+music t [Musik] [Bifald] så kind of Okay die like one time but t time It's gna be annoying So
+just for the f of it we made a small video edit of the example Which kindig even music play
+while the unload load process t place and it will only play Once no matter How many times you
+die [Musik] [Bifald] [Musik] [Musik] looks like a simple thing to do but it isn't really desing
+for must for play next game inside OB to include a system That could handle and on at Thee the
+solution was to let the audio engine Run continuously from entering to exiting the game and in
+this way the audio wouldn't be affected unless We specified otherwise potential downside that is
+Had handle all sounds in the game Which requires a lot of overview and work like with dynamic
+objects start and stop events that can be really difficult to keep track of So for that reason
+we decided to divide the sounds into two main categories namely one for the sounds that we want
+to restart when you respa and the Ones that we want to just let play across as you can see set
+up inse just stop all except ambi music and those kind of sounds and the mix States also Run
+across Death respawn and as you can see on the left side I have a lot of set up a lot of generic
+Mix States that I can choose from Which I can choose like when the boy dies I can fade out over
+Th Seconds and fade Quickly in out over Whatever second F in again and to handle respa process
+We receive the following events from the game When The Boy dies we get a death event also get a
+death safic game fes out to EV prep and then game We the event execution onek Yellow cur BT
+there You can see we resume the event execution and all the events that have to be executed at
+load will be done like at the same point in time and we also have specific events for Chad
+loading a Point and respawning at a point so for example in the hotel sign example Li I showed
+before I could Choose to like when you load the game if you if you exited the game and went to
+the menu and loaded the SA point Again then you could hear the Musical Queue Once Again Which
+would make sense Like if you hadn't played the games for couple of days Whatever and you went
+back mak sense to have this musical playing One basically some the is dealing with to play an
+example where RM Loop Thats acoss Death respa and also abstract sound associated with light of
+Cent guns affes different mi States for different points just you can Orient yourself just play
+the sound of the Cent Light as you can see there two SA points of there Call c room one and two
+and in the first SA point when you respa the lights are off [Musik] I only turn down volume by
+6B to s and this is that Nobody ever notice all about we don't get annoy by Bing the game ring
+the example you notice this RM that Justs Death respa and Again how the Cent mixes differently
+According to the two differ points and this is just a small section a small SL of this section
+underling is actually playing for playing straight for 15 minutes I think totally unaffected by
+the death respa h så you can see the death respawn Doesn't Really interrupt the the gameplay
+Experience can actually work sending information from the aud back to the game not true when
+considering gameplay when gameplay and music are synchronized ex of that I could list a bunch of
+games kind of fail that but using Limbo as a bad example end of Limbo Gravity Go haywire causes
+the Gravity to shift every second and rythmic pattern described by YouTube Way [Musik] [Musik]
+and ID this pattern should have played continuously across death respa Which would allow the
+player to St The Loop pul important for able to puzzle game Again every time die you know the
+game says I don't exist and then back to Zero again and really takes the player out of to speak
+microne Okay øhm jamen l video kind of illustrates how the sound respond to this Gravity timer
+It's like a timer going from zer to F Seconds and In That Way You could call it driven music
+also very nice actually I remember when I had to do the soundtrack for iTunes I actually had to
+play the game in order to Capture the music øh så Ja That's nice to but in a way it to go both
+ways pretending I'm dying and although i k mix The Death respa transition carefully still really
+disturbs the Flow of the game experience Show [Musik] [Musik] get the point Time K breaks The
+Rythm and starts randomly actually makes the game more difficult to play have looked Like This
+Even though that I die and respa arbit arit points in time the RM just continue Keep the player
+in The Loop h a bit of help in order to create a video Which Again demonstrate how I originally
+envision to sound actually not trial task because I had to record The Game only RM and record
+[Musik] differents sounds to together longer enjoy [Musik] [Musik] t t [Musik] [Musik] [Musik]
+kind of sad that the game doesn't sound like that but in addition to that I would consider
+actually at the Moment of respa the Direction of the Gravity because you could respawn at a
+point where you wouldn't have enough time to react but you could also respa at point in Time
+where you had to wait too long you can actually see in the ex made here which is how I would
+have have done it you can see respa Happens relatively early you can see the face of the Gravity
+Left Side you can see the Gravity Downs another Gravity down and that's Because The early
+respawn makes it possible to actually take action at the moment at respawn whereas if respawn
+Happens relatively late in The Loop you wouldn't have time to take action so if the Gravity was
+down in in that example that would mean that you would have to wait for the Gravity to go up and
+go down again So In That case would be preferable to have the Gravity up at the moment respa and
+that that would be decision that had to be made at the Moment of respa how we want the Gravity
+to to be so if we were to do that That could be interesting to do but it would require a lot of
+a lot of work I know that from working with inside be faced with challenges First of all the
+information is updated during unload and load have to bake The Loop we have to B the RM into a
+loop and As We are respawning at point in time we have to make the the game Look at the position
+The Sound at the time ofa and the game would have to Ori actually According to that and you can
+say this is the essence of audio driven gameplay that needed for the game to look into the Sound
+and I think the most difficult part is that gameplay is brought from Game time into musical time
+that means the game mechanic of the Gravity shifting up and down suddenly becomes real time
+Seconds before it was f game time Seconds and f game time Seconds is necessarily the same as for
+real time Seconds because it's dependent on on the frame rate so if suddenly the frame rate
+Drops then Maybe f Seconds become Five Seconds and if you have to go from point a to one point B
+In f Seconds then you won be able to make it probably we been dealing with those issues in
+inside I'm going to play an example From That RM that continues continuously across respa while
+actually conducting the gameplay and in the puzle in order for the boy to survive He have to
+follow people who are Marching and that's in the Left Side Of The Loop you have the Loop from
+the green cursor to the red cursor in the top and in the first part of the Loop the boy have to
+to Mar to walk and the second part He have to stand still and if he does the opposite Like if he
+stand still in the first part he would He get killed and if he moves in the second part he gets
+killed to just play how it sounds and you can actually see in the lower left corner is actually
+sound of the Footsteps of the characters in the game so That's kind of interesting that you have
+integrated the sound of Footsteps in in the music because it's actually the music that decides
+when those characters about to walk Loops we have to make sure that the boy doesn't respa in the
+first part of the Loop because that would be really Cruel Like if respa there wouldn't even
+killed would in the first part of the Loop big CH that he will actually respa Before The Loop
+starts over But if he dies in the second Part Of The Loop a Maj risk that he will Spa in the
+first part of the Loop there instantly being killed in order to to deal with that we are ining a
+bar Loop that will play so that Queue Loop We are in queueing as soon as the game f black and if
+respawn Happens like half a second before the the red cursor there øhm then øh segment play and
+the Half second delay kind of ensures that the boy doesn't respawn right at at the beat so to
+some of this example the prepare spawn event Ines two death segment playing back Ine is ignor
+half second delay of the SP event player time to reorder [Musik] order Loops over the second
+part order to provoke the play Of The Death and after that Al between Surviving Ding in the
+first part Ding in second part [Musik] the [Bifald] [Musik] first så resp [Bifald] [Musik] the
+first Happens before the fin have time to re second part Ja so basically that allow us to have
+this Pulse going on øh across death respawn but Again it requires that it's the audio that
+conducts the gameplay so I'm moving on to the last example Which long example and briefly
+introduce the category of sound conducting iname actions idea of having a Marker in the sound
+that can Trigger an action in the game in the beginning of the example You see some kind of
+flashing light in the background a Visual War warning for a Shock Wave to initiate as you can
+see Marker in the top right Flash when I Put that one in the game [Musik] [Musik] [Bifald]
+[Musik] Trigger how looks game [Musik] [Musik] jeg simple example but shows that you can play
+random Loops and have Random handling Death respa and the audio driven gameplay We reach high
+level of audio Visual synergy feels like Game experi Of Being inside music [Musik] video
+demonstrate that and the section as you saw is about a Shock Wave that's initiated every six
+second and the boy needs to be in cover and otherwise he is kind of blown into small pieces and
+The Following examples illustrates the potential game breaking issue in hearing in anchoring
+gameplay in music time or real time while the game is still executed in the frame rate dependent
+gain time so at slide you see debug View and the green bars illustrates the solution of the
+puzzle It's kind of illustrates where you can see there a cover which is rotating and the green
+bars when they are in a horizontal position that's where we want the the cover to the yellow bar
+illustrates Target position of the of the cover and both The Green bar and the yellow bar they
+are entirely Hooked on music time so Even though i slow down the speed of the game Which do in a
+second those will continue rotating at the same time the point is that Even though i slow down
+the the game The [Musik] music and the yellow bar The Boy he Can Change The Face of the yellow
+bar by [Musik] switch the yellow bars kind of green gre [Musik] behind it will align to it
+gradually again the bars Green bar and the yellow bar en Hooked on music time where the Rotator
+is in fact synchronized with game time but every time the get out of s it will grad try to align
+with the yellow bar The examp Play back now actually slowing down the game a lot which makes the
+game unplayable and you actually see that the cover will jump from one position to another one
+thing I hope you never see in the game [Musik] point cover jumping is Evening The Game totally
+crappy PC and went entirely wrong you would still be able to solve the [Musik] puzzle can see
+the bar correspond to music time r [Musik] [Musik] grad I can change the face the yellow bar i
+to gre [Musik] [Musik] respawning at AR point in time and Of course the game has to look Where
+The Sound is because If could just like put the yellow bar at a random position then maybe the
+puzle would be solved now can see that the yellow bar snaps to the green one If I get close
+enough [Musik] I get close enough the game help Can grad grad so as you figured The Boy was
+about to survive get cover many other ins to underscore kind of progressions soundwise and this
+example I wanted to change the entire sound World both The Music and the ambiances as you can
+see I really get the information in the wrong order Because The Loop starts over which is what
+triggers the Shock Wave and then I know if the boy will die survive but That's kind of too late
+because I want to know when the Shock Wave is initiated so in other words have to determine the
+state of the boy prior to the Shock Wave initiation so that means that we want death survive
+event and then The Loop starts and then we Trigger the Shock Wave and The Way We doing that is
+by checking I think like 50 milliseconds Before The Loop starts over It's bit hard to see The
+Loop point which is just Below the Marker in the upper right Corner which is called mine pre
+blow I think it's just like the vertical Line just after that is The Loop point We are checking
+like 50 milliseconds Before The Loop point before the Shock Wave initiation We checking the
+State The Boy so if the boys is in cover at that point We the game decides that the boy will
+survive and he will actually survive although he might get out of cover When the Blast is
+happening but we need to stick to that decision otherwise we have like one thing happening in
+the game and the audio showing something something different øhm øhm Ja he how it sounds when he
+survives [Musik] could the cover in the right position on the right side as well but nice to the
+Musical change already on the left Side The Musical change the puzzle is solved like logically
+not necessarily when you have left the puzzle so It's kind of way of underlying that you that
+you did it did it right another thing want to to talk about before playing back the entire
+example is at some point The Director and I thought kind of high intens of the shock Waves a bit
+inting and even a Climax coming up later on so we wanted to to kind of to get the mood bit down
+to to to Dim the shock Waves and one idea was to to in the level to have the boy going inside a
+building Which allowed us to push as not only about also about sound gameplay and the visuals
+everything to be flexible in order to play together almost as a band i the entire sections end
+up being Well composed not only because the game because of the music It's because of the way
+that they work together and the section kind of culminates in elevator crash at some point it
+hits the water during the Development like randomly the elevator Hit The Water r pretty cool to
+make always happened I had designers to to make it possible for the elevator to look into the
+Sound and check how it because it's the boy who can Who activates the elevator and he Can Do
+That At Any point in the Six Second Loop and The End We the elevator to crash on on the beat So
+the speed of the elevator is actually adjust adjusted in order to to hit the water Right On The
+Beat and I now play the entire section and think it's important to play a longer stretch of the
+game because I think That's what it all about about the overall Flow of the the game Experience
+and in the example i di many time as a regular game tester So unlike when I played Limbo here
+five years ago now really Enjoy dying because it sounds sounds good so you know how the Shock
+Wave plays continuously throughout the entire example unaffected by Death and respa game
+mechanics and think only possible because we made a game that listens [Musik] [Musik] [Musik] Ja
+[Musik] [Musik] [Musik] [Musik] Ja 1 [Musik] [Musik] 1 [Musik] [Musik] [Musik] t [Musik] [Musik]
+1 [Musik] 1 [Musik] [Musik] [Musik] t t så [Musik] t [Musik] [Musik] [Musik] [Musik] [Bifald]
+Thank [Musik] you I think we have only five minutes for questions øhm so if anyone have any
+questions let me know well Thank you very much for the talk Thanks was very inspiring I was
+curious about how you actually communicated information from Wi back into the game engine øh
+were the the Markers in the timeline initially was the Markers at least during the Development
+but In The End it was replaced by reading prot Mar You than of of time recent iy work you know
+We're using our parameters and everything like that so that the modern tools allow us to do a
+lot of the The Heavy work Within Wise or FM fabric so that there's not a lot of intensive code
+stuff to control What's going on from the audio you seem to be moving back in back in the other
+Direction a little bit by setting these things up and expecting the game now to be paying more
+attention to What's going on in the audio So obviously that would require more code support so
+I'm actually curious about the process of you obviously wanting to make the improvements from
+from Limbo to this game and the conversation you had to have with the entire team of basically
+saying Hey we we want to spend more time focusing on audio we want to make the audio great but
+that means We're going to have to have more programmer time We're going to have to have more
+Commitment Towards The audio did you find that That was something that instantly they just said
+Yes or was it i that we discuss already Limbo But at that time We didn't have time at all to
+realize it no but I don't think I met a lot of Resistance was a bit though regarding this kind
+[Musik] of between music time and game time that Break The Game i i that only point of Resist
+people the game to sound great i people have been positive about reques [Musik] but I think you
+find I know there prob a lot of people here Who would have that conversation would be really
+difficult with a lot of developers still you know is it worth time so Fantastic You got a team
+of that and It's good you have fight that to hard as on kinding that still kind particip in the
+world that ased kind like the prev was more like actually happen and if so you know how did you
+reach what you reach now så mean that the ide of respawning in one setting and nothing has
+really changed that's what we mean because now with the continuous music it sounds like the the
+setting is still moving while while Dead as opposed to it just restarts that's a good question
+What does it actually mean when you respa you know are you going know sometimes it means that
+you are keeping the not relevant like the time in a way some one other the other i often Miss
+kind of experi being game to [Musik] no point saying that back progress up I can go to the to
+the up room BR Jacob Smith the audio programmer if you have any questions for us to thank you
+[Musik] [Bifald] [Musik] [Bifald]

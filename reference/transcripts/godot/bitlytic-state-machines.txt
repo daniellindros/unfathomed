@@ -1,0 +1,112 @@
+---
+title: Finite State Machines in Godot 4 in Under 10 Minutes
+author: Bitlytic
+source_url: https://www.youtube.com/watch?v=ow_Lum-Agbs
+date_added: 2026-09-15
+date_published: unknown
+type: Video transcript (auto-generated captions)
+caption_track: en
+segments: 250
+---
+
+Let's say you're designing an enemy. You want this enemy to wander until it spots something,
+then chase that target, and if it gets close enough, give it an attack. How would you program
+this? It would be super simple to check whether there's a target and whether we're in range, and
+handle the different time for wandering and all the randomness, but imagine you added a few more
+states to that. Maybe you could see how this code would grow larger and larger. Even though this
+is a smaller example, I personally would use a finite state machine. First off, before we define
+a finite state machine, we should probably define what a state is. A state is a set of
+conditions and a behavior to go along with it. So, our wander state from before had the
+conditions that there was no target, and the behavior is wander randomly. And of course, our
+chase behavior was that we have a target and that we're not in range, and that behavior is to
+chase. And that's kind of how we would split things up in code. So, we would have a state class,
+and inside of the state class, we would have a couple of methods. The first two are enter and
+exit, which are called when we transition to a state and leave from a state. Then, we'll have
+two functions. Those are the update and physics update functions. The update is tied to the
+visual frame rate, whereas the physics is tied to the physics server. Then, each state can have
+its own relevant information. For example, the wandering state would probably have a random
+direction and maybe a speed and maybe a time for it to wander. Then, inside of the inner
+function, we would randomize these variables, and on update, we would tick down the timer, and
+if it reaches zero, we would randomize the variables again. Then, inside of physics, we would
+probably move. And for all of the other states, it would probably be a very similar story.
+That's basically it for the state, and the finite state machine is simply just a collection of
+these states. So, in our case, we would have an idle, chase, and attack state. These would all
+belong to one state machine. The state machine itself is responsible for handling the life
+cycle. So, for example, if we're moving between states, it's responsible for calling the exit
+function on the previous state and the inner function on the new one. And it's also responsible
+for keeping track of what the current state is. Usually, the actual state machine is completely
+agnostic to what states are inside of it. It just needs to know what the current state is and
+what state you want to move to. So, let's swap over to Godot and we'll give this a shot. So,
+we're back in the project from before, and all I've got is this little dude. He's got a script
+on him that just calls move and slide, and we'll set the velocity later using the states. So,
+the first thing I'll do is add a new state script. This will be the base script used for all
+other states later, so we'll set up the functions in here. We'll declare class name state, and
+define the functions enter, exit, update, and physics update. All of these will just contain
+pass cuz we don't actually want to do anything in these functions right now. You technically
+could, but for our project, I'll just leave these blank. Next, I'll go ahead and add a new node
+to the enemy and just call this state machine. Then, I'll attach a new script. So, the plan is
+to have the state machine in the scene tree, and every state can just be a child of that node.
+So, what I'll do is I'll define a states dictionary, and then inside of the ready function, I'll
+loop over all of the children. And if the child is a state, I can add it to the dictionary by
+using its name. And since state extends node, we can check directly here whether it's a state or
+not. I'll go ahead and track the current state, and then we'll go ahead and define the process
+and physics process functions. And inside of here, we can check if we have a current state and
+call update and physics update respectively on the current state. But, how do we move between
+states? Well, there's a billion different ways you could do it, but in my personal way, I would
+use signals. We'll head back over to the state class and add a new signal transitioned. Anytime
+you want to leave the state, we'll just call this signal, and inside of the state machine,
+anytime we register a new state, we can simply connect to the transition signal. This will
+connect to a function that takes in the state that called it, and the new state name that it
+wants to transition to. We can check if the state calling it is not the current state, and then
+we'll grab the new state from the state dictionary, and of course make sure that exists. Then,
+we'll check if we have a current state. If we do, we'll call {dot} exit, and then we'll call
+{dot} enter on the new state, and set the current state to the new state. One quick thing is
+down here I use to lower, and I will actually add that up here as well, just to make sure
+capitalization doesn't do anything funky. And then one last thing is I'll add an exported
+variable called initial state, where we can define the initial state that we want the state
+machine to be in. We'll check if initial state exists, and if it does, we'll call dot enter, and
+then we'll set current state to initial state. And then next, we can start building out our
+separate states. The first state I'll make is just idle. I'll start by making a new script, and
+I'll just call this enemy idle. Instead of extending node, we'll instead extend state, and set
+the class name to enemy idle. And inside of this state, we'll have the two randomized variables,
+which are move direction and wander time, and then a function to randomize those variables. And
+then when we enter this state, we'll just call that random function. And then the update
+function should be really simple. We'll just check if wander time is greater than zero. If it
+is, we'll tick down using delta, and then otherwise, we'll just randomize these variables again.
+And then for the physics update, we'll actually add two more variables. These are a reference to
+the enemy that we're going to be updating, and the move speed that we want to update to. Then in
+the physics update, we'll check if enemy exists, and if it does, we'll just set the velocity to
+direction times speed. And then of course, we probably want to test this to make sure this works
+before we go any further. So, I'll go over to the state machine, and add a new node. If we
+search enemy idle, we should see this here. And I'll assign the enemy, and then I'll assign the
+initial state. Then if I go in game, it looks a little jank, but he's definitely moving around.
+And just for visuals, back in the enemy, I've added it so that if we're moving, we're going to
+play the run animation, and flip the sprite based on which way we're going. And that already
+looks a lot better. I'll go ahead and rename this to just idle, and we'll do one more state
+together. So, back down in states, I'll add a new script, and this one will be enemy follow. And
+just like before, we'll extend state, and set up the class name. And we of course need to know
+what we're following. For this example, I'll just assume we're following the player, and I'll
+add the player to its own group. Then I'll add a player as a target, and inside of the inner
+function, I'll just grab the player from the group. And for the physics update, just like
+before, I'll add in a reference to the enemy and the move speed. And then inside of the
+function, we'll get the direction between the player and the enemy, and if it's outside of some
+distance, we'll move the enemy towards the player. Otherwise, we'll have it stand still. And of
+course, we want to test this one too. So, I'll add it as a child. I'll assign the enemy, and set
+the initial state to the follow state. And I'll also rename to just follow. Then if I go in
+game, he follows. So, the last thing to do is moving between states. This is very much state
+dependent, and I think it's a lot easier if I do it for the follow state first. So, for the
+follow state, we want it to go back to being idle once we've reached a certain threshold. So,
+I'll say if the distance is greater than 50, we'll call transition.emit. Note that we're passing
+in the current state and the name of the new state that we want to go to. And if we give this a
+shot in game, we can see that he stops following us after a certain distance. And back in idle,
+we can do the exact same thing. Of course, we'll need to reference to the player, so we can grab
+that from the tree. And inside of physics update, we can grab the direction between the player
+and the enemy. And if it's within some threshold, we can then transition to the follow state.
+And if we give that a shot in game, you can see he swaps to idle. And if we get close, he starts
+to follow again. That's the absolute basics of a state machine, but there are a lot of things
+you could clean up about this. For example, you notice how both of these states have access to
+the enemy, but instead of having access to the enemy directly, there could be an intermediate
+state object that these states modify, and the enemy just grabs every frame. Or since you notice
+that these three variables are duplicated between idle and follow, you could extract them to an
+enemy state class, and have all of the enemy states extend from that. But regardless of that, I
+hope this is a good look at how state machines can be used.

@@ -1,0 +1,222 @@
+---
+title: Turn It Down 90% – INSIDE VFX
+author: ctrl500.com
+source_url: https://www.youtube.com/watch?v=vA3uFC2p8eo
+date_added: 2026-09-15
+date_published: unknown
+type: Video transcript (auto-generated captions)
+caption_track: en
+segments: 524
+---
+
+hi so as our MC announced my name is Mickel and i will get plated i started some time into in
+size production after limbo was done and i did a few things on inside but most notably most
+focused or visual effects even though that wasn't what I expected this is the first time I'm
+talking solo kind of feel lonely up here and try to my best to say um a few times as possible
+even though that's not going well so far anyways is a different format from talk I've done
+before so I hope you like it and I have no segues so waves when the boys swimming around and
+inside at the at the water surface level he generates some waves this is generally just to give
+it a little bit of a emotion feeling it integrated into the water and when we first did these
+the way we did that we were rendered them was to get that pump II think that he just did and
+with like a cube map the cube map was a simple go to thing it was it was the hot the hot stuff
+to do and it was easy you know it blends additively on top and it was a bit of a compromise
+because you know where those lights coming from and obviously they were coming from the cube map
+so there's this source of reflection that doesn't really come from anywhere it's thing in your
+eye and they just don't really feel like they should be there and rather than just giving some
+motion to the water you've just added a distraction so that's not nice it was it was a
+compromise bill was easy once renewed once redone the shipping version of these waves look more
+like this they'd rather than sampling the this this year cubemap rather than being additive
+these guys just blend normally as wally wood and they they reflect the reflection map that the
+water is already using and refract the refraction map that the water again is already using and
+it seems like a bit of a no-brainer especially in hindsight but I was just a good a good lesson
+in sort of integration and you know to fit in or to blend in that it's important to blend into
+the picture rather than standing out when in this field is Biff specifically the VFX one you
+know video game we affects her a little bit like the cherry on top or the sprinkle on your donut
+if it stands out just like CGI visual effects you would call it out you would notice it it's
+going to bring you out most people complain about see giv effects when they were bad not when
+they are there because if they're just there you wouldn't notice them same could be said for you
+know stage makeup which I'm not wearing the best stage mega makeup would be the one that you
+didn't even notice purposefully just went unnoticed coming to inside I was I was thrown school I
+just kind of learned the dream job and I really wanted to show everybody that I was going to be
+the very best there ever was so I wanted to make the biggest explosions and the greatest rain
+and render tens of thousands of dudes and inside and you know luckily for me and the game a
+great mentorship to you know fix that and the general advice and in case you've checked the the
+name of this session the general advice was how about you turn down ninety percent and even
+though it took a long time to get this lesson across the board it's I've found to enjoying it
+now so that's one talking about it anyways the the lesson is sort of in hindsight obvious but
+don't make don't make the rain the brightest thing on screen or the waterfall don't color smoke
+opaquely gray or yellow just because that's smoke color so let's get into some of that but first
+these waves here they're all over the game and in the shipping version you hopefully don't
+notice them until assume way in and enhancing the details and tell you to look at the freaking
+waves if you're playing the game here hopefully you know just playing the game you're not
+looking at your reflection in the pool you're just going to the right or left in this case we're
+back and forth because then it's supposed to be distracting in with that white ring so when we
+first got rain working I I was really excited about this so I put it in all of the farm land
+area and turn it up to eleven and I felt really good about this [ __ ] rain drop so we can
+render Jesus and you know I got some sound advice up front when it came time to tweet this
+effect which was something like turned it down until it becomes uncomfortable and I did so and
+it was for a while for a few days it was uncomfortable but then took pleasure in the omission of
+this thing now the rain is so dim that well the compression of this video is actually making
+pretty hard to tell just look like this the big noise and green on the video but you can see
+them the shaded side of things are under a lamp post that's really all you want you want to
+satisfy the eye for when you you know want a seasoned brain in this case you shouldn't notice on
+this you hear the sound of rain in your eyes go looking for the rain there it is and that's all
+it needs to be just needs to be the satisfying amount not the you guys it's [ __ ] raining kind
+of rain so this is a tool i like and maybe it's just because i did a lot of smoke and vapor or
+volumetrics whatever you call them and the tool was because in the beginning when I did these
+things there are typically additive additive the blended or opaque gray or yellow because this
+smoke color right but they didn't fit in they got very quickly you know nuked out of the game
+for good reason so the revision of this is as you can see you can drag in a smoke stack with
+smoke color and there's a lid color and a shaded color and you can just use the color picker to
+pick what's on the lid of the smoke and what's on the shaded side of that smoke and we'll just
+kind of blend into the scenery sort of a you know purposefully comma flashing it into the
+environment you can see so it this word and the way the way it's done is just you know get the
+get the dot product between the normal and a light direction in our case we're not just using
+like the sunlight because there isn't one and so we're just using a custom light direction which
+ever we feel / smokestack feels right and then you know just mixing or eloping between the two
+colorism Bob's your uncle it seems simple and it is but kind of works we use these all over
+whether they be four exhaust ports or you know for impacts or for the low ambient stuff in the
+background you see it and even more gameplay stuff that's a little bit more in your face like
+this smoke coming out of that Jake crate thing a little bit more in the smoke I promise I'll be
+done with it in a second when we when we did this we wanted low overdraw so we got inspired by a
+NOAA dogs idea of sub sub particle motion by introducing some UV distortion in these particles
+and we did we do this by just having a texture that we sample with some motion vectors before we
+sample the regular texture sort of the stores the texture before we put it on screen and when we
+first did this tried the was pretty happy about this I generated some sharp young noise in 3ds
+max which seemed like the right ideas like turbulence right so we put this in and usually get
+turned down I example one hundred percent if I didn't really get anywhere because well you know
+it's bad detailed actually so it didn't neither rework and the rework that I got around to was
+done within Photoshop and we call this world noise for lack of a better term because it's you
+know so it's done by taking a UV gradient in Photoshop and kind of applying the swirl filter and
+then pasting that over a bunch of times and you got some swell annoys and this was more pleasant
+now it looks more like whiskey wind really whiskey motion in the particles it's now it's
+actually you know usable even though we only you know to ten percent of it or so and that's
+that's really all it took for that motion to get right that particle system probably has like
+eight particles or so in total so not that many layers but they blend together because of this
+and it'll note on albedo so in the beginning we had these particle sheets with with texture and
+I would because that's what I used to do right was have some some color in them like so so like
+just have some shaded sides this sides and the texture itself is really kind of a bad interface
+to for putting this in so actually our practical shader that we use for almost every particle
+doesn't even accept color from the texture just because it doesn't doesn't need to be there you
+could say so we just accept alpha and the color is then set by that you know like blending thing
+that show before and this is also important that we use a very low detail alpha so you don't
+even notice the you know the disparity between different particles we get plenty of variation
+from random rotation and random size of things we don't even we don't need to add more detail
+than is necessary you need to cut off somewhere so especially with minimalist visuals this is
+kind of self-explanatory but another way to look at it could be that essentially you just don't
+need to put sprinkles on top of your sprinkles and there's the sprinkles after all it's not easy
+for for me at least so know what frequency of detail just didn't make anything better but you
+know if you if you add that it could become obvious that that final rule to explicit detail just
+takes an effect then either crumbles it just makes it a little bit off or weird which is you
+know attention-grabbing so the best way I heard this phrase was from a German fella that I met
+on the Internet he's been a computer design mentor to a few people too many actually and to
+paraphrase him he says his name is ms popka by the way he says your work is only as good as its
+worst detail so cut it off there because you know it'll be it'll be graded by the worst common
+denominator you could say and that's a shame another example of that would be that when we first
+got lens flares working in a nice way that tools for stride and performed right the first thing
+I thought was we gonna get some rainbows in there in this monochrome game and for obvious
+reasons you know they got a newt even I love rainbows but they went away they went monochrome
+pretty fast and everyone was happy in the end for this they live like this now in the game you
+in really nudism is eventually I'm all again stick layer or hopefully you don't think about them
+at all actually and back to the water I promise there there's only one more water section so
+when we first started with the it's not playing at all is it now it is when I first start with
+water or rather got the final water system into the game the bump map or the normal map that I
+applied to this water was sort of an ocean one and just like the turbulence one I generated it
+from Three's max using cellular noise just all the octaves in there and apply a normal map
+filters to said celula noise to get the sort of ocean pump and all sorts of screen distortion
+and all sorts of stuff and of course the better solution ended up being just you know having
+this little subtle bump on it that you know doesn't really drank too much attention but just
+satisfies the need for some motion in the water rather than trying hey check me out I'm an ocean
+and there was a pond and now finally won a bit in this one I'll get into some actual technical
+stuff with it for those you that like that was H displacement so for a long time when you passed
+up and down water it glared in my eyes that the water would be extremely flat even though it was
+just for two frames with it in a blink for a second because it was literally just a flat
+polygonal surface with nothing on it and after seeing it you know bumpy from above this was a
+bit of a dissatisfying things disease so we get tessellated edge with displacement mapping
+that's close to the camera in fermented and in the beginning it looked like this if you could
+ever manage to get the camera is still at the water level but there was a bit jarring because
+there's just this sharp cutoff at the top and the bottom of the water and it needed some work in
+order to be you know to be there to not notice because after all it's only same for a few frames
+and it's made to be less noticeable than not having it so here it is with H failing and it just
+fades from somewhere between the lower and the lowest and the highest wave at any given point so
+to explain further what i mean by that here it is up close and here is the alpha channel that's
+used for this fading so what we need is we need to trace in to the to the screen toward the
+horizon of on these waves and for every step we need to find you know keep saving what is the
+lowest wave we found it was the highest one and we also need to keep in mind the horizon of this
+and that's because given this information that we get from the vertex shader by the way because
+that's where we do with this displacement we can then get a fade between them so where is this
+pixel or where is this vertex relative to the top and the bottom of the waveform and fade out as
+it gets too close to the bottom or too close to the top and remain sharp at I think it's we
+don't want to fade out that the horizon that's done using the inverse function which should be
+in your shader header if it isn't already it's also sometimes called the remap and looks
+something like that today that you Lestrade these top to bottom things here is what it looks
+like the position to the bottom like this is the distance to the bottom of the wave this is the
+distance to the top of the wave this is the distance from the bottom to the back or the horizon
+point of the one you know just where waking you see further step back and from the top to the
+horizon point and given this data from the vertex shader inside the fragment shader you just do
+a little thing like this and that gives the exact same recent results is using inverse there or
+remap and you know hopefully all is these weeks of despairing work paid off to fruition
+hopefully you don't notice that we use these things everywhere hopefully you just notice that
+there is water or isn't and hopefully the flat pancake water effect isn't present so that's a
+what it should be if it work works at least now about that spoiler warning it would be a good
+time to if you don't look at the game spoiled now and sometimes it's better to delete things as
+bear to get rid of them maybe because they're too aggressive or maybe we don't need to render
+these 10,000 views maybe we just need a line in the background maybe it's a bit too weird to
+flush this thing because the situation is already to wait at the end even though there's a nice
+flushy effect maybe we just don't need that right now maybe we just don't need this thing right
+here either and you know when you come up come across these situations that make you feel good
+it's important to just you know it the big key and for lack of a better expression it's you know
+kill your darlings and I hate that one especially here at the beginning because like why would I
+kill my best [ __ ] like the stuff that makes me feel good and it makes everything cool and you
+know I can't answer my own question there I think so it's about deleting what you're too close
+to because you have no way of judging its unfitting this now I've been very dogmatic up until
+now and if you have played the game in those usually close your ears if not you'll know that we
+do turn it up to eleven once or twice and that this is this is important like sometimes you
+might want to give it a little more so while this was using the effects as examples it's more
+about minimalist approaches and how they're used for minimal work but generally it's just a good
+lesson in holding back no matter the discipline most of the time you're not the lead violinist
+you have the first violinist this is gold and it's important to know when you are and when
+you're not especially for me this is stuff that sort of the other people more mature than myself
+what come across as a big bird for me at least it was something that maybe I would have liked to
+have known straight at school with wine to be the very best there ever was like no one ever
+maybe of course this this turnaround happened because I've had amazing mentorship everything
+every lesson that I've shared today was not something I came up with it wasn't something taught
+by our friends and peers have plated who put me in my place and yeah thanks to them thanks to
+you that listens and i hope this talk worked out thanks for bearing with me I wanted to try
+something else than the talk i did with with mega good who let that effort a more technical talk
+if you want to check out some more rendering stuff anti-aliasing audio we've got a repo of more
+knowledge right here and now without further ado or a segue we've got five minutes I was told
+even have some sign right let's so that's good I'm so we can help it allows time for some
+questions so if anyone has them please raise your hand okay start in the front with the year old
+back on so I can photographic yes any other questions this one will answer a bunch of questions
+too by the way well thank you for your talk it was really interesting I was wondering what was
+the most challenging for you to make but also the thing you learned the most from the most
+challenging effect and most challenging a fact you need well when I started you still had the
+splash out of the window there well when I started I have been there like a month and the
+directors dragged me over to show as sequencing on to the 3ware whole room is flooded and said
+could you make that way better still in school a week on the job and four years later it was
+there so pretty Kim back and forth between to that effect a bunch of times I think that one
+takes the cake as most jarring thing to make actually anyone else okay I have a question for you
+um so you talked about your most jarring experience what is the one that you're most proud of
+most proud of yes Lou actually the rain i think the other ring the rain itself just because it
+was through a few iterations and the one that's in there it's like we're rendering tens of
+thousand of raindrops as individual meshes and it it goes really fast and you don't notice it so
+in a way I'm kind of happy to do something so expensive in a way that you wouldn't know that you
+don't even notice it feels like a good sort of waste of GPU power that's the one that or water
+splashes when the boy just jumps into the water and it just looks like an Olympic dive that one
+just kind of clicked really well nobody noticed I feel like a background dancer sometimes like
+doing a thing in the background so nobody notices I'm doing my thing in the background it's good
+any nice questions yes so given the chance on a future project would you always turn it down
+ninety percent or would you sometimes just splash it up and do two hundred percent I love two
+hundred percent it depends on the project like hopefully I'll have the restraint to show
+restraint when when the project shows still not my idea at all I'm just using I because I sass
+make very immature statements and I don't want to say you guys are so mature and when you make
+an effect it's so good and you have to delete it sucks like no way one final question stuff
+anyone yes hi um thanks for to talk i bench played the game at last weekend's and i really loved
+it so thanks for the game as well um were there any inspirations for this game like movies or
+anything that's set up the mood for you like what kind of thanks for Kenny maybe me um I can't
+really share anything about moved because I again I did sprinkles so I wouldn't want to talk on
+somebody's more artistically useful behalf than myself for me for that one special thing I
+looked at on those warts [ __ ] movies and was the other one Poseidon the one with the boat that
+goes down yeah not the not the greatest artistic expressions but that was what was required for
+turning it up a notch Thanks it's time all right thanks

@@ -1,0 +1,28 @@
+# Fetch queue for fetch-transcripts.mjs.
+#   <output-name>  <youtube url or 11-char id>
+# Lines starting with # are ignored. Add anything here; it isn't INSIDE-specific.
+#
+# This is the download queue only. Whether a transcript has been distilled into
+# docs/inside/ is tracked in Plane (project UNFAT, label transcript).
+
+subtleties-konsoll2017    3pzgnN3pK_8
+game-that-listens         Dnd74MQMQ-E
+unbreaking-immersion-2    gRF8Gt5hys4
+unbreaking-immersion-3    TcSuVzUjmLw
+turn-it-down-90-vfx       vA3uFC2p8eo
+rendering-gdce2016        RdN06E6Xn9E
+stutter-free-60fps        mQ2KTRn4BMI
+huddle-up                 gFkYjAKuUCE
+
+# Known problems, verified 2026-09-15:
+#
+# unbreaking-immersion-1  1yzj2ZinN5M
+#   Captions are disabled on this video — nothing to fetch. Left out of the
+#   queue so a run doesn't report a failure every time. The other two parts of
+#   the Wwise series are fine. If you want part 1, it needs watching.
+#
+# game-that-listens
+#   Has one caption track and YouTube tags it Danish. The speech is English —
+#   a Danish speaker presenting — so it was transcribed with the wrong language
+#   model and the names are wrecked. The script takes it anyway and stamps a
+#   warning in the file header. Treat every specific in it as unverified.

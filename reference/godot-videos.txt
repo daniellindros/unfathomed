@@ -1,0 +1,31 @@
+# Fetch queue for Godot tutorial videos.
+#   <output-name>  <youtube url or 11-char id>
+#
+#   cd reference && node fetch-transcripts.mjs -i godot-videos.txt -o transcripts/godot
+#
+# Community tutorials, not official docs and not Playdead. Unverified: a video
+# written for one Godot 4.x may not hold for another, and none of this is
+# authoritative over docs/decisions.md. Distilled on request only — these do NOT
+# feed docs/inside/.
+
+# Godotneers — engine fundamentals
+godotneers-node-paths        KzvkrpA5Y3M
+godotneers-components        W8gYHTjDCic
+godotneers-data-models       4vAkTHeoORk
+godotneers-ui-basics         1_OFJLyqlXI
+godotneers-shaders-intro     nyFzPaWAzeQ
+
+# State machines — three takes on the same problem
+bucketbrigade-state-machines LmT2UgWOQis
+quilled-state-machines       2Gh5WxuAMkw
+bitlytic-state-machines      ow_Lum-Agbs
+
+# Signals
+recursivedev-signals         EvRkJAxlgPg
+
+# Composition
+codewithro-composition       e3H_nw4w5U8
+
+# Playlists these came from, not fetched:
+#   Node paths   list=PLEbADkZjuNUR9CYUZB2KWE5IPWsZHqg4R
+#   Components   list=PLEbADkZjuNURk2-S1fu8GLurgaHX0zHvk
