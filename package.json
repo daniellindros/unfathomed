@@ -1,0 +1,14 @@
+{
+  "name": "unfathomed-docs",
+  "private": true,
+  "type": "module",
+  "description": "Local docs site for reading the project notes. Not part of the game.",
+  "scripts": {
+    "docs": "vitepress dev docs",
+    "docs:build": "vitepress build docs",
+    "docs:preview": "vitepress preview docs"
+  },
+  "devDependencies": {
+    "vitepress": "^1.6.4"
+  }
+}

@@ -9,3 +9,7 @@ export/
 
 # Transcript tooling
 node_modules/
+
+# Docs site (VitePress, local only)
+docs/.vitepress/dist/
+docs/.vitepress/cache/

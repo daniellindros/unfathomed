@@ -38,6 +38,13 @@ what's been researched or decided is already written down somewhere in here.
   properly, the answer is written here instead of being lost with the session. Read the
   index before re-deriving something. Says *why*; `decisions.md` says *what*.
 
+## Reading the docs
+
+`npm install` once, then `npm run docs` serves them as a searchable site on
+localhost. `docs/index.md` and `docs/.vitepress/` are site furniture, not notes — the
+sidebar is generated from the filesystem, so adding a file is enough and no config
+needs touching.
+
 ## Work tracking
 
 Plane, project **Unfathomed** (`UNFAT`) — tasks, and the open questions that gate
